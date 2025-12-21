@@ -5,6 +5,8 @@ import {
   FileText,
   History,
   LayoutDashboard,
+  List,
+  Lock,
   Play,
   Target,
   Trophy,
@@ -28,6 +30,11 @@ const mainItems: MenuItem[] = [
     defaultOpen: true,
     submenu: [
       {
+        icon: <List className="h-4 w-4" />,
+        label: "All Exams",
+        href: "/exams",
+      },
+      {
         icon: <Play className="h-4 w-4" />,
         label: "Take Exam",
         href: "/exams?status=ongoing",
@@ -49,7 +56,12 @@ const mainItems: MenuItem[] = [
     label: "Collections",
     submenu: [
       {
-        icon: <FileText className="h-4 w-4" />,
+        icon: <List className="h-4 w-4" />,
+        label: "All Collections",
+        href: "/collections",
+      },
+      {
+        icon: <Lock className="h-4 w-4" />,
         label: "Your Collections",
         href: "/collections?type=private",
       },
@@ -81,12 +93,12 @@ const exploreItems: MenuItem[] = [
   {
     icon: <Trophy className="h-4 w-4" />,
     label: "Leaderboard",
-    href: "/student/leaderboard",
+    href: "/leaderboard",
   },
   {
     icon: <BookOpen className="h-4 w-4" />,
     label: "Resources",
-    href: "/student/resources",
+    href: "/resources",
   },
 ];
 

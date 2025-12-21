@@ -12,16 +12,29 @@ import { user } from "./auth";
 import { sessionStatus } from "./enums";
 import { problems } from "./problems";
 
-export const exams = pgTable("exams", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
-  title: text().notNull(),
-  startTime: timestamp("start_time", { mode: "string" }).notNull(),
-  endTime: timestamp("end_time", { mode: "string" }).notNull(),
-  durationMinutes: integer("duration_minutes").notNull(),
-  config: jsonb().notNull(),
-  createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
-  updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow().notNull(),
-});
+export const exams = pgTable(
+  "exams",
+  {
+    id: uuid().defaultRandom().primaryKey().notNull(),
+    title: text().notNull(),
+    startTime: timestamp("start_time", { mode: "string" }).notNull(),
+    endTime: timestamp("end_time", { mode: "string" }).notNull(),
+    durationMinutes: integer("duration_minutes").notNull(),
+    config: jsonb().notNull(),
+    createdBy: text("created_by").notNull(),
+    createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
+    updatedAt: timestamp("updated_at", { mode: "string" })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    foreignKey({
+      columns: [table.createdBy],
+      foreignColumns: [user.id],
+      name: "exams_created_by_user_id_fk",
+    }),
+  ],
+);
 
 export const examSessions = pgTable(
   "exam_sessions",

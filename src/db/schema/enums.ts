@@ -18,6 +18,8 @@ export const submissionStatus = pgEnum("submission_status", [
   "accepted",
   "wrong_answer",
   "time_limit_exceeded",
+  "memory_limit_exceeded",
+  "compile_error",
   "runtime_error",
   "manual_review",
 ]);

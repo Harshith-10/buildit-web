@@ -1,14 +1,29 @@
 import { foreignKey, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { user } from "./auth";
 
-export const groups = pgTable("groups", {
-  id: text().primaryKey().notNull(),
-  name: text().notNull(),
-  description: text(),
-  createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow().notNull(),
-  expiresAt: timestamp("expires_at", { mode: "string" }),
-});
+export const groups = pgTable(
+  "groups",
+  {
+    id: text().primaryKey().notNull(),
+    name: text().notNull(),
+    description: text(),
+    createdBy: text("created_by").notNull(),
+    createdAt: timestamp("created_at", { mode: "string" })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { mode: "string" })
+      .defaultNow()
+      .notNull(),
+    expiresAt: timestamp("expires_at", { mode: "string" }),
+  },
+  (table) => [
+    foreignKey({
+      columns: [table.createdBy],
+      foreignColumns: [user.id],
+      name: "groups_created_by_user_id_fk",
+    }),
+  ],
+);
 
 export const usersToGroups = pgTable(
   "users_to_groups",

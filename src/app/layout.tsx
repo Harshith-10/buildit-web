@@ -3,6 +3,7 @@ import { Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 const fontSans = localFont({
   src: [
@@ -37,7 +38,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${fontSans.variable} ${fontMono.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="dark">
-          {children}
+          <NuqsAdapter>{children}</NuqsAdapter>
         </ThemeProvider>
       </body>
     </html>

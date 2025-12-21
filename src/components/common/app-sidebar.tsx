@@ -42,6 +42,7 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { ScrollArea } from "../ui/scroll-area";
 
 interface MenuItem {
   icon: React.ReactNode;
@@ -177,24 +178,26 @@ export default function AppSidebar({
         )}
       </SidebarHeader>
 
-      <SidebarContent>
-        {sections.map((section: SidebarSection, idx: number) => (
-          <div key={section.label}>
-            <SidebarGroup>
-              <SidebarGroupLabel>{section.label}</SidebarGroupLabel>
-              <SidebarGroupContent>
-                {section.items.map((item: MenuItem) => (
-                  <RecursiveSidebarItem
-                    item={item}
-                    currentRoute={currentRoute}
-                    key={item.label}
-                  />
-                ))}
-              </SidebarGroupContent>
-            </SidebarGroup>
-            {idx !== sections.length - 1 && <SidebarSeparator />}
-          </div>
-        ))}
+      <SidebarContent className="overflow-hidden">
+        <ScrollArea className="h-full">
+          {sections.map((section: SidebarSection, idx: number) => (
+            <div key={section.label}>
+              <SidebarGroup>
+                <SidebarGroupLabel>{section.label}</SidebarGroupLabel>
+                <SidebarGroupContent>
+                  {section.items.map((item: MenuItem) => (
+                    <RecursiveSidebarItem
+                      item={item}
+                      currentRoute={currentRoute}
+                      key={item.label}
+                    />
+                  ))}
+                </SidebarGroupContent>
+              </SidebarGroup>
+              {idx !== sections.length - 1 && <SidebarSeparator />}
+            </div>
+          ))}
+        </ScrollArea>
       </SidebarContent>
 
       <SidebarFooter className="border-t border-sidebar-border">
@@ -222,7 +225,7 @@ export default function AppSidebar({
         <SidebarMenu className={`transition-all ${open ? "px-2" : ""}`}>
           <SidebarMenuItem>
             <SidebarMenuButton tooltip="Support" asChild>
-              <Link href="/student/dashboard">
+              <Link href="/support">
                 <LifeBuoy className="h-4 w-4" />
                 <span>Support</span>
               </Link>
@@ -230,7 +233,7 @@ export default function AppSidebar({
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton tooltip="Settings" asChild>
-              <Link href="/student/dashboard">
+              <Link href="/settings">
                 <Settings className="h-4 w-4" />
                 <span>Settings</span>
               </Link>

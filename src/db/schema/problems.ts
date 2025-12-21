@@ -7,29 +7,17 @@ import {
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
+import { user } from "./auth";
 import { difficulty, problemType } from "./enums";
 
-export const problemBanks = pgTable("problem_banks", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
-  name: text().notNull(),
-  description: text(),
-  public: boolean().default(false),
-  createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow().notNull(),
-});
-
-export const problems = pgTable(
-  "problems",
+export const collections = pgTable(
+  "collections",
   {
     id: uuid().defaultRandom().primaryKey().notNull(),
-    bankId: uuid("bank_id"),
-    type: problemType().notNull(),
-    difficulty: difficulty().notNull(),
-    title: text().notNull(),
-    description: text().notNull(),
-    content: jsonb().notNull(),
-    gradingMetadata: jsonb("grading_metadata"),
+    name: text().notNull(),
+    description: text(),
     public: boolean().default(false),
+    createdBy: text("created_by").notNull(),
     createdAt: timestamp("created_at", { mode: "string" })
       .defaultNow()
       .notNull(),
@@ -39,9 +27,43 @@ export const problems = pgTable(
   },
   (table) => [
     foreignKey({
-      columns: [table.bankId],
-      foreignColumns: [problemBanks.id],
-      name: "problems_bank_id_problem_banks_id_fk",
+      columns: [table.createdBy],
+      foreignColumns: [user.id],
+      name: "collections_created_by_user_id_fk",
+    }),
+  ],
+);
+
+export const problems = pgTable(
+  "problems",
+  {
+    id: uuid().defaultRandom().primaryKey().notNull(),
+    collectionId: uuid("collection_id"),
+    type: problemType().notNull(),
+    difficulty: difficulty().notNull(),
+    title: text().notNull(),
+    description: text().notNull(),
+    content: jsonb().notNull(),
+    gradingMetadata: jsonb("grading_metadata"),
+    public: boolean().default(false),
+    createdBy: text("created_by").notNull(),
+    createdAt: timestamp("created_at", { mode: "string" })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { mode: "string" })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    foreignKey({
+      columns: [table.collectionId],
+      foreignColumns: [collections.id],
+      name: "problems_collection_id_collections_id_fk",
+    }),
+    foreignKey({
+      columns: [table.createdBy],
+      foreignColumns: [user.id],
+      name: "problems_created_by_user_id_fk",
     }),
   ],
 );

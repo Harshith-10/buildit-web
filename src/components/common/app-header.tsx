@@ -1,5 +1,6 @@
 "use client";
 
+import { Bell, Search } from "lucide-react";
 import { usePathname } from "next/navigation";
 import React from "react";
 import {
@@ -11,6 +12,13 @@ import {
 } from "@/components/ui/breadcrumb";
 import getPageName from "@/lib/get-page-name";
 import { usePageNameStore } from "@/stores/use-page-name-store";
+import { Button } from "../ui/button";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "../ui/input-group";
+import User from "./user-card";
 
 export default function AppHeader() {
   const pathname = usePathname();
@@ -28,7 +36,12 @@ export default function AppHeader() {
     return (
       <React.Fragment key={fullPath}>
         <BreadcrumbItem>
-          <BreadcrumbLink href={fullPath} className={pathname === fullPath ? "font-bold text-foreground" : ""}>{displayName}</BreadcrumbLink>
+          <BreadcrumbLink
+            href={fullPath}
+            className={pathname === fullPath ? "text-foreground text-base" : ""}
+          >
+            {displayName}
+          </BreadcrumbLink>
         </BreadcrumbItem>
         {index < pathSegments.length - 1 && <BreadcrumbSeparator />}
       </React.Fragment>
@@ -42,7 +55,18 @@ export default function AppHeader() {
           <BreadcrumbList>{breadcrumbItems}</BreadcrumbList>
         </Breadcrumb>
       </div>
-      
+      <div className="flex items-center gap-2 min-w-md">
+        <InputGroup>
+          <InputGroupInput placeholder="Search for problems, collections or exams..." />
+          <InputGroupAddon>
+            <Search />
+          </InputGroupAddon>
+        </InputGroup>
+        <Button size="icon" variant="ghost">
+          <Bell />
+        </Button>
+        <User size="small" popupSide="bottom" disableTooltip />
+      </div>
     </header>
   );
 }

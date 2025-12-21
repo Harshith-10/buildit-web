@@ -28,7 +28,15 @@ import {
 // import { signOut, useSession } from "@/lib/auth-client";
 import { Skeleton } from "../ui/skeleton";
 
-export default function User({ size }: { size: "default" | "small" }) {
+export default function User({
+  size,
+  disableTooltip = false,
+  popupSide = "right",
+}: {
+  size: "default" | "small";
+  popupSide?: "top" | "bottom" | "left" | "right";
+  disableTooltip?: boolean;
+}) {
   //   const { data: session, isPending, error } = useSession();
 
   const _router = useRouter();
@@ -75,7 +83,7 @@ export default function User({ size }: { size: "default" | "small" }) {
                     `https://api.dicebear.com/9.x/fun-emoji/svg?seed=${user.username}`
                   }
                 />
-                <AvatarFallback className="bg-emerald-500/20 text-emerald-500 uppercase">
+                <AvatarFallback className="bg-primary/20 text-primary uppercase">
                   {user.name
                     .split(" ")
                     .map((word) => word[0])
@@ -92,6 +100,21 @@ export default function User({ size }: { size: "default" | "small" }) {
                 <ChevronsUpDown size={16} className="text-muted-foreground" />
               </div>
             </div>
+          ) : disableTooltip ? (
+            <Avatar className="h-8 w-8 cursor-pointer">
+              <AvatarImage
+                src={
+                  user.image ||
+                  `https://api.dicebear.com/9.x/fun-emoji/svg?seed=${user.username}`
+                }
+              />
+              <AvatarFallback className="bg-primary/20 text-primary rounded h-full w-full uppercase text-xs">
+                {user.name
+                  .split(" ")
+                  .map((word) => word[0])
+                  .join("")}
+              </AvatarFallback>
+            </Avatar>
           ) : (
             <Tooltip>
               <TooltipTrigger asChild>
@@ -102,7 +125,7 @@ export default function User({ size }: { size: "default" | "small" }) {
                       `https://api.dicebear.com/9.x/fun-emoji/svg?seed=${user.username}`
                     }
                   />
-                  <AvatarFallback className="bg-emerald-500/20 text-emerald-500 rounded h-full w-full uppercase text-xs">
+                  <AvatarFallback className="bg-primary/20 text-primary rounded h-full w-full uppercase text-xs">
                     {user.name
                       .split(" ")
                       .map((word) => word[0])
@@ -118,7 +141,7 @@ export default function User({ size }: { size: "default" | "small" }) {
           )}
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent side="right" align="end" className="w-56">
+      <DropdownMenuContent side={popupSide} align="end" className="w-56">
         <DropdownMenuLabel className="flex items-center gap-2">
           <Avatar className="h-10 w-10">
             <AvatarImage
@@ -127,7 +150,7 @@ export default function User({ size }: { size: "default" | "small" }) {
                 `https://api.dicebear.com/9.x/fun-emoji/svg?seed=${user.username}`
               }
             />
-            <AvatarFallback className="bg-emerald-500/20 text-emerald-500 uppercase">
+            <AvatarFallback className="bg-primary/20 text-primary uppercase">
               {user.name
                 .split(" ")
                 .map((word) => word[0])
@@ -181,7 +204,13 @@ export default function User({ size }: { size: "default" | "small" }) {
   );
 }
 
-function _UserSkeleton({ size }: { size: "default" | "small" }) {
+function _UserSkeleton({
+  size,
+  disableTooltip = false,
+}: {
+  size: "default" | "small";
+  disableTooltip?: boolean;
+}) {
   return (
     <div className="cursor-pointer">
       {size === "default" ? (
@@ -197,6 +226,10 @@ function _UserSkeleton({ size }: { size: "default" | "small" }) {
             <ChevronsUpDown size={16} className="text-muted-foreground" />
           </div>
         </div>
+      ) : disableTooltip ? (
+        <Avatar className="h-8 w-8 cursor-pointer">
+          <Skeleton className="h-8 w-8" />
+        </Avatar>
       ) : (
         <Tooltip>
           <TooltipTrigger asChild>

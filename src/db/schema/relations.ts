@@ -2,7 +2,7 @@ import { relations } from "drizzle-orm/relations";
 import { account, session, user } from "./auth";
 import { examSessions, exams, sessionProblems } from "./exams";
 import { groups, usersToGroups } from "./groups";
-import { problemBanks, problems, testCases } from "./problems";
+import { collections, problems, testCases } from "./problems";
 import { jobLogs, submissions } from "./submissions";
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -30,22 +30,34 @@ export const usersToGroupsRelations = relations(usersToGroups, ({ one }) => ({
   }),
 }));
 
-export const groupsRelations = relations(groups, ({ many }) => ({
+export const groupsRelations = relations(groups, ({ one, many }) => ({
   usersToGroups: many(usersToGroups),
+  createdBy: one(user, {
+    fields: [groups.createdBy],
+    references: [user.id],
+  }),
 }));
 
 export const problemsRelations = relations(problems, ({ one, many }) => ({
-  problemBank: one(problemBanks, {
-    fields: [problems.bankId],
-    references: [problemBanks.id],
+  collection: one(collections, {
+    fields: [problems.collectionId],
+    references: [collections.id],
   }),
   testCases: many(testCases),
   submissions: many(submissions),
   sessionProblems: many(sessionProblems),
+  createdBy: one(user, {
+    fields: [problems.createdBy],
+    references: [user.id],
+  }),
 }));
 
-export const problemBanksRelations = relations(problemBanks, ({ many }) => ({
+export const collectionsRelations = relations(collections, ({ one, many }) => ({
   problems: many(problems),
+  createdBy: one(user, {
+    fields: [collections.createdBy],
+    references: [user.id],
+  }),
 }));
 
 export const testCasesRelations = relations(testCases, ({ one }) => ({
@@ -71,8 +83,12 @@ export const examSessionsRelations = relations(
   }),
 );
 
-export const examsRelations = relations(exams, ({ many }) => ({
+export const examsRelations = relations(exams, ({ one, many }) => ({
   examSessions: many(examSessions),
+  createdBy: one(user, {
+    fields: [exams.createdBy],
+    references: [user.id],
+  }),
 }));
 
 export const accountRelations = relations(account, ({ one }) => ({
