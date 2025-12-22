@@ -17,9 +17,9 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import {
+  type ReadonlyURLSearchParams,
   usePathname,
   useSearchParams,
-  type ReadonlyURLSearchParams,
 } from "next/navigation";
 import type React from "react";
 import Logo from "@/components/common/logo";

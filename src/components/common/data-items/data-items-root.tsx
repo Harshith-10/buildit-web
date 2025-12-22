@@ -1,9 +1,9 @@
 "use client";
 
-import { LayoutGrid, List, Plus, Search, RotateCcw } from "lucide-react";
+import { LayoutGrid, List, Plus, RotateCcw, Search } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import { type ReactNode, useEffect, useState } from "react";
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -30,8 +30,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import type { DataItemsViewProps, ViewMode } from "./types";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 // If useDebounce hook doesn't exist, we can implement a simple effect inside,
 // but for now I'll assume standard debounce usage or implement inline.
@@ -230,13 +234,13 @@ export function DataItemsView<T extends { id: string }>({
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-            variant="ghost"
-            size="icon"
-            onClick={resetAll}
-            className="h-9 w-9"
-          >
-            <RotateCcw className="h-4 w-4" />
-          </Button>
+                variant="ghost"
+                size="icon"
+                onClick={resetAll}
+                className="h-9 w-9"
+              >
+                <RotateCcw className="h-4 w-4" />
+              </Button>
             </TooltipTrigger>
             <TooltipContent>
               <p>Reset filters</p>
