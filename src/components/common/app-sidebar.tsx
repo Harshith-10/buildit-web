@@ -261,6 +261,7 @@ function RecursiveSidebarItem({
   currentRoute: string;
 }) {
   const searchParams = useSearchParams();
+  const { open } = useSidebar();
 
   // Helper to check if two search params objects share the same relevant keys
   const hasMatchingParams = (
@@ -360,6 +361,36 @@ function RecursiveSidebarItem({
         !hasConflictingParams(sub.href, searchParams))
     );
   });
+
+  // Logic for collapsed state redirection
+  if (!open && item.submenu && item.submenu.length > 0) {
+    const firstChildHref = item.submenu.find((sub) => sub.href)?.href;
+
+    if (firstChildHref) {
+      return (
+        <SidebarMenu>
+          <SidebarMenuItem className={item.className}>
+            <SidebarMenuButton
+              asChild
+              tooltip={item.label}
+              isActive={isActive || hasActiveChild}
+            >
+              <Link href={firstChildHref}>
+                {item.icon}
+                <span className="flex-1">{item.label}</span>
+                {item.indicator && (
+                  <div className="relative">
+                    <div className="absolute w-2 h-2 bg-emerald-400 rounded-full animate-ping" />
+                    <div className="relative w-2 h-2 bg-emerald-400 rounded-full" />
+                  </div>
+                )}
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      );
+    }
+  }
 
   return (
     <SidebarMenu key={item.label}>

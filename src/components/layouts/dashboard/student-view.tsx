@@ -176,10 +176,10 @@ export function StudentView({
       {/* Main Content Grid */}
       <div className="grid gap-6 md:grid-cols-7 lg:grid-cols-7">
         {/* Left Column (Charts) - spans 5 cols */}
-        <div className="col-span-7 lg:col-span-5 flex flex-col gap-6">
+        <div className="col-span-5 flex flex-col gap-6">
           <div className="grid gap-6 md:grid-cols-3">
             {/* Weekly Activity Chart */}
-            <Card className="md:col-span-2 h-[310px] border-primary/20 shadow-sm flex flex-col overflow-hidden">
+            <Card className="md:col-span-2 h-full border-primary/20 shadow-sm flex flex-col overflow-hidden">
               <CardHeader className="pb-2">
                 <CardTitle>Weekly Activity</CardTitle>
                 <CardDescription>Problems solved this week</CardDescription>
@@ -239,7 +239,7 @@ export function StudentView({
             </Card>
 
             {/* Solved Problems Pie Chart */}
-            <Card className="h-[310px] border-primary/20 shadow-sm flex flex-col">
+            <Card className="h-full border-primary/20 shadow-sm flex flex-col">
               <CardHeader className="pb-0">
                 <CardTitle>Solved Problems</CardTitle>
                 <CardDescription>By difficulty level</CardDescription>
@@ -294,13 +294,13 @@ export function StudentView({
         </div>
 
         {/* Right Column (Upcoming) - spans 2 cols */}
-        <div className="col-span-7 lg:col-span-2 flex flex-col gap-6">
-          <Card className="flex flex-col h-[310px] shadow-sm bg-card/50 overflow-hidden relative">
+        <div className="col-span-2 flex flex-col gap-6">
+          <Card className="flex flex-col h-full shadow-sm bg-card/50 overflow-hidden relative">
             <CardHeader className="pb-2">
               <CardTitle className="text-lg">Upcoming Exams</CardTitle>
               <CardDescription>Stay prepared!</CardDescription>
             </CardHeader>
-            <CardContent className="px-4 pt-0 pb-2 flex-1">
+            <CardContent className="px-6 flex-1">
               {upcomingExams.length > 0 ? (
                 <ExamCarousel exams={upcomingExams} />
               ) : (
@@ -350,7 +350,7 @@ function ExamCarousel({ exams }: { exams: StudentViewProps["upcomingExams"] }) {
           >
             <Link
               href={`/exams/${currentExam.id}`}
-              className="flex flex-col gap-2 p-3 rounded-xl bg-background border border-muted-foreground/40 shadow-sm cursor-pointer h-full group"
+              className="flex flex-col gap-2 p-4 rounded-xl bg-background border border-muted-foreground/40 shadow-sm cursor-pointer h-full group"
             >
               <div className="flex items-center gap-2">
                 <div className="p-1.5 rounded-lg bg-primary/10 text-primary">
@@ -370,12 +370,16 @@ function ExamCarousel({ exams }: { exams: StudentViewProps["upcomingExams"] }) {
                     })}
                   </span>
                 </div>
-                <ChevronRight className="ml-auto h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
               </div>
 
-              <h4 className="font-bold text-base leading-12 line-clamp-2 text-muted-foreground hover:text-primary transition-all">
+              <h4 className="font-semibold text-base leading-12 line-clamp-2 group-hover:text-primary transition-all">
                 {currentExam.title}
               </h4>
+
+              <Button>
+                View Details
+                <ChevronRight className="group-hover:translate-x-1 transition-all" />
+              </Button>
             </Link>
           </motion.div>
         </AnimatePresence>
