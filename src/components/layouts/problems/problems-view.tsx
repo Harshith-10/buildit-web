@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { Calendar, Eye, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { DataItemsView } from "@/components/common/data-items/data-items-root";
+import { useSession } from "@/lib/auth-client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,6 +36,7 @@ interface ProblemsViewProps {
 
 export function ProblemsView({ data, total }: ProblemsViewProps) {
   usePageName("Problems");
+  const session = useSession();
 
   const getDifficultyColor = (diff: string) => {
     switch (diff) {
@@ -140,12 +142,17 @@ export function ProblemsView({ data, total }: ProblemsViewProps) {
         { label: "Title (A-Z)", value: "title-asc" },
         { label: "Difficulty (Asc)", value: "difficulty-asc" },
       ]}
-      createAction={{
-        label: "New Problem",
-        onClick: () => {
-          window.location.href = "/problems/create";
-        },
-      }}
+      createAction={
+        session?.data?.user.role === "instructor" ||
+        session?.data?.user.role === "admin"
+          ? {
+              label: "New Problem",
+              onClick: () => {
+                window.location.href = "/problems/create";
+              },
+            }
+          : undefined
+      }
     />
   );
 }

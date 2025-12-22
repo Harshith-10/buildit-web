@@ -5,6 +5,7 @@ import { Calendar, Clock, Eye, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import type { GetExamsParams } from "@/actions/exams-list";
 import { DataItemsView } from "@/components/common/data-items/data-items-root";
+import { useSession } from "@/lib/auth-client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,6 +36,7 @@ interface ExamsViewProps {
 
 export function ExamsView({ data, total }: ExamsViewProps) {
   usePageName("Exams");
+  const session = useSession();
 
   // Helper for Status Badge
   const getStatus = (start: Date, end: Date) => {
@@ -161,14 +163,19 @@ export function ExamsView({ data, total }: ExamsViewProps) {
         { label: "Date (Descending)", value: "date-desc" },
         { label: "Title (A-Z)", value: "title-asc" },
       ]}
-      createAction={{
-        label: "Create Exam",
-        onClick: () => {
-          // This should probably navigate to a create page or open a modal.
-          // For now, let's assume navigation.
-          window.location.href = "/exams/create";
-        },
-      }}
+      createAction={
+        session?.data?.user.role === "instructor" ||
+        session?.data?.user.role === "admin"
+          ? {
+              label: "Create Exam",
+              onClick: () => {
+                // This should probably navigate to a create page or open a modal.
+                // For now, let's assume navigation.
+                window.location.href = "/exams/create";
+              },
+            }
+          : undefined
+      }
     />
   );
 }

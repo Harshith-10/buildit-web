@@ -99,7 +99,7 @@ export function StudentView({
           <div className="flex flex-col h-full justify-between">
             <div className="space-y-2">
               <div className="flex items-center gap-2 opacity-90">
-                <Flame className="h-5 w-5 animate-pulse" />
+                <Flame className="h-5 w-5" />
                 <span className="font-medium tracking-wide text-sm uppercase">
                   Daily Challenge
                 </span>
