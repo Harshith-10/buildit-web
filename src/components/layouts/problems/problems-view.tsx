@@ -4,7 +4,6 @@ import { format } from "date-fns";
 import { Calendar, Eye, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { DataItemsView } from "@/components/common/data-items/data-items-root";
-import { useSession } from "@/lib/auth-client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { usePageName } from "@/hooks/use-page-name";
+import { useSession } from "@/lib/auth-client";
 
 interface Problem {
   id: string;

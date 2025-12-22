@@ -2,12 +2,12 @@
 
 import { format } from "date-fns";
 import {
+  AlertCircle,
   Calendar,
   Clock,
   PlayCircle,
   Settings,
   User,
-  AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { usePageName } from "@/hooks/use-page-name";
-import { ExamConfig } from "@/types/exam-config";
+import type { ExamConfig } from "@/types/exam-config";
 
 interface Exam {
   id: string;
@@ -131,7 +131,10 @@ export function ExamDetailsView({ exam }: ExamDetailsViewProps) {
                     it may affect your submission.
                   </li>
                   <li>
-                    This exam uses the <strong className="capitalize">{config.strategy.replace("_", " ")}</strong>{" "}
+                    This exam uses the{" "}
+                    <strong className="capitalize">
+                      {config.strategy.replace("_", " ")}
+                    </strong>{" "}
                     configuration.
                   </li>
                 </ul>

@@ -1,22 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import {
   AlertTriangle,
   CheckCircle2,
   Info,
+  LogOut,
   Maximize,
   MonitorOff,
-  MousePointerClick,
   Play,
   ShieldAlert,
   Timer,
   User as UserIcon,
-  LogOut,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -25,10 +26,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { cn } from "@/lib/utils";
 import { authClient, useSession } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 interface ExamEntryViewProps {
   examId: string;
@@ -59,7 +58,7 @@ export function ExamEntryView({
     };
   }, []);
 
-  const fetchSessions = async () => {
+  const fetchSessions = useCallback(async () => {
     setLoadingSessions(true);
     try {
       const sessions = await authClient.listSessions();
@@ -69,11 +68,11 @@ export function ExamEntryView({
     } finally {
       setLoadingSessions(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchSessions();
-  }, []);
+  }, [fetchSessions]);
 
   const enterFullscreen = async () => {
     try {

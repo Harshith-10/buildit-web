@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  ChartConfig,
+  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
@@ -185,16 +185,33 @@ export function StudentView({
                 <CardDescription>Problems solved this week</CardDescription>
               </CardHeader>
               <CardContent className="flex-1 pt-0 pb-2 overflow-hidden">
-                <ChartContainer config={activityChartConfig} className="aspect-auto! h-[200px] w-full">
+                <ChartContainer
+                  config={activityChartConfig}
+                  className="aspect-auto! h-[200px] w-full"
+                >
                   <AreaChart
                     accessibilityLayer
                     data={ACTIVITY_DATA}
                     margin={{ left: 12, right: 12, top: 8, bottom: 20 }}
                   >
                     <defs>
-                      <linearGradient id="colorSolved" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="var(--color-solved)" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="var(--color-solved)" stopOpacity={0} />
+                      <linearGradient
+                        id="colorSolved"
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                      >
+                        <stop
+                          offset="5%"
+                          stopColor="var(--color-solved)"
+                          stopOpacity={0.3}
+                        />
+                        <stop
+                          offset="95%"
+                          stopColor="var(--color-solved)"
+                          stopOpacity={0}
+                        />
                       </linearGradient>
                     </defs>
                     <CartesianGrid vertical={false} />
@@ -250,15 +267,24 @@ export function StudentView({
                 </ChartContainer>
                 <div className="flex gap-4 justify-center text-xs text-muted-foreground">
                   <div className="flex items-center gap-1.5">
-                    <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "hsl(142.1 76.2% 36.3%)" }} />
+                    <div
+                      className="w-2.5 h-2.5 rounded-full"
+                      style={{ backgroundColor: "hsl(142.1 76.2% 36.3%)" }}
+                    />
                     <span>Easy</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "hsl(47.9 95.8% 53.1%)" }} />
+                    <div
+                      className="w-2.5 h-2.5 rounded-full"
+                      style={{ backgroundColor: "hsl(47.9 95.8% 53.1%)" }}
+                    />
                     <span>Med</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "hsl(0 84.2% 60.2%)" }} />
+                    <div
+                      className="w-2.5 h-2.5 rounded-full"
+                      style={{ backgroundColor: "hsl(0 84.2% 60.2%)" }}
+                    />
                     <span>Hard</span>
                   </div>
                 </div>
@@ -368,9 +394,9 @@ function ExamCarousel({ exams }: { exams: StudentViewProps["upcomingExams"] }) {
         </Button>
 
         <div className="flex gap-1.5">
-          {exams.map((_, idx) => (
+          {exams.map((exam, idx) => (
             <button
-              key={`dot-${idx}`}
+              key={`dot-${exam.id}`}
               type="button"
               onClick={() => setCurrentIndex(idx)}
               className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentIndex ? "w-6 bg-primary" : "w-1.5 bg-muted-foreground/30 hover:bg-primary/50"}`}

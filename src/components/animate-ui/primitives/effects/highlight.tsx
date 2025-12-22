@@ -44,6 +44,7 @@ type HighlightContextType<T extends string> = {
 
 const HighlightContext = React.createContext<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // biome-ignore lint/suspicious/noExplicitAny: Generic context requires any
   HighlightContextType<any> | undefined
 >(undefined);
 
@@ -328,6 +329,7 @@ function Highlight<T extends React.ElementType = "div">({
           ? render(children)
           : render(
               React.Children.map(children, (child, index) => (
+                // biome-ignore lint/suspicious/noArrayIndexKey: Children order is assumed stable or unique key is unavailable
                 <HighlightItem key={index} className={props?.itemsClassName}>
                   {child}
                 </HighlightItem>
