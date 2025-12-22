@@ -74,4 +74,11 @@ async function seedUsers() {
   }
 }
 
-await seedUsers();
+async function main() {
+  await seedUsers();
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

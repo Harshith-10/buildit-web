@@ -2,18 +2,7 @@
 
 import { CheckCircle, Flame, Play, Trophy } from "lucide-react";
 import Link from "next/link";
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  Cell,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Area, AreaChart, CartesianGrid, Pie, PieChart, XAxis } from "recharts";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -22,8 +11,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
 import { getGreeting } from "@/lib/get-greeting";
-import { ChartCard } from "./chart-card";
 import { StatsCard } from "./stats-card";
 
 interface StudentViewProps {
@@ -59,10 +53,35 @@ const ACTIVITY_DATA = [
 ];
 
 const DIFFICULTY_DATA = [
-  { name: "Easy", value: 12, color: "#22c55e" },
-  { name: "Medium", value: 8, color: "#eab308" },
-  { name: "Hard", value: 3, color: "#ef4444" },
+  { name: "Easy", value: 12, fill: "var(--color-easy)" },
+  { name: "Medium", value: 8, fill: "var(--color-medium)" },
+  { name: "Hard", value: 3, fill: "var(--color-hard)" },
 ];
+
+const activityChartConfig = {
+  solved: {
+    label: "Problems Solved:\u00A0",
+    color: "#6366f1",
+  },
+} satisfies ChartConfig;
+
+const difficultyChartConfig = {
+  value: {
+    label: "Problems",
+  },
+  easy: {
+    label: "Easy",
+    color: "hsl(142.1 76.2% 36.3%)",
+  },
+  medium: {
+    label: "Medium",
+    color: "hsl(47.9 95.8% 53.1%)",
+  },
+  hard: {
+    label: "Hard",
+    color: "hsl(0 84.2% 60.2%)",
+  },
+} satisfies ChartConfig;
 
 export function StudentView({
   stats,
@@ -76,7 +95,7 @@ export function StudentView({
       {/* Hero Section */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {/* Welcome & Daily Goal - Spans 2 cols */}
-        <div className="md:col-span-2 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-6 text-white shadow-lg">
+        <div className="md:col-span-2 rounded-xl bg-linear-to-br from-indigo-500 via-purple-500 to-pink-500 p-6 text-white shadow-lg">
           <div className="flex flex-col h-full justify-between">
             <div className="space-y-2">
               <div className="flex items-center gap-2 opacity-90">
@@ -159,109 +178,103 @@ export function StudentView({
         {/* Left Column (Charts) - spans 5 cols */}
         <div className="col-span-7 lg:col-span-5 flex flex-col gap-6">
           <div className="grid gap-6 md:grid-cols-3">
-            <ChartCard
-              title="Weekly Activity"
-              className="md:col-span-2 min-h-[300px] border-primary/20 shadow-sm"
-            >
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={ACTIVITY_DATA}>
-                  <defs>
-                    <linearGradient
-                      id="colorSolved"
-                      x1="0"
-                      y1="0"
-                      x2="0"
-                      y2="1"
-                    >
-                      <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                    vertical={false}
-                    stroke="var(--border)"
-                    opacity={0.3}
-                  />
-                  <XAxis
-                    dataKey="day"
-                    axisLine={false}
-                    tickLine={false}
-                    tickMargin={10}
-                    fontSize={12}
-                  />
-                  <YAxis
-                    axisLine={false}
-                    tickLine={false}
-                    tickMargin={10}
-                    fontSize={12}
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      borderRadius: "12px",
-                      border: "none",
-                      boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
-                    }}
-                    cursor={{ stroke: "#6366f1", strokeWidth: 2 }}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="solved"
-                    stroke="#6366f1"
-                    strokeWidth={3}
-                    fillOpacity={1}
-                    fill="url(#colorSolved)"
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </ChartCard>
+            {/* Weekly Activity Chart */}
+            <Card className="md:col-span-2 h-[310px] border-primary/20 shadow-sm flex flex-col overflow-hidden">
+              <CardHeader className="pb-2">
+                <CardTitle>Weekly Activity</CardTitle>
+                <CardDescription>Problems solved this week</CardDescription>
+              </CardHeader>
+              <CardContent className="flex-1 pt-0 pb-2 overflow-hidden">
+                <ChartContainer config={activityChartConfig} className="aspect-auto! h-[200px] w-full">
+                  <AreaChart
+                    accessibilityLayer
+                    data={ACTIVITY_DATA}
+                    margin={{ left: 12, right: 12, top: 8, bottom: 20 }}
+                  >
+                    <defs>
+                      <linearGradient id="colorSolved" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="var(--color-solved)" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="var(--color-solved)" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid vertical={false} />
+                    <XAxis
+                      dataKey="day"
+                      tickLine={false}
+                      axisLine={false}
+                      tickMargin={4}
+                    />
+                    <ChartTooltip
+                      cursor={false}
+                      content={<ChartTooltipContent indicator="line" />}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="solved"
+                      stroke="var(--color-solved)"
+                      strokeWidth={2}
+                      fillOpacity={1}
+                      fill="url(#colorSolved)"
+                    />
+                  </AreaChart>
+                </ChartContainer>
+              </CardContent>
+            </Card>
 
-            <ChartCard
-              title="Skills"
-              className="min-h-[300px] border-primary/20 shadow-sm"
-            >
-              <div className="flex flex-col items-center justify-center h-full">
-                <ResponsiveContainer width="100%" height={200}>
+            {/* Solved Problems Pie Chart */}
+            <Card className="h-[310px] border-primary/20 shadow-sm flex flex-col">
+              <CardHeader className="pb-0">
+                <CardTitle>Solved Problems</CardTitle>
+                <CardDescription>By difficulty level</CardDescription>
+              </CardHeader>
+              <CardContent className="flex-1 pb-4">
+                <ChartContainer
+                  config={difficultyChartConfig}
+                  className="mx-auto aspect-square h-[180px]"
+                >
                   <PieChart>
+                    <ChartTooltip
+                      cursor={false}
+                      content={<ChartTooltipContent hideLabel />}
+                    />
                     <Pie
                       data={DIFFICULTY_DATA}
-                      innerRadius={60}
-                      outerRadius={80}
-                      paddingAngle={5}
                       dataKey="value"
-                      stroke="none"
-                    >
-                      {DIFFICULTY_DATA.map((entry, _index) => (
-                        <Cell key={entry.name} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
+                      nameKey="name"
+                      innerRadius={50}
+                      outerRadius={70}
+                      strokeWidth={2}
+                      paddingAngle={3}
+                    />
                   </PieChart>
-                </ResponsiveContainer>
-                <div className="flex gap-4 justify-center text-xs text-muted-foreground mt-[-20px]">
-                  <div className="flex items-center gap-1">
-                    <div className="w-2 h-2 rounded-full bg-green-500" /> Easy
+                </ChartContainer>
+                <div className="flex gap-4 justify-center text-xs text-muted-foreground">
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "hsl(142.1 76.2% 36.3%)" }} />
+                    <span>Easy</span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <div className="w-2 h-2 rounded-full bg-yellow-500" /> Med
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "hsl(47.9 95.8% 53.1%)" }} />
+                    <span>Med</span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <div className="w-2 h-2 rounded-full bg-red-500" /> Hard
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "hsl(0 84.2% 60.2%)" }} />
+                    <span>Hard</span>
                   </div>
                 </div>
-              </div>
-            </ChartCard>
+              </CardContent>
+            </Card>
           </div>
         </div>
 
         {/* Right Column (Upcoming) - spans 2 cols */}
         <div className="col-span-7 lg:col-span-2 flex flex-col gap-6">
-          <Card className="h-full border-l-4 border-l-primary shadow-sm bg-card/50 overflow-hidden relative">
-            <CardHeader>
+          <Card className="flex flex-col h-[310px] shadow-sm bg-card/50 overflow-hidden relative">
+            <CardHeader className="pb-2">
               <CardTitle className="text-lg">Upcoming Exams</CardTitle>
               <CardDescription>Stay prepared!</CardDescription>
             </CardHeader>
-            <CardContent className="px-4 pb-12">
+            <CardContent className="px-4 pt-0 pb-2 flex-1">
               {upcomingExams.length > 0 ? (
                 <ExamCarousel exams={upcomingExams} />
               ) : (
@@ -298,8 +311,8 @@ function ExamCarousel({ exams }: { exams: StudentViewProps["upcomingExams"] }) {
   const currentExam = exams[currentIndex];
 
   return (
-    <div className="relative w-full">
-      <div className="overflow-hidden min-h-[160px] flex items-center justify-center">
+    <div className="relative w-full h-full flex flex-col">
+      <div className="overflow-hidden flex-1 flex items-stretch">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentExam.id}
@@ -307,12 +320,15 @@ function ExamCarousel({ exams }: { exams: StudentViewProps["upcomingExams"] }) {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3 }}
-            className="w-full"
+            className="w-full h-full"
           >
-            <div className="flex flex-col gap-3 p-4 rounded-xl bg-background border border-primary/10 shadow-sm">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 rounded-lg bg-primary/10 text-primary">
-                  <Calendar className="h-5 w-5" />
+            <Link
+              href={`/exams/${currentExam.id}`}
+              className="flex flex-col gap-2 p-3 rounded-xl bg-background border border-muted-foreground/40 shadow-sm cursor-pointer h-full group"
+            >
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 rounded-lg bg-primary/10 text-primary">
+                  <Calendar className="h-4 w-4" />
                 </div>
                 <div className="flex flex-col">
                   <span className="text-xs font-bold uppercase text-muted-foreground">
@@ -328,38 +344,27 @@ function ExamCarousel({ exams }: { exams: StudentViewProps["upcomingExams"] }) {
                     })}
                   </span>
                 </div>
+                <ChevronRight className="ml-auto h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
               </div>
 
-              <h4 className="font-bold text-lg leading-snug line-clamp-2 min-h-[3.5rem]">
+              <h4 className="font-bold text-base leading-12 line-clamp-2 text-muted-foreground hover:text-primary transition-all">
                 {currentExam.title}
               </h4>
-
-              <Button
-                variant="default"
-                size="sm"
-                asChild
-                className="w-full mt-2 group"
-              >
-                <Link href={`/exams/${currentExam.id}`}>
-                  View Details{" "}
-                  <ChevronRight className="ml-1 h-3 w-3 transition-transform group-hover:translate-x-1" />
-                </Link>
-              </Button>
-            </div>
+            </Link>
           </motion.div>
         </AnimatePresence>
       </div>
 
       {/* Navigation Indicators */}
-      <div className="flex items-center justify-between mt-4 px-2">
+      <div className="flex items-center justify-between px-2 pt-2">
         <Button
           variant="ghost"
           size="icon"
           type="button"
-          className="h-8 w-8 rounded-full hover:bg-primary/10"
+          className="h-6 w-6 rounded-full hover:bg-primary/10"
           onClick={prev}
         >
-          <ChevronLeft className="h-4 w-4" />
+          <ChevronLeft className="h-3 w-3" />
         </Button>
 
         <div className="flex gap-1.5">
@@ -377,10 +382,10 @@ function ExamCarousel({ exams }: { exams: StudentViewProps["upcomingExams"] }) {
           variant="ghost"
           size="icon"
           type="button"
-          className="h-8 w-8 rounded-full hover:bg-primary/10"
+          className="h-6 w-6 rounded-full hover:bg-primary/10"
           onClick={next}
         >
-          <ChevronRight className="h-4 w-4" />
+          <ChevronRight className="h-3 w-3" />
         </Button>
       </div>
     </div>
