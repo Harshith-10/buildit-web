@@ -13,7 +13,23 @@ export const auth = betterAuth({
     minPasswordLength: 6,
   },
   plugins: [
-    admin(),
+    admin({
+      defaultRole: "student",
+      roles: {
+        student: {
+          authorize: () => true as any,
+          statements: [],
+        },
+        instructor: {
+          authorize: () => true as any,
+          statements: [],
+        },
+        admin: {
+          authorize: () => true as any,
+          statements: [],
+        },
+      },
+    }),
     username({
       minUsernameLength: 5,
       maxUsernameLength: 100,

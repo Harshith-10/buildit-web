@@ -3,7 +3,25 @@ import { createAuthClient } from "better-auth/react";
 
 export const authClient = createAuthClient({
   baseURL: "http://localhost:3000",
-  plugins: [adminClient(), usernameClient()],
+  plugins: [
+    adminClient({
+      roles: {
+        student: {
+          authorize: () => true as any,
+          statements: [],
+        },
+        instructor: {
+          authorize: () => true as any,
+          statements: [],
+        },
+        admin: {
+          authorize: () => true as any,
+          statements: [],
+        },
+      },
+    }),
+    usernameClient(),
+  ],
 });
 
 export const { signIn, signOut, signUp, useSession } = authClient;

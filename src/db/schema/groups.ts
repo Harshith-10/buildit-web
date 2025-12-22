@@ -8,13 +8,9 @@ export const groups = pgTable(
     name: text().notNull(),
     description: text(),
     createdBy: text("created_by").notNull(),
-    createdAt: timestamp("created_at", { mode: "string" })
-      .defaultNow()
-      .notNull(),
-    updatedAt: timestamp("updated_at", { mode: "string" })
-      .defaultNow()
-      .notNull(),
-    expiresAt: timestamp("expires_at", { mode: "string" }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+    expiresAt: timestamp("expires_at"),
   },
   (table) => [
     foreignKey({

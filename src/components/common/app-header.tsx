@@ -49,7 +49,7 @@ export default function AppHeader() {
   });
 
   return (
-    <header className="flex items-center justify-between p-4 border-b">
+    <div className="flex items-center justify-between p-4 border-b sticky top-0 z-10 bg-background">
       <div className="flex items-center gap-2">
         <Breadcrumb>
           <BreadcrumbList>{breadcrumbItems}</BreadcrumbList>
@@ -67,6 +67,6 @@ export default function AppHeader() {
         </Button>
         <User size="small" popupSide="bottom" disableTooltip />
       </div>
-    </header>
+    </div>
   );
 }

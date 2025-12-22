@@ -17,15 +17,13 @@ export const exams = pgTable(
   {
     id: uuid().defaultRandom().primaryKey().notNull(),
     title: text().notNull(),
-    startTime: timestamp("start_time", { mode: "string" }).notNull(),
-    endTime: timestamp("end_time", { mode: "string" }).notNull(),
+    startTime: timestamp("start_time").notNull(),
+    endTime: timestamp("end_time").notNull(),
     durationMinutes: integer("duration_minutes").notNull(),
     config: jsonb().notNull(),
     createdBy: text("created_by").notNull(),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
-    updatedAt: timestamp("updated_at", { mode: "string" })
-      .defaultNow()
-      .notNull(),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
   (table) => [
     foreignKey({
@@ -45,8 +43,8 @@ export const examSessions = pgTable(
     status: sessionStatus().default("in_progress").notNull(),
     deviceFingerprint: text("device_fingerprint"),
     lockedIp: text("locked_ip"),
-    startedAt: timestamp("started_at", { mode: "string" }).defaultNow(),
-    expiresAt: timestamp("expires_at", { mode: "string" }).notNull(),
+    startedAt: timestamp("started_at").defaultNow(),
+    expiresAt: timestamp("expires_at").notNull(),
   },
   (table) => [
     foreignKey({

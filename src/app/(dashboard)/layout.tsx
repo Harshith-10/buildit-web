@@ -11,6 +11,7 @@ import {
   Target,
   Trophy,
 } from "lucide-react";
+import PinProtection from "@/components/auth/pin-protection";
 import AppHeader from "@/components/common/app-header";
 import AppSidebar, {
   type MenuItem,
@@ -113,16 +114,18 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <SidebarProvider>
-      <main className="flex w-screen h-screen">
-        <AppSidebar sections={[mainSection, exploreSection]} />
-        <div className="w-full h-full py-2 pr-2 bg-sidebar">
-          <div className="flex flex-col bg-background w-full h-full overflow-auto rounded-lg border-2">
-            <AppHeader />
-            {children}
+    <PinProtection>
+      <SidebarProvider>
+        <main className="flex w-screen h-screen">
+          <AppSidebar sections={[mainSection, exploreSection]} />
+          <div className="w-full h-full py-2 pr-2 bg-sidebar">
+            <div className="flex flex-col bg-background w-full h-full overflow-auto rounded-lg border-2">
+              <AppHeader />
+              {children}
+            </div>
           </div>
-        </div>
-      </main>
-    </SidebarProvider>
+        </main>
+      </SidebarProvider>
+    </PinProtection>
   );
 }

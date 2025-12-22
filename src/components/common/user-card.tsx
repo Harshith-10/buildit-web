@@ -25,7 +25,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-// import { signOut, useSession } from "@/lib/auth-client";
+import { signOut, useSession } from "@/lib/auth-client";
+import { usePinStore } from "@/stores/pin-store";
 import { Skeleton } from "../ui/skeleton";
 
 export default function User({
@@ -37,38 +38,28 @@ export default function User({
   popupSide?: "top" | "bottom" | "left" | "right";
   disableTooltip?: boolean;
 }) {
-  //   const { data: session, isPending, error } = useSession();
+  const { data: session, isPending } = useSession();
+  const resetPinStore = usePinStore((state) => state.reset);
 
-  const _router = useRouter();
+  const router = useRouter();
   const { theme, setTheme } = useTheme();
 
-  //   const handleLogout = async () => {
-  //     await signOut({
-  //       fetchOptions: {
-  //         onSuccess: () => {
-  //           router.push("/auth");
-  //         },
-  //       },
-  //     });
-  //   };
-
-  //   if (isPending || !session?.user) {
-  //     return <UserSkeleton size={size} />;
-  //   }
-
-  //   if (error) {
-  //     toast.error("Failed to load session. Redirecting to auth...");
-  //     redirect("/auth");
-  //   }
-
-  //   const user = session.user;
-
-  const user = {
-    name: "Harshith Doddipalli",
-    email: "harshith.doddipalli@gmail.com",
-    image: "https://api.dicebear.com/9.x/glass/svg?seed=Harshit%20Doddipalli",
-    username: "harshith",
+  const handleLogout = async () => {
+    await signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          resetPinStore(); // Reset PIN store to clear authCompleted
+          router.push("/auth");
+        },
+      },
+    });
   };
+
+  if (isPending || !session?.user) {
+    return <UserSkeleton size={size} disableTooltip={disableTooltip} />;
+  }
+
+  const user = session.user;
 
   return (
     <DropdownMenu>
@@ -193,7 +184,7 @@ export default function User({
         <DropdownMenuSeparator />
         <DropdownMenuItem
           variant="destructive"
-          //   onClick={handleLogout}
+          onClick={handleLogout}
           className="cursor-pointer"
         >
           <LogOut className="mr-2 h-4 w-4" />
@@ -204,7 +195,7 @@ export default function User({
   );
 }
 
-function _UserSkeleton({
+function UserSkeleton({
   size,
   disableTooltip = false,
 }: {

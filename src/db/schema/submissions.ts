@@ -22,7 +22,7 @@ export const submissions = pgTable(
     score: integer().default(0),
     runtimeMs: integer("runtime_ms"),
     memoryKb: integer("memory_kb"),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
+    createdAt: timestamp("created_at").defaultNow(),
   },
   (table) => [
     foreignKey({
@@ -46,7 +46,7 @@ export const jobLogs = pgTable(
     workerNodeId: text("worker_node_id").notNull(),
     consensusHash: text("consensus_hash"),
     outputLog: text("output_log"),
-    executedAt: timestamp("executed_at", { mode: "string" }).defaultNow(),
+    executedAt: timestamp("executed_at").defaultNow(),
   },
   (table) => [
     foreignKey({

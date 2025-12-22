@@ -1,5 +1,6 @@
 import { relations } from "drizzle-orm/relations";
 import { account, session, user } from "./auth";
+import { dailyProblems as dailyProblemsSchema } from "./daily-problems";
 import { examSessions, exams, sessionProblems } from "./exams";
 import { groups, usersToGroups } from "./groups";
 import { collections, problems, testCases } from "./problems";
@@ -124,8 +125,14 @@ export const sessionProblemsRelations = relations(
       fields: [sessionProblems.sessionId],
       references: [examSessions.id],
     }),
+  }),
+);
+
+export const dailyProblemsRelations = relations(
+  dailyProblemsSchema,
+  ({ one }) => ({
     problem: one(problems, {
-      fields: [sessionProblems.problemId],
+      fields: [dailyProblemsSchema.problemId],
       references: [problems.id],
     }),
   }),

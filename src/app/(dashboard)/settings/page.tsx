@@ -1,10 +1,28 @@
-"use client";
-
-import UnderConstruction from "@/components/common/under-construction";
-import { usePageName } from "@/hooks/use-page-name";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import AccountSettings from "@/components/settings/account-settings";
+import SecuritySettings from "@/components/settings/security-settings";
+import RoleSpecificSettings from "@/components/settings/role-specific-settings";
 
 export default function SettingsPage() {
-  usePageName("Settings");
-
-  return <UnderConstruction />;
+  return (
+    <div className="container p-6">
+      <h1 className="text-3xl font-bold mb-6">Settings</h1>
+      <Tabs defaultValue="account"  >
+        <TabsList className="grid w-full grid-cols-3 lg:w-[400px]">
+          <TabsTrigger value="account">Account</TabsTrigger>
+          <TabsTrigger value="security">Security</TabsTrigger>
+          <TabsTrigger value="role">Role Settings</TabsTrigger>
+        </TabsList>
+        <TabsContent value="account">
+          <AccountSettings />
+        </TabsContent>
+        <TabsContent value="security">
+          <SecuritySettings />
+        </TabsContent>
+        <TabsContent value="role">
+          <RoleSpecificSettings />
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
 }

@@ -24,3 +24,8 @@ export const submissionStatus = pgEnum("submission_status", [
   "manual_review",
 ]);
 export const userRole = pgEnum("user_role", ["student", "instructor", "admin"]);
+export const pinStrategy = pgEnum("pin_strategy", [
+  "always",
+  "new_device",
+  "random",
+]);
