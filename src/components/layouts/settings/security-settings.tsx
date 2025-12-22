@@ -1,16 +1,17 @@
 "use client";
 
+import { Monitor, Smartphone, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { useSession, authClient } from "@/lib/auth-client";
-import { getDeviceFingerprint, getDeviceName } from "@/lib/fingerprint";
-import { checkPinStatus, setupPin, type PinStatusResult } from "@/actions/pin";
+import { checkPinStatus, type PinStatusResult, setupPin } from "@/actions/pin";
 import {
-  getSessions,
-  revokeSession,
   getDevices,
+  getSessions,
   removeDevice,
+  revokeSession,
 } from "@/actions/settings";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -18,18 +19,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Trash2, Smartphone, Monitor } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { authClient, useSession } from "@/lib/auth-client";
+import { getDeviceFingerprint } from "@/lib/fingerprint";
 
 export default function SecuritySettings() {
   const { data: session } = useSession();
@@ -61,6 +61,7 @@ export default function SecuritySettings() {
     setLoadingSessions(false);
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: I don't want to pass refreshSessionsAndDevices to useEffect
   useEffect(() => {
     async function init() {
       const fp = await getDeviceFingerprint();
@@ -101,7 +102,7 @@ export default function SecuritySettings() {
           },
         },
       );
-    } catch (err) {
+    } catch (_err) {
       toast.error("An error occurred");
     } finally {
       setChangingPassword(false);
@@ -129,7 +130,7 @@ export default function SecuritySettings() {
       } else {
         toast.error(result.error);
       }
-    } catch (err) {
+    } catch (_err) {
       toast.error("Failed to set PIN");
     } finally {
       setSettingPin(false);
@@ -145,7 +146,7 @@ export default function SecuritySettings() {
       } else {
         toast.error(result.error);
       }
-    } catch (err) {
+    } catch (_err) {
       toast.error("Failed to revoke session");
     }
   };
@@ -159,7 +160,7 @@ export default function SecuritySettings() {
       } else {
         toast.error(result.error);
       }
-    } catch (err) {
+    } catch (_err) {
       toast.error("Failed to remove device");
     }
   };

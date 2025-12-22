@@ -5,13 +5,13 @@ import {
   getFacultyDashboardData,
   getStudentDashboardData,
 } from "@/actions/dashboard";
-import { AdminView } from "@/components/dashboard/admin-view";
-import { FacultyView } from "@/components/dashboard/faculty-view";
-import { StudentView } from "@/components/dashboard/student-view";
+import { AdminView } from "@/components/layouts/dashboard/admin-view";
+import { FacultyView } from "@/components/layouts/dashboard/faculty-view";
+import { StudentView } from "@/components/layouts/dashboard/student-view";
 import { auth } from "@/lib/auth";
 
 export const metadata = {
-  title: "Dashboard | BuildIt",
+  title: "Dashboard | BuildIT",
 };
 
 export default async function DashboardPage() {

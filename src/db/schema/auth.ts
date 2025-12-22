@@ -2,9 +2,9 @@ import {
   boolean,
   index,
   pgTable,
+  primaryKey,
   text,
   timestamp,
-  primaryKey,
 } from "drizzle-orm/pg-core";
 import { pinStrategy, userRole } from "./enums";
 

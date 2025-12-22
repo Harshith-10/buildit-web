@@ -1,7 +1,10 @@
 "use client";
 
-import { useSession } from "@/lib/auth-client";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { updateProfile } from "@/actions/settings";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -9,13 +12,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { toast } from "sonner";
-import { useState, useEffect } from "react";
+import { useSession } from "@/lib/auth-client";
 
 export default function AccountSettings() {
   const { data: session, isPending, refetch } = useSession();
@@ -47,7 +47,7 @@ export default function AccountSettings() {
       } else {
         toast.error(result.error);
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error("An error occurred");
     } finally {
       setLoading(false);

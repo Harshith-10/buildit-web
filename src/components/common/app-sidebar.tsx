@@ -16,7 +16,11 @@ import {
   Trophy,
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import {
+  usePathname,
+  useSearchParams,
+  type ReadonlyURLSearchParams,
+} from "next/navigation";
 import type React from "react";
 import Logo from "@/components/common/logo";
 import User from "@/components/common/user-card";
@@ -256,16 +260,106 @@ function RecursiveSidebarItem({
   item: MenuItem;
   currentRoute: string;
 }) {
-  const isActive =
-    item.href === currentRoute ||
-    (!!item.href &&
-      currentRoute.startsWith(item.href) &&
-      item.href !== "/dashboard");
-  const hasActiveChild = item.submenu?.some(
-    (sub) =>
-      sub.href === currentRoute ||
-      (sub.href && currentRoute.startsWith(sub.href)),
-  );
+  const searchParams = useSearchParams();
+
+  // Helper to check if two search params objects share the same relevant keys
+  const hasMatchingParams = (
+    itemHref: string,
+    currentParams: ReadonlyURLSearchParams,
+  ) => {
+    if (!itemHref.includes("?")) return false;
+    const itemUrl = new URL(itemHref, "http://localhost");
+    const itemParams = itemUrl.searchParams;
+
+    // Check if all params in the item's href match the current params
+    // specific focus on 'status' and 'type' as routing params
+    for (const [key, value] of itemParams.entries()) {
+      if (currentParams.get(key) !== value) return false;
+    }
+    return true;
+  };
+
+  // Helper to check if current route has conflicting params for a base route
+  // e.g. /exams should not be active if we are at /exams?status=upcoming
+  const hasConflictingParams = (
+    itemHref: string,
+    currentParams: ReadonlyURLSearchParams,
+  ) => {
+    // If item has specific params, it's already handled by hasMatchingParams logic implicitly
+    if (itemHref.includes("?")) return false;
+
+    // List of params that act as sub-routes
+    const routingParams = ["status", "type"];
+
+    // If current URL has any of these params, and the item's HREF doesn't,
+    // then this item (likely a base "All ..." link) should NOT be active.
+    for (const param of routingParams) {
+      if (currentParams.has(param)) return true;
+    }
+
+    return false;
+  };
+
+  const isActive = (() => {
+    // 1. Exact match (ignoring query params for now, unless item has them)
+    // We treat query params as part of the identity if the item defined them.
+
+    const itemHasQuery = item.href?.includes("?");
+    const normalizedItemHref = item.href?.split("?")[0];
+    const normalizedCurrentRoute = currentRoute.split("?")[0];
+
+    // If item points to dashboard, strict active check prevents it from being active on sub-routes if desired,
+    // but usually dashboard is unique. Existing logic had specific check.
+    if (item.href === "/dashboard" || item.href === "/student/dashboard") {
+      return currentRoute === item.href;
+    }
+
+    if (!item.href) return false;
+
+    // Case A: Item has query params (e.g. /exams?status=upcoming)
+    if (itemHasQuery) {
+      return (
+        normalizedItemHref === normalizedCurrentRoute &&
+        hasMatchingParams(item.href, searchParams)
+      );
+    }
+
+    // Case B: Item is a base path (e.g. /exams)
+    // It should match if:
+    // 1. Paths match/start-with
+    // 2. We don't have "conflicting" params (like status=upcoming) that belong to a sibling item
+    const isPathMatch =
+      currentRoute === item.href ||
+      (currentRoute.startsWith(item.href) && item.href !== "/");
+
+    if (isPathMatch) {
+      return !hasConflictingParams(item.href, searchParams);
+    }
+
+    return false;
+  })();
+
+  const hasActiveChild = item.submenu?.some((sub) => {
+    // Recursive check concept, but we can reuse similar logic or just check hrefs
+    // For simplicity re-evaluating similar logic for children roughly:
+    if (!sub.href) return false;
+
+    // Quick active check for parent expanding
+    // This duplicates logic slightly but keeps it self-contained for the child check
+    const subHasQuery = sub.href.includes("?");
+    const normSub = sub.href.split("?")[0];
+    const normCurr = currentRoute.split("?")[0];
+
+    if (subHasQuery) {
+      return normSub === normCurr && hasMatchingParams(sub.href, searchParams);
+    }
+
+    return (
+      currentRoute === sub.href ||
+      (currentRoute.startsWith(sub.href) &&
+        !hasConflictingParams(sub.href, searchParams))
+    );
+  });
 
   return (
     <SidebarMenu key={item.label}>
@@ -278,7 +372,7 @@ function RecursiveSidebarItem({
             <SidebarMenuButton
               tooltip={item.label}
               className={item.className}
-              isActive={hasActiveChild}
+              isActive={isActive || hasActiveChild}
             >
               {item.icon}
               <span className="flex-1">{item.label}</span>

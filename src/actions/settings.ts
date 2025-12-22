@@ -1,8 +1,8 @@
 "use server";
 
-import { and, eq, ne } from "drizzle-orm";
-import { headers } from "next/headers";
+import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import db from "@/db";
 import { device, session, user } from "@/db/schema";
 import { auth } from "@/lib/auth";
@@ -49,7 +49,7 @@ export async function updateProfile(data: {
 
     revalidatePath("/settings");
     return { success: true };
-  } catch (error) {
+  } catch (_error) {
     return { success: false, error: "Failed to update profile" };
   }
 }
@@ -92,7 +92,7 @@ export async function revokeSession(sessionId: string): Promise<ActionResult> {
     );
     revalidatePath("/settings");
     return { success: true };
-  } catch (error) {
+  } catch (_error) {
     return { success: false, error: "Failed to revoke session" };
   }
 }
@@ -138,7 +138,7 @@ export async function removeDevice(fingerprint: string): Promise<ActionResult> {
 
     revalidatePath("/settings");
     return { success: true };
-  } catch (error) {
+  } catch (_error) {
     return { success: false, error: "Failed to remove device" };
   }
 }

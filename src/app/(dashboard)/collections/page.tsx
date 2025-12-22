@@ -1,20 +1,28 @@
-"use client";
+import { getCollections } from "@/actions/collections-list";
+import { CollectionsView } from "@/components/layouts/collections/collections-view";
 
-import { parseAsString, useQueryState } from "nuqs";
-import UnderConstruction from "@/components/common/under-construction";
-import { usePageName } from "@/hooks/use-page-name";
+export default async function CollectionsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const params = await searchParams;
 
-export default function CollectionsPage() {
-  const [type] = useQueryState("type", parseAsString.withDefault("none"));
-  usePageName(
-    type === "private"
-      ? "Your Collections"
-      : type === "practice"
-        ? "Practice Sheets"
-        : type === "company"
-          ? "Company Lists"
-          : "Collections",
-  );
+  const page = typeof params.page === "string" ? parseInt(params.page, 10) : 1;
+  const search = typeof params.q === "string" ? params.q : undefined;
+  const sort = typeof params.sort === "string" ? params.sort : undefined;
+  const visibility =
+    typeof params.visibility === "string"
+      ? (params.visibility as "public" | "private")
+      : undefined;
 
-  return <UnderConstruction />;
+  const { data, total } = await getCollections({
+    page,
+    search,
+    sort,
+    visibility,
+    perPage: 10,
+  });
+
+  return <CollectionsView data={data} total={total} />;
 }
