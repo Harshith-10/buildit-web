@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { getLanguages } from "@/actions/code-execution";
 import {
   getProblem,
   getProblems,
@@ -17,23 +18,26 @@ interface PageProps {
 export default async function ProblemPage({ params }: PageProps) {
   const { slug } = await params;
 
-  const [problem, _problems] = await Promise.all([
+  const [problem, _problems, languages] = await Promise.all([
     getProblem(slug),
     getProblems(),
+    getLanguages(),
   ]);
 
   if (!problem) {
     notFound();
   }
 
-  const [userSubmissions] = await Promise.all([getUserSubmissions(problem.id)]);
+  const [_userSubmissions] = await Promise.all([
+    getUserSubmissions(problem.id),
+  ]);
 
   return (
     <main className="flex h-screen w-full">
       <ProblemSidebar problems={_problems} activeProblemSlug={slug} />
       <div className="h-screen w-full flex flex-col overflow-hidden">
         <ProblemHeader problem={problem} />
-        <ProblemPanes problem={problem} />
+        <ProblemPanes problem={problem} languages={languages} />
       </div>
     </main>
   );

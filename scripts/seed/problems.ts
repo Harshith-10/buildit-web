@@ -57,11 +57,11 @@ Output: [0,1]
 - **Only one valid answer exists.**
 `,
     driverCode: {
-      python: `# region boilerplate
-def two_sum(nums, target):
+      python: `def two_sum(nums, target):
     # Write your code here...
     pass
 
+# region boilerplate
 if __name__ == "__main__":
     nums = list(map(int, input().split(",")))
     target = int(input())
@@ -82,37 +82,38 @@ public class Main {
         int[] result = twoSum(nums, target);
         System.out.println(Arrays.toString(result));
     }
-
+// endregion
     public static int[] twoSum(int[] nums, int target) {
         // Write your code here...
         return new int[]{};
     }
+// region boilerplate
 }
 // endregion`,
     },
     testCases: [
       {
-        input: '{"nums": [2,7,11,15], "target": 9}',
+        input: "2,7,11,15\n9",
         expectedOutput: "[0,1]",
         isHidden: false,
       },
       {
-        input: '{"nums": [3,2,4], "target": 6}',
+        input: "3,2,4\n6",
         expectedOutput: "[1,2]",
         isHidden: false,
       },
       {
-        input: '{"nums": [3,3], "target": 6}',
+        input: "3,3\n6",
         expectedOutput: "[0,1]",
         isHidden: false,
       },
       {
-        input: '{"nums": [1,2,3,4,5], "target": 9}',
+        input: "1,2,3,4,5\n9",
         expectedOutput: "[3,4]",
         isHidden: true,
       },
       {
-        input: '{"nums": [1,2,3], "target": 4}',
+        input: "1,2,3\n4",
         expectedOutput: "[0,2]",
         isHidden: true,
       },

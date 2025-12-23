@@ -131,12 +131,8 @@
           "name": "account_user_id_user_id_fk",
           "tableFrom": "account",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -205,12 +201,8 @@
           "name": "device_user_id_user_id_fk",
           "tableFrom": "device",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -218,10 +210,7 @@
       "compositePrimaryKeys": {
         "device_fingerprint_user_id_pk": {
           "name": "device_fingerprint_user_id_pk",
-          "columns": [
-            "fingerprint",
-            "user_id"
-          ]
+          "columns": ["fingerprint", "user_id"]
         }
       },
       "uniqueConstraints": {},
@@ -324,12 +313,8 @@
           "name": "session_user_id_user_id_fk",
           "tableFrom": "session",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -339,9 +324,7 @@
         "session_token_unique": {
           "name": "session_token_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "token"
-          ]
+          "columns": ["token"]
         }
       },
       "policies": {},
@@ -443,16 +426,12 @@
         "user_email_unique": {
           "name": "user_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         },
         "user_username_unique": {
           "name": "user_username_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "username"
-          ]
+          "columns": ["username"]
         }
       },
       "policies": {},
@@ -563,12 +542,8 @@
           "name": "daily_problems_problem_id_problems_id_fk",
           "tableFrom": "daily_problems",
           "tableTo": "problems",
-          "columnsFrom": [
-            "problem_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["problem_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -578,9 +553,7 @@
         "daily_problems_date_unique": {
           "name": "daily_problems_date_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "date"
-          ]
+          "columns": ["date"]
         }
       },
       "policies": {},
@@ -650,12 +623,8 @@
           "name": "exam_sessions_exam_id_exams_id_fk",
           "tableFrom": "exam_sessions",
           "tableTo": "exams",
-          "columnsFrom": [
-            "exam_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["exam_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -663,12 +632,8 @@
           "name": "exam_sessions_user_id_user_id_fk",
           "tableFrom": "exam_sessions",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -747,12 +712,8 @@
           "name": "exams_created_by_user_id_fk",
           "tableFrom": "exams",
           "tableTo": "user",
-          "columnsFrom": [
-            "created_by"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["created_by"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -792,12 +753,8 @@
           "name": "session_problems_session_id_exam_sessions_id_fk",
           "tableFrom": "session_problems",
           "tableTo": "exam_sessions",
-          "columnsFrom": [
-            "session_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["session_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -805,12 +762,8 @@
           "name": "session_problems_problem_id_problems_id_fk",
           "tableFrom": "session_problems",
           "tableTo": "problems",
-          "columnsFrom": [
-            "problem_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["problem_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -818,10 +771,7 @@
       "compositePrimaryKeys": {
         "session_problems_session_id_problem_id_pk": {
           "name": "session_problems_session_id_problem_id_pk",
-          "columns": [
-            "session_id",
-            "problem_id"
-          ]
+          "columns": ["session_id", "problem_id"]
         }
       },
       "uniqueConstraints": {},
@@ -884,12 +834,8 @@
           "name": "groups_created_by_user_id_fk",
           "tableFrom": "groups",
           "tableTo": "user",
-          "columnsFrom": [
-            "created_by"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["created_by"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -923,12 +869,8 @@
           "name": "users_to_groups_user_id_user_id_fk",
           "tableFrom": "users_to_groups",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -936,12 +878,8 @@
           "name": "users_to_groups_group_id_groups_id_fk",
           "tableFrom": "users_to_groups",
           "tableTo": "groups",
-          "columnsFrom": [
-            "group_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["group_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1009,12 +947,8 @@
           "name": "collections_created_by_user_id_fk",
           "tableFrom": "collections",
           "tableTo": "user",
-          "columnsFrom": [
-            "created_by"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["created_by"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1172,12 +1106,8 @@
           "name": "problems_collection_id_collections_id_fk",
           "tableFrom": "problems",
           "tableTo": "collections",
-          "columnsFrom": [
-            "collection_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["collection_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1185,12 +1115,8 @@
           "name": "problems_created_by_user_id_fk",
           "tableFrom": "problems",
           "tableTo": "user",
-          "columnsFrom": [
-            "created_by"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["created_by"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1200,9 +1126,7 @@
         "problems_slug_unique": {
           "name": "problems_slug_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "slug"
-          ]
+          "columns": ["slug"]
         }
       },
       "policies": {},
@@ -1268,12 +1192,8 @@
           "name": "test_cases_problem_id_problems_id_fk",
           "tableFrom": "test_cases",
           "tableTo": "problems",
-          "columnsFrom": [
-            "problem_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["problem_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1333,12 +1253,8 @@
           "name": "job_logs_submission_id_submissions_id_fk",
           "tableFrom": "job_logs",
           "tableTo": "submissions",
-          "columnsFrom": [
-            "submission_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["submission_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1419,12 +1335,8 @@
           "name": "submissions_session_id_exam_sessions_id_fk",
           "tableFrom": "submissions",
           "tableTo": "exam_sessions",
-          "columnsFrom": [
-            "session_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["session_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -1432,12 +1344,8 @@
           "name": "submissions_problem_id_problems_id_fk",
           "tableFrom": "submissions",
           "tableTo": "problems",
-          "columnsFrom": [
-            "problem_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["problem_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1453,20 +1361,12 @@
     "public.difficulty": {
       "name": "difficulty",
       "schema": "public",
-      "values": [
-        "easy",
-        "medium",
-        "hard"
-      ]
+      "values": ["easy", "medium", "hard"]
     },
     "public.pin_strategy": {
       "name": "pin_strategy",
       "schema": "public",
-      "values": [
-        "always",
-        "new_device",
-        "random"
-      ]
+      "values": ["always", "new_device", "random"]
     },
     "public.problem_type": {
       "name": "problem_type",
@@ -1482,11 +1382,7 @@
     "public.session_status": {
       "name": "session_status",
       "schema": "public",
-      "values": [
-        "in_progress",
-        "submitted",
-        "terminated"
-      ]
+      "values": ["in_progress", "submitted", "terminated"]
     },
     "public.submission_status": {
       "name": "submission_status",
@@ -1505,11 +1401,7 @@
     "public.user_role": {
       "name": "user_role",
       "schema": "public",
-      "values": [
-        "student",
-        "instructor",
-        "admin"
-      ]
+      "values": ["student", "instructor", "admin"]
     }
   },
   "schemas": {},

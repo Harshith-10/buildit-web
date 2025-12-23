@@ -155,3 +155,27 @@ export async function executeTestcases(
     };
   }
 }
+
+export type Runtime = {
+  language: string;
+  version: string;
+  aliases: string[];
+  runtime?: string;
+};
+
+export async function getLanguages(): Promise<Runtime[]> {
+  try {
+    const response = await fetch(`${PISTON_API_URL}/api/v2/runtimes`, {
+      method: "GET",
+    });
+
+    if (!response.ok) {
+      throw new Error(`API error: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error: any) {
+    console.error("Get languages error:", error);
+    return [];
+  }
+}

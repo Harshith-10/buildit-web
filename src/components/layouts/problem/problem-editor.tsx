@@ -9,9 +9,11 @@ import CodeMirror, {
   type Extension,
   type ReactCodeMirrorRef,
 } from "@uiw/react-codemirror";
-import { Play, Send, Settings } from "lucide-react";
+import { Loader, Play, Send, Settings } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { toast } from "sonner";
+import type { Runtime } from "@/actions/code-execution";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import {
@@ -21,6 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { getLanguageName } from "@/lib/languages";
 
 interface ProblemEditorProps {
   value: string;
@@ -56,24 +59,41 @@ export default function ProblemEditor({
   }, [language]);
 
   // Folding logic
+  // Ref to track if we have folded for the current language session
+  const hasFoldedRef = useRef(false);
+  const lastLanguageRef = useRef(language);
+
+  // Reset fold state when language changes
+  useEffect(() => {
+    if (language !== lastLanguageRef.current) {
+      hasFoldedRef.current = false;
+      lastLanguageRef.current = language;
+    }
+  }, [language]);
+
+  // Folding logic
   useEffect(() => {
     if (!editorRef.current || !mounted) return;
 
-    const view = editorRef.current.view;
-    if (!view) return;
-
-    // Small delay to ensure editor is ready
+    // Use a timeout to ensure editor view is ready and to debounce
     const timer = setTimeout(() => {
-      // Find fold regions
+      const view = editorRef.current?.view;
+      if (!view) return;
+
+      // If already folded for this session, skip
+      if (hasFoldedRef.current) return;
+
       const lines = value.split("\n");
       const foldRanges: { from: number; to: number }[] = [];
       let startLine = -1;
+      let _foundRegion = false;
 
       lines.forEach((line, index) => {
+        const trimmed = line.trim();
         // Check for start markers
         if (
-          line.trim().includes("# region boilerplate") ||
-          line.trim().includes("// region boilerplate")
+          trimmed.includes("# region boilerplate") ||
+          trimmed.includes("// region boilerplate")
         ) {
           startLine = index;
         }
@@ -81,113 +101,31 @@ export default function ProblemEditor({
         // Check for end markers
         if (
           startLine !== -1 &&
-          (line.trim().includes("# endregion") ||
-            line.trim().includes("// endregion"))
+          (trimmed.includes("# endregion") || trimmed.includes("// endregion"))
         ) {
-          // Convert line numbers to character positions
-          const from = view.state.doc.line(startLine + 1).to; // End of start line
-          const to = view.state.doc.line(index + 1).to; // End of end line
-
+          // Determine range
+          const from = view.state.doc.line(startLine + 1).to;
+          const to = view.state.doc.line(index + 1).to;
           foldRanges.push({ from, to });
           startLine = -1;
+          _foundRegion = true;
         }
       });
 
-      // Apply folds
+      // Apply folds if regions found
       if (foldRanges.length > 0) {
         view.dispatch({
           effects: foldRanges.map(({ from, to }) =>
             foldEffect.of({ from, to }),
           ),
         });
-      }
-    }, 100);
-
-    return () => clearTimeout(timer);
-  }, [value, mounted]); // Run when value works, but ideally only on initial load for a specific problem/lang?
-  // Current logic re-folds on every keypress if marker is present.
-  // Better: Only fold on language change or initial load.
-  // But value is managed by parent.
-  // Refined Logic below:
-
-  // Only fold when language changes or content is reset to boilerplate?
-  // For now, let's keep it simple: fold on mount and language change if value matches template?
-  // User Requirement: "The boilerplate code should be line-folded, but can be modified by the user."
-  // If user unfolds and edits, we shouldn't force refold.
-  // So we need a ref to track if we already folded for this language session?
-  // Let's rely on the fact that [language] dependency changes -> new boilerplate -> fold.
-  const lastLanguageRef = useRef(language);
-
-  useEffect(() => {
-    if (!editorRef.current || !mounted) return;
-    if (language === lastLanguageRef.current && mounted) {
-      // If language hasn't changed, don't auto-fold (let user toggle)
-      // return;
-      // Wait, initial mount needs fold too.
-    }
-    lastLanguageRef.current = language;
-
-    const view = editorRef.current.view;
-    if (!view) return;
-
-    const timer = setTimeout(() => {
-      const lines = value.split("\n");
-      // Basic region parsing
-      let start = -1;
-      const effects = [];
-
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].trim();
-        if (
-          line.includes("// region boilerplate") ||
-          line.includes("# region boilerplate")
-        ) {
-          start = i;
-        } else if (
-          start !== -1 &&
-          (line.includes("// endregion") || line.includes("# endregion"))
-        ) {
-          // Found a region
-          // Fold from end of start line to end of end line?
-          // CodeMirror fold expects range.
-          const lineStart = view.state.doc.line(start + 1);
-          const lineEnd = view.state.doc.line(i + 1);
-          // We want to fold the content BETWEEN the markers, or including markers?
-          // User said: "This should be displayed to user as: ... code ..."
-          // Usually we fold the whole block.
-          // Let's fold the range covering these lines.
-
-          // Create fold effect
-          effects.push(
-            foldEffect.of({
-              from: lineStart.to, // End of start line (keeps start marker visible? No, usually we want to hide it all)
-              // Wait, if we fold from lineStart.to, the header is visible.
-              // If we want to hide "public class Main { ... }", we should fold valid ranges.
-              // The markers are: // region boilerplate ... // endregion
-              // The prompt says:
-              /*
-                  public class Main { ... }
-                  This should be displayed to user as:
-                  ...
-                  int addTwoNums(int a, int b) { ... }
-                  ...
-               */
-              // So the boilerplate includes the class wrapper.
-              // Folding region behaves like VSCode regions.
-              to: lineEnd.to,
-            }),
-          );
-          start = -1;
-        }
-      }
-
-      if (effects.length) {
-        view.dispatch({ effects });
+        // Mark as folded so we don't annoy user on subsequent edits
+        hasFoldedRef.current = true;
       }
     }, 50);
 
     return () => clearTimeout(timer);
-  }, [language, mounted]); // Dependency on language ensures we fold when switching.
+  }, [value, mounted]); // added value back, guarded by hasFoldedRef
 
   if (!mounted) return null;
 
@@ -217,41 +155,127 @@ export default function ProblemEditor({
 
 interface ProblemEditorHeaderProps {
   language: string;
+  version: string;
   onLanguageChange: (lang: string) => void;
+  onVersionChange: (ver: string) => void;
+  languages?: Runtime[];
+  onRun?: () => Promise<void>;
+  isExecuting?: boolean;
 }
 
 export function ProblemEditorHeader({
   language,
+  version,
   onLanguageChange,
+  onVersionChange,
+  languages,
+  onRun,
+  isExecuting,
 }: ProblemEditorHeaderProps) {
+  // Rate limiting ref
+  const lastExecutionTime = useRef<number>(0);
+
+  // Get unique languages
+  const uniqueLanguages = useMemo(() => {
+    if (!languages) return [];
+    const langs = new Set<string>();
+    languages.forEach((l) => {
+      langs.add(l.language);
+    });
+    return Array.from(langs).sort();
+  }, [languages]);
+
+  // Get versions for selected language
+  const versions = useMemo(() => {
+    if (!languages || !language) return [];
+    return languages
+      .filter((l) => l.language === language)
+      .map((l) => l.version)
+      .sort((a, b) =>
+        b.localeCompare(a, undefined, { numeric: true, sensitivity: "base" }),
+      ); // Descending order
+  }, [languages, language]);
+
+  const handleRunClick = async () => {
+    if (!onRun) return;
+
+    const now = Date.now();
+    if (now - lastExecutionTime.current < 5000) {
+      toast.error("Please wait 5 seconds before running again.");
+      return;
+    }
+
+    lastExecutionTime.current = now;
+    await onRun();
+  };
+
   return (
     <div className="w-full items-center justify-between flex gap-2 p-2 border-b border-border bg-background">
-      <Select value={language} onValueChange={onLanguageChange}>
-        <SelectTrigger className="min-w-[180px]">
-          <SelectValue placeholder="Select a language" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="python">Python</SelectItem>
-          <SelectItem value="java">Java</SelectItem>
-          <SelectItem value="javascript">JavaScript</SelectItem>
-          <SelectItem value="typescript">TypeScript</SelectItem>
-        </SelectContent>
-      </Select>
+      <div className="flex items-center gap-2">
+        <Select value={language} onValueChange={onLanguageChange}>
+          <SelectTrigger className="min-w-[120px]">
+            <SelectValue placeholder="Language" />
+          </SelectTrigger>
+          <SelectContent>
+            {uniqueLanguages.map((lang) => (
+              <SelectItem key={lang} value={lang}>
+                {getLanguageName(lang)}
+              </SelectItem>
+            ))}
+            {!languages && (
+              <>
+                <SelectItem value="java">java</SelectItem>
+                <SelectItem value="python">python</SelectItem>
+                <SelectItem value="typescript">typescript</SelectItem>
+              </>
+            )}
+          </SelectContent>
+        </Select>
+
+        <Select
+          value={version}
+          onValueChange={onVersionChange}
+          disabled={!language}
+        >
+          <SelectTrigger className="min-w-[100px]">
+            <SelectValue placeholder="Version" />
+          </SelectTrigger>
+          <SelectContent>
+            {versions.map((ver) => (
+              <SelectItem key={ver} value={ver}>
+                {ver}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
       <div className="flex items-center gap-2">
         <ButtonGroup>
-          <Button size="sm" variant="outline" className="w-fit">
-            <Play className="h-4 w-4 mr-2" />
+          <Button
+            size="sm"
+            variant="outline"
+            className="w-fit"
+            onClick={handleRunClick}
+            disabled={isExecuting}
+          >
+            {isExecuting ? (
+              <Loader className="h-4 w-4 animate-spin" />
+            ) : (
+              <Play className="h-4 w-4" />
+            )}
             Run
           </Button>
           <Button
             size="sm"
             className="w-fit bg-green-600 text-white hover:bg-green-700"
+            onClick={handleRunClick}
+            disabled={isExecuting}
           >
             <Send className="h-4 w-4 mr-2" />
             Submit
           </Button>
         </ButtonGroup>
-        <Button variant="ghost" size="icon">
+        <Button variant="ghost" className="px-2">
           <Settings className="h-4 w-4" />
         </Button>
       </div>

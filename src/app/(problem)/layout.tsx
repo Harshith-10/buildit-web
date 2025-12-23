@@ -1,4 +1,5 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function ProblemLayout({
   children,
@@ -7,7 +8,10 @@ export default function ProblemLayout({
 }) {
   return (
     <div className="h-screen w-screen">
-      <SidebarProvider>{children}</SidebarProvider>
+      <SidebarProvider>
+        {children}
+        <Toaster richColors />
+      </SidebarProvider>
     </div>
   );
 }
