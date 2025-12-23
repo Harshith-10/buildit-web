@@ -1,7 +1,7 @@
 "use client";
 
 import { format } from "date-fns";
-import { Calendar, Clock, Eye, MoreHorizontal } from "lucide-react";
+import { ArrowRight, Calendar, Clock, Eye, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import type { GetExamsParams } from "@/actions/exams-list";
 import { DataItemsView } from "@/components/common/data-items/data-items-root";
@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { usePageName } from "@/hooks/use-page-name";
 import { useSession } from "@/lib/auth-client";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface Exam {
   id: string;
@@ -86,20 +87,18 @@ export function ExamsView({ data, total }: ExamsViewProps) {
     {
       header: "Actions",
       accessorKey: (item: Exam) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem asChild>
-              <Link href={`/exam/${item.id}`} className="flex items-center">
-                <Eye className="mr-2 h-4 w-4" /> View Details
-              </Link>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <Tooltip>
+          <TooltipTrigger>
+            <Link href={`/exams/${item.id}`} className="flex items-center">
+              <Button variant="ghost" size="icon">
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
+          </TooltipTrigger>
+          <TooltipContent side="right">
+            <p>View Exam</p>
+          </TooltipContent>
+        </Tooltip>
       ),
       className: "w-[50px]",
     },

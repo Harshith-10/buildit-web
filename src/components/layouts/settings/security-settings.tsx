@@ -30,6 +30,13 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { authClient, useSession } from "@/lib/auth-client";
 import { getDeviceFingerprint } from "@/lib/fingerprint";
+import {
+  Select,
+  SelectItem,
+  SelectValue,
+  SelectContent,
+  SelectTrigger,
+} from "@/components/ui/select";
 
 export default function SecuritySettings() {
   const { data: session } = useSession();
@@ -221,14 +228,14 @@ export default function SecuritySettings() {
               Configure a PIN for additional security.
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="h-full">
             {loadingPin ? (
-              <div className="space-y-2">
+              <div className="flex flex-col gap-2">
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-10 w-full" />
               </div>
             ) : (
-              <div className="space-y-6">
+              <div className="h-full flex flex-col gap-6">
                 <div className="flex items-center justify-between p-4 border rounded-lg">
                   <div>
                     <p className="font-medium">Status</p>
@@ -245,42 +252,53 @@ export default function SecuritySettings() {
                   )}
                 </div>
 
-                <form onSubmit={handlePinSetup} className="space-y-4">
-                  <div className="grid gap-2">
-                    <Label>PIN Strategy</Label>
-                    <select
-                      className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                      value={pinStrategy}
-                      onChange={(e) => setPinStrategy(e.target.value)}
-                    >
-                      <option value="always">Always Require PIN</option>
-                      <option value="new_device">Require on New Device</option>
-                      <option value="random">Randomly Require (10%)</option>
-                    </select>
-                    <p className="text-xs text-muted-foreground">
-                      Determine when you will be asked to enter your PIN.
-                    </p>
-                  </div>
-
-                  <div className="grid gap-2">
-                    <Label>
-                      {pinStatus?.pinEnabled ? "Change PIN" : "Set PIN"}
-                    </Label>
-                    <InputOTP
-                      maxLength={4}
-                      value={pin}
-                      onChange={(value) => setPin(value)}
-                    >
-                      <InputOTPGroup>
-                        <InputOTPSlot index={0} />
-                        <InputOTPSlot index={1} />
-                        <InputOTPSlot index={2} />
-                        <InputOTPSlot index={3} />
-                      </InputOTPGroup>
-                    </InputOTP>
-                    <p className="text-xs text-muted-foreground">
-                      Enter a 4-digit PIN.
-                    </p>
+                <form onSubmit={handlePinSetup} className="flex-1 flex flex-col gap-4">
+                  <div className="flex-1 grid grid-cols-2 gap-6">
+                    <div className="flex flex-col gap-2">
+                      <Label>PIN Strategy</Label>
+                      <Select
+                        value={pinStrategy}
+                        onValueChange={(value) => setPinStrategy(value)}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select a pin strategy" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="always">
+                            Always Require PIN
+                          </SelectItem>
+                          <SelectItem value="new_device">
+                            Require on New Device
+                          </SelectItem>
+                          <SelectItem value="random">
+                            Randomly Require (10%)
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <p className="text-xs text-muted-foreground">
+                        Determine when you will be asked to enter your PIN.
+                      </p>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <Label>
+                        {pinStatus?.pinEnabled ? "Change PIN" : "Set PIN"}
+                      </Label>
+                      <InputOTP
+                        maxLength={4}
+                        value={pin}
+                        onChange={(value) => setPin(value)}
+                      >
+                        <InputOTPGroup className="w-full flex">
+                          <InputOTPSlot className="flex-1" index={0} />
+                          <InputOTPSlot className="flex-1" index={1} />
+                          <InputOTPSlot className="flex-1" index={2} />
+                          <InputOTPSlot className="flex-1" index={3} />
+                        </InputOTPGroup>
+                      </InputOTP>
+                      <p className="text-xs text-muted-foreground">
+                        Enter a 4-digit PIN.
+                      </p>
+                    </div>
                   </div>
 
                   <div className="flex justify-end">

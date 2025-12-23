@@ -22,6 +22,8 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { usePageName } from "@/hooks/use-page-name";
 import type { ExamConfig } from "@/types/exam-config";
+import { getExamCreatedBy } from "@/actions/exam-details";
+import { useEffect, useState } from "react";
 
 interface Exam {
   id: string;
@@ -64,6 +66,12 @@ export function ExamDetailsView({ exam }: ExamDetailsViewProps) {
   // Determine if exam can be started
   const now = new Date();
   const isOngoing = now >= exam.startTime && now <= exam.endTime;
+
+  const [creator, setCreator] = useState("");
+
+  useEffect(() => {
+    getExamCreatedBy(exam.id).then((createdBy) => setCreator(createdBy));
+  }, [exam.id]);
 
   return (
     <div className="p-6 flex flex-col gap-6">
@@ -236,7 +244,7 @@ export function ExamDetailsView({ exam }: ExamDetailsViewProps) {
                 <div>
                   <span className="block text-sm font-medium">Created By</span>
                   <span className="text-sm text-muted-foreground break-all">
-                    {exam.createdBy}
+                    {creator}
                   </span>
                 </div>
               </div>

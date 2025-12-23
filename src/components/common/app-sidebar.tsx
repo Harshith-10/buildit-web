@@ -63,91 +63,12 @@ interface SidebarSection {
   items: MenuItem[];
 }
 
-const mainItems: MenuItem[] = [
-  {
-    icon: <LayoutDashboard className="h-4 w-4" />,
-    label: "Dashboard",
-    href: "/student/dashboard",
-  },
-  {
-    icon: <FileText className="h-4 w-4" />,
-    label: "Exams",
-    defaultOpen: true,
-    submenu: [
-      {
-        icon: <Play className="h-4 w-4" />,
-        label: "Take Exam",
-        href: "/student/exams/take-exam",
-      },
-      {
-        icon: <Clock className="h-4 w-4" />,
-        label: "Upcoming",
-        href: "/student/exams/upcoming",
-      },
-      {
-        icon: <History className="h-4 w-4" />,
-        label: "Past Exams",
-        href: "/student/exams/past",
-      },
-    ],
-  },
-  {
-    icon: <BookOpen className="h-4 w-4" />,
-    label: "Collections",
-    submenu: [
-      {
-        icon: <FileText className="h-4 w-4" />,
-        label: "Your Collections",
-        href: "/student/collections/personal",
-      },
-      {
-        icon: <Code2 className="h-4 w-4" />,
-        label: "Practice Sheets",
-        href: "/student/collections/practice-sheets",
-      },
-      {
-        icon: <Target className="h-4 w-4" />,
-        label: "Companies",
-        href: "/student/collections/companies",
-      },
-    ],
-  },
-  {
-    icon: <Code2 className="h-4 w-4" />,
-    label: "Practice",
-    href: "/student/problems",
-  },
-];
-
-const mainSection: SidebarSection = {
-  label: "Main",
-  items: mainItems,
-};
-
-const exploreItems: MenuItem[] = [
-  {
-    icon: <Trophy className="h-4 w-4" />,
-    label: "Leaderboard",
-    href: "/student/leaderboard",
-  },
-  {
-    icon: <BookOpen className="h-4 w-4" />,
-    label: "Resources",
-    href: "/student/resources",
-  },
-];
-
-const exploreSection: SidebarSection = {
-  label: "Explore",
-  items: exploreItems,
-};
-
 interface AppSidebarProps {
-  sections?: SidebarSection[];
+  sections: SidebarSection[];
 }
 
 export default function AppSidebar({
-  sections = [mainSection, exploreSection],
+  sections,
 }: AppSidebarProps) {
   const { open } = useSidebar();
   const currentRoute = usePathname();
@@ -311,7 +232,7 @@ function RecursiveSidebarItem({
 
     // If item points to dashboard, strict active check prevents it from being active on sub-routes if desired,
     // but usually dashboard is unique. Existing logic had specific check.
-    if (item.href === "/dashboard" || item.href === "/student/dashboard") {
+    if (item.href === "/dashboard") {
       return currentRoute === item.href;
     }
 

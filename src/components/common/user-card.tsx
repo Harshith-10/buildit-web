@@ -157,13 +157,13 @@ export default function User({
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <Link href="/student/dashboard" className="flex items-center gap-2">
+          <Link href="/settings?tab=profile" className="flex items-center gap-2">
             <UserIcon className="h-4 w-4" />
             <span className="ml-2">Profile</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Link href="/student/dashboard" className="flex items-center gap-2">
+          <Link href="/settings" className="flex items-center gap-2">
             <Settings className="h-4 w-4" />
             <span className="ml-2">Settings</span>
           </Link>
