@@ -94,7 +94,7 @@ export function ProblemsView({ data, total }: ProblemsViewProps) {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem asChild>
-              <Link href={`/problems/${item.id}`} className="flex items-center">
+              <Link href={`/problem/${item.id}`} className="flex items-center">
                 <Eye className="mr-2 h-4 w-4" /> View Details
               </Link>
             </DropdownMenuItem>

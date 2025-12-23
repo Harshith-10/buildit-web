@@ -1,9 +1,35 @@
-"use client";
+import {
+  getProblem,
+  getUserSubmissions,
+  getProblems,
+} from "@/actions/problem-data";
+import ProblemClientPage from "./problem-client-page";
+import { notFound } from "next/navigation";
 
-import { usePageName } from "@/hooks/use-page-name";
+interface PageProps {
+  params: Promise<{
+    problemId: string;
+  }>;
+}
 
-export default function ProblemPage() {
-  usePageName("Problem");
+export default async function ProblemPage({ params }: PageProps) {
+  const { problemId } = await params;
 
-  return <div>Problem Page</div>;
+  const [problem, userSubmissions, problems] = await Promise.all([
+    getProblem(problemId),
+    getUserSubmissions(problemId),
+    getProblems(),
+  ]);
+
+  if (!problem) {
+    notFound();
+  }
+
+  return (
+    <ProblemClientPage
+      problem={problem}
+      userSubmissions={userSubmissions}
+      problems={problems}
+    />
+  );
 }

@@ -76,9 +76,9 @@ export function ExamSidebar({
                       className="h-auto py-2"
                     >
                       {problem.status === "solved" ? (
-                        <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
+                        <CheckCircle2 className={`w-4 h-4 shrink-0 ${isActive ? "text-primary-foreground" : "text-green-500"}`} />
                       ) : (
-                        <Circle className="w-4 h-4 text-muted-foreground shrink-0" />
+                        <Circle className={`w-4 h-4 shrink-0 ${isActive ? "text-primary-foreground" : "text-muted-foreground"}`} />
                       )}
                       <div className="flex flex-col gap-1 overflow-hidden w-full">
                         <span className="truncate font-medium">

@@ -37,7 +37,7 @@ const mainItems: MenuItem[] = [
       },
       {
         icon: <Play className="h-4 w-4" />,
-        label: "Take Exam",
+        label: "Ongoing Exams",
         href: "/exams?status=ongoing",
       },
       {
