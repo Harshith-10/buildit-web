@@ -1,19 +1,19 @@
 "use client";
 
-import * as React from "react";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
 import {
   CheckCircle2,
-  Terminal,
+  Loader2,
   Play,
   Send,
-  Loader2,
+  Terminal,
   XCircle,
 } from "lucide-react";
+import * as React from "react";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import type { Problem } from "@/types/problem";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface ConsolePanelProps {
   problem: Problem;

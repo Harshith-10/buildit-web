@@ -1,6 +1,9 @@
 "use client";
 
 import * as React from "react";
+import { toast } from "sonner";
+import { runCode, submitSolution } from "@/actions/problem-data";
+import { ProblemSidebar } from "@/components/layouts/problem/problem-sidebar";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -11,14 +14,10 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { ProblemSidebar } from "@/components/layouts/problem/problem-sidebar";
-import { toast } from "sonner";
-import { runCode, submitSolution } from "@/actions/problem-data";
 import type { Problem, Submission } from "@/types/problem";
-
+import { ConsolePanel } from "./_components/console-panel";
 import { DescriptionPanel } from "./_components/description-panel";
 import { CodeEditorPanel } from "./_components/editor-panel";
-import { ConsolePanel } from "./_components/console-panel";
 
 interface ProblemClientPageProps {
   problem: Problem;
@@ -26,7 +25,7 @@ interface ProblemClientPageProps {
   problems: {
     id: string;
     title: string;
-    difficulty: "Easy" | "Medium" | "Hard";
+    difficulty: "easy" | "medium" | "hard";
     status: string;
   }[];
 }
@@ -99,7 +98,10 @@ export default function ProblemClientPage({
         </header>
 
         <div className="flex-1 overflow-hidden">
-          <ResizablePanelGroup direction="horizontal" className="h-full w-full">
+          <ResizablePanelGroup
+            orientation="horizontal"
+            className="h-full w-full"
+          >
             {/* LEFT PANEL: Description */}
             <ResizablePanel
               defaultSize={40}
@@ -120,7 +122,7 @@ export default function ProblemClientPage({
 
             {/* RIGHT PANEL: Editor & Console */}
             <ResizablePanel defaultSize={60} className="h-full">
-              <ResizablePanelGroup direction="vertical" className="h-full">
+              <ResizablePanelGroup orientation="vertical" className="h-full">
                 {/* EDITOR */}
                 <ResizablePanel
                   defaultSize={70}

@@ -10,7 +10,7 @@ export interface Problem {
   id: string;
   title: string;
   description: string;
-  difficulty: "Easy" | "Medium" | "Hard";
+  difficulty: "easy" | "medium" | "hard";
   content: {
     examples: {
       input: string;

@@ -1,8 +1,8 @@
 "use client";
 
-import { CheckCircle2, Circle, FileText, ChevronLeft } from "lucide-react";
+import { CheckCircle2, ChevronLeft, Circle, FileText } from "lucide-react";
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
@@ -14,15 +14,13 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-  useSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 
 interface ProblemItem {
   id: string;
   title: string;
-  difficulty: "Easy" | "Medium" | "Hard";
+  difficulty: "easy" | "medium" | "hard";
   status: string;
 }
 
@@ -88,12 +86,12 @@ export function ProblemSidebar({
                           <Badge
                             variant="secondary"
                             className={cn(
-                              "text-[9px] px-1 py-0 h-3.5 border font-normal w-fit",
-                              problem.difficulty === "Easy" &&
+                              "text-[9px] px-1 py-0 h-3.5 border font-normal w-fit capitalize",
+                              problem.difficulty === "easy" &&
                                 "text-green-600 border-green-200 bg-green-50",
-                              problem.difficulty === "Medium" &&
+                              problem.difficulty === "medium" &&
                                 "text-yellow-600 border-yellow-200 bg-yellow-50",
-                              problem.difficulty === "Hard" &&
+                              problem.difficulty === "hard" &&
                                 "text-red-600 border-red-200 bg-red-50",
                             )}
                           >

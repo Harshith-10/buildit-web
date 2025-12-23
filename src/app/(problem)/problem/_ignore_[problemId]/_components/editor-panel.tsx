@@ -1,16 +1,17 @@
 "use client";
 
-import * as React from "react";
-import CodeMirror from "@uiw/react-codemirror";
-import { javascript } from "@codemirror/lang-javascript";
-import { python } from "@codemirror/lang-python";
 import { cpp } from "@codemirror/lang-cpp";
-import { java } from "@codemirror/lang-java";
-import { rust } from "@codemirror/lang-rust";
 import { go } from "@codemirror/lang-go";
+import { java } from "@codemirror/lang-java";
+import { javascript } from "@codemirror/lang-javascript";
 import { php } from "@codemirror/lang-php";
+import { python } from "@codemirror/lang-python";
+import { rust } from "@codemirror/lang-rust";
 import { sql } from "@codemirror/lang-sql";
 import { githubDark } from "@uiw/codemirror-theme-github";
+import CodeMirror from "@uiw/react-codemirror";
+import { Code2, RotateCcw, Settings2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -19,9 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Code2, RotateCcw, Settings2 } from "lucide-react";
 
 interface CodeEditorPanelProps {
   language: string;

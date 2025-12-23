@@ -1,21 +1,20 @@
 "use client";
 
-import * as React from "react";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import {
-  FileText,
-  Clock,
-  ListTodo,
   AlertCircle,
   CheckCircle2,
-  XCircle,
+  Clock,
+  Code2,
   Cpu,
   Database,
-  Code2,
+  FileText,
+  ListTodo,
+  XCircle,
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import type { Problem, Submission } from "@/types/problem";
 
@@ -71,19 +70,19 @@ export function DescriptionPanel({
                 <div className="flex items-center gap-3">
                   <Badge
                     variant={
-                      problem.difficulty === "Easy"
+                      problem.difficulty === "easy"
                         ? "default"
-                        : problem.difficulty === "Medium"
+                        : problem.difficulty === "medium"
                           ? "secondary"
                           : "destructive"
                     }
                     className={cn(
                       "capitalize shadow-none px-2.5 rounded-md",
-                      problem.difficulty === "Easy" &&
+                      problem.difficulty === "easy" &&
                         "bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20 border-emerald-500/20",
-                      problem.difficulty === "Medium" &&
+                      problem.difficulty === "medium" &&
                         "bg-amber-500/10 text-amber-600 hover:bg-amber-500/20 border-amber-500/20",
-                      problem.difficulty === "Hard" &&
+                      problem.difficulty === "hard" &&
                         "bg-rose-500/10 text-rose-600 hover:bg-rose-500/20 border-rose-500/20",
                     )}
                   >

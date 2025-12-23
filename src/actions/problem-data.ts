@@ -1,11 +1,11 @@
 "use server";
 
+import { desc, eq } from "drizzle-orm";
+import { headers } from "next/headers";
+import { cache } from "react";
 import db from "@/db";
 import { problems, submissions } from "@/db/schema";
-import { eq, desc } from "drizzle-orm";
-import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
-import { cache } from "react";
 import type { Problem, Submission } from "@/types/problem";
 
 export const getProblem = cache(
@@ -24,7 +24,7 @@ export const getProblem = cache(
     return {
       ...problem,
       // Ensure strict type compatibility for enums if needed, or cast if schema matches
-      difficulty: problem.difficulty as "Easy" | "Medium" | "Hard",
+      difficulty: problem.difficulty as "easy" | "medium" | "hard",
       content: problem.content as Problem["content"],
       testCases: problem.testCases.map((tc) => ({
         ...tc,
@@ -70,7 +70,7 @@ export const getProblems = cache(async () => {
   return allProblems.map((p) => ({
     id: p.id,
     title: p.title,
-    difficulty: p.difficulty as "Easy" | "Medium" | "Hard",
+    difficulty: p.difficulty as "easy" | "medium" | "hard",
     status: p.submissions.some(
       (s) => s.examSession?.userId === session?.user?.id,
     )
