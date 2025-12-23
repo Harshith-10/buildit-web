@@ -6,7 +6,7 @@ import ProblemDescription from "./problem-description";
 export default function ProblemInfo({ problem }: { problem: Problem }) {
   return (
     <Tabs defaultValue="description" className="h-full">
-      <div className="p-2">
+      <div className="px-2 pt-2">
         <TabsList className="w-full">
           <TabsTrigger value="description">Description</TabsTrigger>
           <TabsTrigger value="submissions">Submissions</TabsTrigger>
