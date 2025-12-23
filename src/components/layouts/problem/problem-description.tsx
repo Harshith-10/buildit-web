@@ -142,7 +142,7 @@ export default function ProblemDescription({ problem }: { problem: Problem }) {
           pre: ({ className, ...props }) => (
             <pre
               className={cn(
-                "mb-4 mt-6 overflow-x-auto rounded-lg border py-4",
+                "mb-4 mt-6 overflow-x-auto rounded-lg border px-4 py-4 [&_code]:border-none [&_code]:bg-transparent [&_code]:p-0",
                 className,
               )}
               {...props}

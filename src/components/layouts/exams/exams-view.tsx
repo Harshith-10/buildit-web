@@ -94,7 +94,7 @@ export function ExamsView({ data, total }: ExamsViewProps) {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem asChild>
-              <Link href={`/exams/${item.id}`} className="flex items-center">
+              <Link href={`/exam/${item.id}`} className="flex items-center">
                 <Eye className="mr-2 h-4 w-4" /> View Details
               </Link>
             </DropdownMenuItem>
@@ -130,7 +130,7 @@ export function ExamsView({ data, total }: ExamsViewProps) {
 
       <div className="mt-auto pt-4 border-t w-full">
         <Button asChild className="w-full gap-2">
-          <Link href={`/exams/${item.id}`}>View Exam</Link>
+          <Link href={`/exam/${item.id}`}>View Exam</Link>
         </Button>
       </div>
     </div>

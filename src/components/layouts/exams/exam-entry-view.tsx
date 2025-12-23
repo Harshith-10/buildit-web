@@ -87,7 +87,7 @@ export function ExamEntryView({
       alert("Please enter fullscreen mode to start the exam.");
       return;
     }
-    router.push(`/exam/${examId}/run`);
+    router.push(`/exam/${examId}`);
   };
 
   const handleTerminateOtherSessions = async () => {

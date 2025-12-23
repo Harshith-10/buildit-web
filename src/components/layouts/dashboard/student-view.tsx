@@ -33,6 +33,7 @@ interface StudentViewProps {
       id: string;
       title: string;
       difficulty: string;
+      slug: string;
     };
   } | null;
   upcomingExams: {
@@ -130,7 +131,7 @@ export function StudentView({
                     className="font-bold shrink-0"
                     asChild
                   >
-                    <Link href={`/problems/${dailyProblem.problem.id}`}>
+                    <Link href={`/problem/${dailyProblem.problem.slug}`}>
                       Solve Now <Play className="ml-2 h-4 w-4 fill-current" />
                     </Link>
                   </Button>
@@ -149,7 +150,7 @@ export function StudentView({
             value={stats.streak || 5}
             icon={Flame}
             description="days on fire!"
-            className="bg-orange-500/10 border-orange-500/20"
+            className="bg-orange-500/10 border-orange-500/50"
             iconClassName="bg-orange-500/20 text-orange-600"
             trend={{ value: 1, direction: "up" }}
           />
@@ -158,7 +159,7 @@ export function StudentView({
             value={stats.totalSolved}
             icon={CheckCircle}
             description="total solved"
-            className="bg-green-500/10 border-green-500/20"
+            className="bg-green-500/10 border-green-500/50"
             iconClassName="bg-green-500/20 text-green-600"
             trend={{ value: 12, direction: "up", label: "this week" }}
           />
@@ -167,7 +168,7 @@ export function StudentView({
             value={`#${stats.rank || 420}`}
             icon={Trophy}
             description="top 15%"
-            className="bg-yellow-500/10 border-yellow-500/20"
+            className="bg-yellow-500/10 border-yellow-500/50"
             iconClassName="bg-yellow-500/20 text-yellow-600"
           />
         </div>
@@ -349,7 +350,7 @@ function ExamCarousel({ exams }: { exams: StudentViewProps["upcomingExams"] }) {
             className="w-full h-full"
           >
             <Link
-              href={`/exams/${currentExam.id}`}
+              href={`/exam/${currentExam.id}`}
               className="flex flex-col gap-2 p-4 rounded-xl bg-background border border-muted-foreground/40 shadow-sm cursor-pointer h-full group"
             >
               <div className="flex items-center gap-2">
