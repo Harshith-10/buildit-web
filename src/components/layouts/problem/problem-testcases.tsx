@@ -49,7 +49,7 @@ export default function TestCasesPane({ problem }: { problem: Problem }) {
 
         {/* Input Output */}
         <TabsContent value="input-output">
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-2 p-2">
             <div className="flex flex-col gap-2">
               <Label>Input</Label>
               <Textarea className="min-h-20 bg-input/30 rounded-md border font-mono p-2 text-sm" />

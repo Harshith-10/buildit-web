@@ -9,9 +9,9 @@ import { auth } from "@/lib/auth";
 import type { Problem, Submission } from "@/types/problem";
 
 export const getProblem = cache(
-  async (problemId: string): Promise<Problem | null> => {
+  async (slug: string): Promise<Problem | null> => {
     const problem = await db.query.problems.findFirst({
-      where: eq(problems.id, problemId),
+      where: eq(problems.slug, slug),
       with: {
         testCases: true,
         collection: true,
@@ -26,10 +26,8 @@ export const getProblem = cache(
       // Ensure strict type compatibility for enums if needed, or cast if schema matches
       difficulty: problem.difficulty as "easy" | "medium" | "hard",
       content: problem.content as Problem["content"],
-      testCases: problem.testCases.map((tc) => ({
-        ...tc,
-        isHidden: tc.isHidden ?? false, // Handle nullable default
-      })),
+      driverCode: problem.driverCode as Record<string, string>,
+      testCases: problem.testCases.filter((tc) => !tc.isHidden),
       collection: problem.collection
         ? {
             id: problem.collection.id,
@@ -46,6 +44,7 @@ export const getProblems = cache(async () => {
       id: true,
       title: true,
       difficulty: true,
+      slug: true,
     },
     with: {
       submissions: {
@@ -71,6 +70,7 @@ export const getProblems = cache(async () => {
     id: p.id,
     title: p.title,
     difficulty: p.difficulty as "easy" | "medium" | "hard",
+    slug: p.slug,
     status: p.submissions.some(
       (s) => s.examSession?.userId === session?.user?.id,
     )

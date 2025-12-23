@@ -1,6 +1,7 @@
 import {
   boolean,
   foreignKey,
+  index,
   jsonb,
   pgTable,
   text,
@@ -38,8 +39,10 @@ export const problems = pgTable(
     type: problemType().notNull(),
     difficulty: difficulty().notNull(),
     title: text().notNull(),
+    slug: text().notNull().unique(),
     description: text().notNull(),
     content: jsonb().notNull(),
+    driverCode: jsonb("driver_code"),
     gradingMetadata: jsonb("grading_metadata"),
     public: boolean().default(false),
     createdBy: text("created_by").notNull(),
@@ -51,12 +54,15 @@ export const problems = pgTable(
       columns: [table.collectionId],
       foreignColumns: [collections.id],
       name: "problems_collection_id_collections_id_fk",
-    }),
+    }).onDelete("cascade"),
     foreignKey({
       columns: [table.createdBy],
       foreignColumns: [user.id],
       name: "problems_created_by_user_id_fk",
     }),
+    index("problems_collection_id_idx").on(table.collectionId),
+    index("problems_created_by_idx").on(table.createdBy),
+    index("problems_slug_idx").on(table.slug),
   ],
 );
 
@@ -67,13 +73,14 @@ export const testCases = pgTable(
     problemId: uuid("problem_id").notNull(),
     input: text().notNull(),
     expectedOutput: text("expected_output").notNull(),
-    isHidden: boolean("is_hidden").default(true),
+    isHidden: boolean("is_hidden").default(true).notNull(),
   },
   (table) => [
     foreignKey({
       columns: [table.problemId],
       foreignColumns: [problems.id],
       name: "test_cases_problem_id_problems_id_fk",
-    }),
+    }).onDelete("cascade"),
+    index("test_cases_problem_id_idx").on(table.problemId),
   ],
 );

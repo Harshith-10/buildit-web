@@ -20,6 +20,7 @@ interface Problem {
   type: string;
   difficulty: string;
   title: string;
+  slug: string;
   description: string;
   content: unknown;
   gradingMetadata: unknown;
@@ -94,7 +95,10 @@ export function ProblemsView({ data, total }: ProblemsViewProps) {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem asChild>
-              <Link href={`/problem/${item.id}`} className="flex items-center">
+              <Link
+                href={`/problem/${item.slug}`}
+                className="flex items-center"
+              >
                 <Eye className="mr-2 h-4 w-4" /> View Details
               </Link>
             </DropdownMenuItem>

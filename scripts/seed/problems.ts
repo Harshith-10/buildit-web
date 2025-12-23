@@ -1,8 +1,10 @@
 export interface SeedProblem {
   title: string;
+  slug: string; // Add slug to interface
   type: "coding";
   difficulty: "easy" | "medium" | "hard";
   description: string;
+  driverCode?: Record<string, string>;
   testCases: {
     input: string;
     expectedOutput: string;
@@ -13,6 +15,7 @@ export interface SeedProblem {
 export const problems: SeedProblem[] = [
   {
     title: "Two Sum",
+    slug: "two-sum",
     type: "coding",
     difficulty: "easy",
     description: `
@@ -53,6 +56,40 @@ Output: [0,1]
 - \`-10^9 <= target <= 10^9\`
 - **Only one valid answer exists.**
 `,
+    driverCode: {
+      python: `# region boilerplate
+def two_sum(nums, target):
+    # Write your code here...
+    pass
+
+if __name__ == "__main__":
+    nums = list(map(int, input().split(",")))
+    target = int(input())
+    print(two_sum(nums, target))
+# endregion`,
+      java: `// region boilerplate
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        String[] parts = sc.nextLine().split(",");
+        int[] nums = new int[parts.length];
+        for (int i = 0; i < parts.length; i++) {
+            nums[i] = Integer.parseInt(parts[i]);
+        }
+        int target = sc.nextInt();
+        int[] result = twoSum(nums, target);
+        System.out.println(Arrays.toString(result));
+    }
+
+    public static int[] twoSum(int[] nums, int target) {
+        // Write your code here...
+        return new int[]{};
+    }
+}
+// endregion`,
+    },
     testCases: [
       {
         input: '{"nums": [2,7,11,15], "target": 9}',
@@ -83,6 +120,7 @@ Output: [0,1]
   },
   {
     title: "Valid Parentheses",
+    slug: "valid-parentheses",
     type: "coding",
     difficulty: "easy",
     description: `
@@ -152,6 +190,7 @@ Output: false
   },
   {
     title: "Merge Two Sorted Lists",
+    slug: "merge-two-sorted-lists",
     type: "coding",
     difficulty: "easy",
     description: `
@@ -220,6 +259,7 @@ Output: [0]
   },
   {
     title: "Best Time to Buy and Sell Stock",
+    slug: "best-time-to-buy-and-sell-stock",
     type: "coding",
     difficulty: "easy",
     description: `
@@ -283,6 +323,7 @@ Explanation: In this case, no transactions are done and the max profit = 0.
   },
   {
     title: "Valid Palindrome",
+    slug: "valid-palindrome",
     type: "coding",
     difficulty: "easy",
     description: `

@@ -22,16 +22,17 @@ interface ProblemItem {
   title: string;
   difficulty: "easy" | "medium" | "hard";
   status: string;
+  slug: string;
 }
 
 interface ProblemSidebarProps {
   problems: ProblemItem[];
-  activeProblemId: string;
+  activeProblemSlug: string;
 }
 
 export function ProblemSidebar({
   problems,
-  activeProblemId,
+  activeProblemSlug,
 }: ProblemSidebarProps) {
   // const { toggleSidebar } = useSidebar();
 
@@ -60,7 +61,7 @@ export function ProblemSidebar({
           <SidebarGroupContent>
             <SidebarMenu>
               {problems.map((problem) => {
-                const isActive = activeProblemId === problem.id;
+                const isActive = activeProblemSlug === problem.slug;
                 return (
                   <SidebarMenuItem key={problem.id}>
                     <SidebarMenuButton
@@ -69,7 +70,7 @@ export function ProblemSidebar({
                       tooltip={problem.title}
                       className="h-auto py-2"
                     >
-                      <Link href={`/problem/${problem.id}`}>
+                      <Link href={`/problem/${problem.slug}`}>
                         {problem.status === "solved" ? (
                           <CheckCircle2
                             className={`w-4 h-4 shrink-0 ${isActive ? "text-primary-foreground" : "text-green-500"}`}

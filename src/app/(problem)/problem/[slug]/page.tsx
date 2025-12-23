@@ -10,16 +10,15 @@ import { ProblemSidebar } from "@/components/layouts/problem/problem-sidebar";
 
 interface PageProps {
   params: Promise<{
-    problemId: string;
+    slug: string;
   }>;
 }
 
 export default async function ProblemPage({ params }: PageProps) {
-  const { problemId } = await params;
+  const { slug } = await params;
 
-  const [problem, _userSubmissions, _problems] = await Promise.all([
-    getProblem(problemId),
-    getUserSubmissions(problemId),
+  const [problem, _problems] = await Promise.all([
+    getProblem(slug),
     getProblems(),
   ]);
 
@@ -27,9 +26,11 @@ export default async function ProblemPage({ params }: PageProps) {
     notFound();
   }
 
+  const [userSubmissions] = await Promise.all([getUserSubmissions(problem.id)]);
+
   return (
     <main className="flex h-screen w-full">
-      <ProblemSidebar problems={_problems} activeProblemId={problemId} />
+      <ProblemSidebar problems={_problems} activeProblemSlug={slug} />
       <div className="h-screen w-full flex flex-col overflow-hidden">
         <ProblemHeader problem={problem} />
         <ProblemPanes problem={problem} />

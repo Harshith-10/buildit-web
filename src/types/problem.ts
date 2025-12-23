@@ -19,6 +19,7 @@ export interface Problem {
     }[];
     constraints?: string[];
   };
+  driverCode?: Record<string, string>;
   testCases: TestCase[];
   collection?: {
     id: string;
