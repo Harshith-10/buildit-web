@@ -102,7 +102,6 @@ export default function ProblemDescription({ problem }: { problem: Problem }) {
             alt,
             ...props
           }: React.ImgHTMLAttributes<HTMLImageElement>) => (
-            // eslint-disable-next-line @next/next/no-img-element
             // biome-ignore lint/performance/noImgElement: Ignore this one time
             <img
               className={cn("rounded-md border", className)}

@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { runCode, submitSolution } from "@/actions/problem-data";
 import { ProblemSidebar } from "@/components/layouts/problem/problem-sidebar";
@@ -36,15 +36,15 @@ export default function ProblemClientPage({
   problems,
 }: ProblemClientPageProps) {
   // State
-  const [activeConsoleTab, setActiveConsoleTab] = React.useState<
+  const [activeConsoleTab, setActiveConsoleTab] = useState<
     "testcase" | "result"
   >("testcase");
-  const [code, setCode] = React.useState("// Write your solution here...");
-  const [language, setLanguage] = React.useState("cpp");
-  const [isRunning, setIsRunning] = React.useState(false);
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [code, setCode] = useState("// Write your solution here...");
+  const [language, setLanguage] = useState("cpp");
+  const [isRunning, setIsRunning] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   // biome-ignore lint/suspicious/noExplicitAny: Dynamic structure
-  const [testResult, setTestResult] = React.useState<any>(null);
+  const [testResult, setTestResult] = useState<any>(null);
 
   // Handlers
   const handleRun = async () => {

@@ -5,7 +5,7 @@ import { duotoneDark, duotoneLight } from "@uiw/codemirror-theme-duotone";
 import CodeMirror from "@uiw/react-codemirror";
 import { Play, Send, Settings } from "lucide-react";
 import { useTheme } from "next-themes";
-import React from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import {
@@ -19,14 +19,14 @@ import {
 export default function ProblemEditor() {
   const { theme } = useTheme();
   // Ensure we mount only after hydration to prevent hydration mismatch
-  const [mounted, setMounted] = React.useState(false);
-  const [_value, setValue] = React.useState("console.log('Hello, World!');");
+  const [mounted, setMounted] = useState(false);
+  const [_value, setValue] = useState("console.log('Hello, World!');");
 
-  React.useEffect(() => {
+  useEffect(() => {
     setMounted(true);
   }, []);
 
-  const onChange = React.useCallback((val: string) => {
+  const onChange = useCallback((val: string) => {
     setValue(val);
   }, []);
 

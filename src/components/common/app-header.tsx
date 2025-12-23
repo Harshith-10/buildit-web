@@ -2,7 +2,7 @@
 
 import { Bell, Search } from "lucide-react";
 import { usePathname } from "next/navigation";
-import React from "react";
+import { Fragment } from "react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -34,7 +34,7 @@ export default function AppHeader() {
     const displayName = getPageName(fullPath, pageNames);
 
     return (
-      <React.Fragment key={fullPath}>
+      <Fragment key={fullPath}>
         <BreadcrumbItem>
           <BreadcrumbLink
             href={fullPath}
@@ -44,7 +44,7 @@ export default function AppHeader() {
           </BreadcrumbLink>
         </BreadcrumbItem>
         {index < pathSegments.length - 1 && <BreadcrumbSeparator />}
-      </React.Fragment>
+      </Fragment>
     );
   });
 

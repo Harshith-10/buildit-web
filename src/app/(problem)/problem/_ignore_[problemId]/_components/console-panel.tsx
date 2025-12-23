@@ -8,7 +8,7 @@ import {
   Terminal,
   XCircle,
 } from "lucide-react";
-import * as React from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -37,7 +37,7 @@ export function ConsolePanel({
   activeConsoleTab,
   setActiveConsoleTab,
 }: ConsolePanelProps) {
-  const [activeTestCaseId, setActiveTestCaseId] = React.useState<string>(
+  const [activeTestCaseId, setActiveTestCaseId] = useState<string>(
     problem.testCases[0]?.id || "",
   );
 
@@ -117,6 +117,7 @@ export function ConsolePanel({
                   .filter((t) => !t.isHidden)
                   .map((tc, i) => (
                     <button
+                      type="button"
                       key={tc.id}
                       onClick={() => setActiveTestCaseId(tc.id)}
                       className={cn(
