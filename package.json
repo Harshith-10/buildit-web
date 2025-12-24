@@ -11,6 +11,7 @@
     "fixlint": "biome check --write",
     "db:seed:users": "tsx scripts/seed/users.ts",
     "db:seed": "tsx scripts/seed/data.ts",
+    "db:seed:problems": "tsx scripts/seed/problems.ts",
     "db:reset": "tsx scripts/reset-db.ts"
   },
   "dependencies": {
