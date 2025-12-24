@@ -95,7 +95,7 @@ export default function ProblemPanes({
         }
       }
     }
-  }, [mounted, languages]);
+  }, [mounted, languages, lastLanguage, lastLanguageVersion, selectedVersion]);
 
   const [activeTab, setActiveTab] = useState("test-cases");
   const [testCaseResults, setTestCaseResults] = useState<TestcaseResult[]>([]);
@@ -112,7 +112,7 @@ export default function ProblemPanes({
       storeCode[problem.id]?.[selectedLanguage] ??
       getBoilerplate(problem, selectedLanguage)
     );
-  }, [storeCode, problem.id, selectedLanguage, mounted]);
+  }, [storeCode, problem, selectedLanguage, mounted]);
 
   const handleCodeChange = (val: string) => {
     setStoreCode(problem.id, selectedLanguage, val);
@@ -245,7 +245,6 @@ export default function ProblemPanes({
     <ResizablePanelGroup
       orientation="horizontal"
       className="flex-1 min-h-0 w-full"
-      onLayout={onLayout}
     >
       <ResizablePanel
         className="max-h-full"
