@@ -28,6 +28,8 @@ import {
 } from "@/components/ui/card";
 import { authClient, useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
+import { startExamAction } from "@/actions/startExam";
+import { getDeviceFingerprint } from "@/lib/fingerprint";
 
 interface ExamEntryViewProps {
   examId: string;
@@ -82,12 +84,39 @@ export function ExamEntryView({
     }
   };
 
-  const startExam = () => {
-    if (!isFullscreen) {
-      alert("Please enter fullscreen mode to start the exam.");
+  const startExam = async () => {
+    if (!session?.user?.id) {
+      toast.error("Please log in to start the exam");
       return;
     }
-    router.push(`/exam/${examId}`);
+
+    try {
+      // Enter fullscreen first
+      if (!document.fullscreenElement) {
+        try {
+          await document.documentElement.requestFullscreen();
+          // Wait a moment for fullscreen to activate
+          await new Promise(resolve => setTimeout(resolve, 300));
+        } catch (err) {
+          toast.error("Please allow fullscreen mode to start the exam");
+          console.error("Fullscreen error:", err);
+          return;
+        }
+      }
+
+      toast.loading("Starting exam...");
+      
+      // Get device fingerprint on the client
+      const fingerprint = await getDeviceFingerprint();
+      
+      // Pass fingerprint to server action
+      await startExamAction(examId, session.user.id, fingerprint);
+      // The action will redirect to /exam/[sessionId] and fullscreen will be maintained
+    } catch (error: any) {
+      toast.dismiss();
+      toast.error(error?.message || "Failed to start exam");
+      console.error("Error starting exam:", error);
+    }
   };
 
   const handleTerminateOtherSessions = async () => {
@@ -107,7 +136,7 @@ export function ExamEntryView({
   const hasMultipleSessions = activeSessions.length > 1;
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-background">
+    <div className="min-h-screen flex w-full items-center justify-center p-4 bg-background">
       <div className="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="flex flex-col gap-6">
           <div>

@@ -1,14 +1,18 @@
 "use server";
 
 import { and, eq } from "drizzle-orm";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import db from "@/db";
 import { examSessions, exams, sessionProblems } from "@/db/schema";
 import { generateQuestionSet } from "@/lib/exam-engine";
-import { getDeviceFingerprint } from "@/lib/fingerprint";
 import type { ExamConfig } from "@/types/exam-config";
 
-export async function startExamAction(examId: string, userId: string) {
+export async function startExamAction(
+  examId: string,
+  userId: string,
+  deviceFingerprint?: string,
+) {
   // 1. Validations
   const exam = await db.query.exams.findFirst({
     where: eq(exams.id, examId),
@@ -23,14 +27,16 @@ export async function startExamAction(examId: string, userId: string) {
   }
 
   // 2. Security: Device Fingerprinting
-  // Simple version: Hash of IP + User-Agent
-  // const headersList = await headers(); // Next.js headers
-  // const ip = headersList.get("x-forwarded-for") || "unknown";
-  // const ua = headersList.get("user-agent") || "unknown";
-  // const currentFingerprint = Buffer.from(`${ip}-${ua}`).toString("base64");
-
-  // New Version: Use FingerprintJS
-  const currentFingerprint = await getDeviceFingerprint();
+  // Use provided fingerprint or fallback to server-side fingerprinting
+  let currentFingerprint = deviceFingerprint;
+  
+  if (!currentFingerprint) {
+    // Fallback: Simple server-side fingerprint using IP + User-Agent
+    const headersList = await headers();
+    const ip = headersList.get("x-forwarded-for") || headersList.get("x-real-ip") || "unknown";
+    const ua = headersList.get("user-agent") || "unknown";
+    currentFingerprint = Buffer.from(`${ip}-${ua}`).toString("base64");
+  }
 
   // 3. Check for Existing Active Sessions
   const existingSession = await db.query.examSessions.findFirst({
@@ -57,10 +63,15 @@ export async function startExamAction(examId: string, userId: string) {
   // 4. Generate the Questions (The "Engine" runs here)
   // We cast the JSON column to our type
   const config = exam.config as unknown as ExamConfig;
+  
+  console.log("Exam config:", JSON.stringify(config, null, 2));
+  
   const selectedProblemIds = await generateQuestionSet(config);
+  
+  console.log("Selected problem IDs:", selectedProblemIds);
 
   if (selectedProblemIds.length === 0) {
-    throw new Error("Configuration Error: No questions generated.");
+    throw new Error("Configuration Error: No questions generated. Please check the exam configuration or ensure problems exist in the database.");
   }
 
   // 5. Create Session Transaction (Atomic)

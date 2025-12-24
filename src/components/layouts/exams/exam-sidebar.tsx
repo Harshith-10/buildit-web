@@ -9,7 +9,6 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -18,30 +17,30 @@ import {
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
-interface Problem {
+interface ExamProblem {
   id: string;
   title: string;
-  difficulty: string;
-  status: string;
+  difficulty: "easy" | "medium" | "hard";
+  slug: string;
 }
 
 interface ExamSidebarProps {
-  problems: Problem[];
+  problems: ExamProblem[];
   activeProblemId: string;
-  onSelect: (id: string) => void;
-  title: string;
+  onProblemSelect: (problemId: string) => void;
+  attemptedProblems: Set<string>;
   onEndExam?: () => void;
 }
 
 export function ExamSidebar({
   problems,
   activeProblemId,
-  onSelect,
-  title,
+  onProblemSelect,
+  attemptedProblems,
   onEndExam,
 }: ExamSidebarProps) {
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" className="border-r-0">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -53,8 +52,10 @@ export function ExamSidebar({
                 <FileText className="size-4" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{title}</span>
-                <span className="truncate text-xs">Exam Questions</span>
+                <span className="truncate font-semibold">Exam Questions</span>
+                <span className="truncate text-xs">
+                  {attemptedProblems.size} of {problems.length} Attempted
+                </span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -62,20 +63,20 @@ export function ExamSidebar({
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Problem List</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {problems.map((problem) => {
+              {problems.map((problem, index) => {
                 const isActive = activeProblemId === problem.id;
+                const isAttempted = attemptedProblems.has(problem.id);
                 return (
                   <SidebarMenuItem key={problem.id}>
                     <SidebarMenuButton
-                      onClick={() => onSelect(problem.id)}
                       isActive={isActive}
                       tooltip={problem.title}
-                      className="h-auto py-2"
+                      className="h-auto py-2 cursor-pointer"
+                      onClick={() => onProblemSelect(problem.id)}
                     >
-                      {problem.status === "solved" ? (
+                      {isAttempted ? (
                         <CheckCircle2
                           className={`w-4 h-4 shrink-0 ${isActive ? "text-primary-foreground" : "text-green-500"}`}
                         />
@@ -84,14 +85,14 @@ export function ExamSidebar({
                           className={`w-4 h-4 shrink-0 ${isActive ? "text-primary-foreground" : "text-muted-foreground"}`}
                         />
                       )}
-                      <div className="flex flex-col gap-1 overflow-hidden w-full">
-                        <span className="truncate font-medium">
-                          {problem.title}
+                      <div className="flex flex-col gap-0.5 overflow-hidden w-full">
+                        <span className="truncate font-medium text-xs">
+                          {index + 1}. {problem.title}
                         </span>
                         <Badge
                           variant="secondary"
                           className={cn(
-                            "text-[10px] px-1.5 py-0 h-4 border font-normal w-fit",
+                            "text-[9px] px-1 py-0 h-3.5 border font-normal w-fit capitalize",
                             problem.difficulty === "easy" &&
                               "text-green-600 border-green-200 bg-green-50",
                             problem.difficulty === "medium" &&
@@ -113,15 +114,21 @@ export function ExamSidebar({
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>
-          <SidebarMenuItem className="group-data-[collapsible=icon]:hidden">
+          <SidebarMenuItem>
             <Button
               variant="destructive"
               className="w-full gap-2"
               onClick={onEndExam}
+              disabled={!onEndExam}
             >
               <Power className="w-4 h-4" />
               <span>End Exam</span>
             </Button>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <div className="px-2 py-1 text-xs text-muted-foreground">
+              Click on a question to navigate
+            </div>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>

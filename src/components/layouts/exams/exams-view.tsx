@@ -88,11 +88,12 @@ export function ExamsView({ data, total }: ExamsViewProps) {
       header: "Actions",
       accessorKey: (item: Exam) => (
         <Tooltip>
-          <TooltipTrigger>
-            <Link href={`/exams/${item.id}`} className="flex items-center">
-              <Button variant="ghost" size="icon">
-                <ArrowRight className="h-4 w-4" />
-              </Button>
+          <TooltipTrigger asChild>
+            <Link 
+              href={`/exams/${item.id}`} 
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9"
+            >
+              <ArrowRight className="h-4 w-4" />
             </Link>
           </TooltipTrigger>
           <TooltipContent side="right">
