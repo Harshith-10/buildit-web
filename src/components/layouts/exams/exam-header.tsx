@@ -19,6 +19,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import UserInfo from "../exam/user-info";
 
 interface ExamHeaderProps {
   sessionId: string;
@@ -134,7 +135,7 @@ export default function ExamHeader({
               {timeRemaining}
             </div>
           </div>
-          <User size="small" />
+          <UserInfo />
         </div>
       </header>
 

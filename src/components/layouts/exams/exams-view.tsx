@@ -130,7 +130,7 @@ export function ExamsView({ data, total }: ExamsViewProps) {
 
       <div className="mt-auto pt-4 border-t w-full">
         <Button asChild className="w-full gap-2">
-          <Link href={`/exam/${item.id}`}>View Exam</Link>
+          <Link href={`/exam/${item.id}/start`}>View Exam</Link>
         </Button>
       </div>
     </div>
