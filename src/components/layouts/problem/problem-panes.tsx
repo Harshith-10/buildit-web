@@ -228,6 +228,7 @@ export default function ProblemPanes({
           setActiveTab("results");
         }
       }
+    // biome-ignore lint/suspicious/noExplicitAny: Capture all errors
     } catch (e: any) {
       toast.error(e.message || "Submission failed");
     } finally {
@@ -235,9 +236,9 @@ export default function ProblemPanes({
     }
   };
 
-  const onLayout = (sizes: number[]) => {
-    setPreferences({ panelLayout: sizes });
-  };
+  // const onLayout = (sizes: number[]) => {
+  //   setPreferences({ panelLayout: sizes });
+  // };
 
   if (!mounted) return null;
 
