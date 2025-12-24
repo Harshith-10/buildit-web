@@ -144,7 +144,7 @@ export function ExamsView({ data, total }: ExamsViewProps) {
       totalItems={total}
       columns={columns}
       renderCard={renderCard}
-      defaultView="table"
+      defaultView="card"
       availableViews={["card", "table"]}
       filters={[
         {

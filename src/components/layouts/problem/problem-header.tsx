@@ -3,6 +3,8 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import type { Problem } from "@/types/problem";
+import UserInfo from "../exam/user-info";
+import ThemeToggle from "@/components/common/theme-toggle";
 
 interface ProblemHeaderProps {
   problem: Problem;
@@ -28,7 +30,7 @@ export default function ProblemHeader({ problem }: ProblemHeaderProps) {
           {problem.difficulty}
         </Badge>
       </div>
-      <div className="flex px-2">
+      <div className="flex gap-2 px-2">
         <User size="small" />
       </div>
     </header>

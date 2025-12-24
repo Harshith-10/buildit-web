@@ -1,7 +1,7 @@
 "use client";
 
 import { format } from "date-fns";
-import { Calendar, Eye, MoreHorizontal } from "lucide-react";
+import { ArrowRight, Calendar, Eye, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { DataItemsView } from "@/components/common/data-items/data-items-root";
 import { Badge } from "@/components/ui/badge";
@@ -87,23 +87,11 @@ export function ProblemsView({ data, total }: ProblemsViewProps) {
     {
       header: "Actions",
       accessorKey: (item: Problem) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem asChild>
-              <Link
-                href={`/problem/${item.slug}`}
-                className="flex items-center"
-              >
-                <Eye className="mr-2 h-4 w-4" /> View Details
-              </Link>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <Link href={`/problem/${item.slug}`} className="flex items-center">
+          <Button variant="ghost" size="icon">
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        </Link>
       ),
       className: "w-[50px]",
     },

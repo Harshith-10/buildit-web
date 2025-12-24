@@ -57,30 +57,115 @@ Output: [0,1]
 - **Only one valid answer exists.**
 `,
     driverCode: {
-      python: `def two_sum(nums, target):
-    # Write your code here...
-    pass
+      c: `// region boilerplate
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-# region boilerplate
-if __name__ == "__main__":
-    nums = list(map(int, input().split(",")))
-    target = int(input())
-    print(two_sum(nums, target))
-# endregion`,
+// endregion
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+int* twoSum(const int* nums, int numsSize, int target, int* returnSize) {
+    // Write your code here...
+    *returnSize = 2;
+    int* result = (int*)malloc(2 * sizeof(int));
+    result[0] = 0;
+    result[1] = 1;
+    return result;
+}
+// region boilerplate
+
+int main() {
+    char line[1024];
+    if (!fgets(line, 1024, stdin)) return 0;
+    
+    // Remove newline
+    line[strcspn(line, "\\n")] = 0;
+
+    int nums[1000];
+    int size = 0;
+    char* token = strtok(line, ",");
+    while (token) {
+        nums[size++] = atoi(token);
+        token = strtok(NULL, ",");
+    }
+
+    if (!fgets(line, 1024, stdin)) return 0;
+    int target = atoi(line);
+
+    int returnSize;
+    int* result = twoSum(nums, size, target, &returnSize);
+
+    if (returnSize == 2) {
+        printf("[%d,%d]", result[0], result[1]);
+    } else {
+        printf("[]");
+    }
+    
+    if (result) free(result);
+    return 0;
+}
+// endregion`,
+      cpp: `// region boilerplate
+#include <iostream>
+#include <vector>
+#include <string>
+#include <sstream>
+
+using namespace std;
+
+class Solution {
+public:
+// endregion
+    vector<int> twoSum(vector<int>& nums, int target) {
+        // Write your code here...
+        return {};
+    }
+// region boilerplate
+};
+
+int main() {
+    string line;
+    getline(cin, line);
+    
+    stringstream ss(line);
+    string item;
+    vector<int> nums;
+    while (getline(ss, item, ',')) {
+        nums.push_back(stoi(item));
+    }
+    
+    string targetStr;
+    getline(cin, targetStr);
+    int target = stoi(targetStr);
+    
+    Solution sol;
+    vector<int> result = sol.twoSum(nums, target);
+    
+    cout << "[" << result[0] << "," << result[1] << "]" << endl;
+    return 0;
+}
+// endregion`,
       java: `// region boilerplate
 import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        String[] parts = sc.nextLine().split(",");
-        int[] nums = new int[parts.length];
-        for (int i = 0; i < parts.length; i++) {
-            nums[i] = Integer.parseInt(parts[i]);
+        if (sc.hasNextLine()) {
+            String[] parts = sc.nextLine().split(",");
+            int[] nums = new int[parts.length];
+            for (int i = 0; i < parts.length; i++) {
+                nums[i] = Integer.parseInt(parts[i]);
+            }
+            if (sc.hasNextInt()) {
+                int target = sc.nextInt();
+                int[] result = twoSum(nums, target);
+                System.out.println(Arrays.toString(result).replace(" ", ""));
+            }
         }
-        int target = sc.nextInt();
-        int[] result = twoSum(nums, target);
-        System.out.println(Arrays.toString(result));
+        sc.close();
     }
 // endregion
     public static int[] twoSum(int[] nums, int target) {
@@ -89,6 +174,91 @@ public class Main {
     }
 // region boilerplate
 }
+// endregion`,
+      javascript: `/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number[]}
+ */
+var twoSum = function(nums, target) {
+    // Write your code here...
+};
+
+// region boilerplate
+const fs = require('fs');
+try {
+    const input = fs.readFileSync(0, 'utf-8').trim().split('\\n');
+    if (input.length >= 2) {
+        const nums = input[0].split(',').map(Number);
+        const target = Number(input[1]);
+        const result = twoSum(nums, target);
+        console.log(JSON.stringify(result));
+    }
+} catch (e) {}
+// endregion`,
+      python: `def two_sum(nums, target):
+    # Write your code here...
+    pass
+
+# region boilerplate
+if __name__ == "__main__":
+    import sys
+    input = sys.stdin.read().split()
+    if len(input) >= 2:
+        nums = list(map(int, input[0].split(",")))
+        target = int(input[1])
+        print(str(two_sum(nums, target)).replace(" ", ""))
+# endregion`,
+      rust: `// region boilerplate
+struct Solution;
+// endregion
+
+impl Solution {
+    pub fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
+        // Write your code here...
+        vec![]
+    }
+}
+
+// region boilerplate
+use std::io::{self, BufRead};
+
+fn main() {
+    let stdin = io::stdin();
+    let mut lines = stdin.lock().lines();
+    
+    if let Some(Ok(nums_str)) = lines.next() {
+        let nums: Vec<i32> = nums_str.split(',')
+            .filter_map(|s| s.trim().parse().ok())
+            .collect();
+            
+        if let Some(Ok(target_str)) = lines.next() {
+            if let Ok(target) = target_str.trim().parse() {
+                let result = Solution::two_sum(nums, target);
+                let res_str = format!("{:?}", result).replace(" ", "");
+                println!("{}", res_str);
+            }
+        }
+    }
+}
+// endregion`,
+      typescript: `function twoSum(nums: number[], target: number): number[] {
+    // Write your code here...
+    return [];
+}
+
+// region boilerplate
+import * as fs from 'fs';
+
+try {
+    const input = fs.readFileSync(0, 'utf-8').trim().split('\\n');
+    if (input.length >= 2) {
+        const nums = input[0].split(',').map(Number);
+        const target = Number(input[1]);
+        const result = twoSum(nums, target);
+        console.log(JSON.stringify(result));
+    }
+} catch (e) {}
 // endregion`,
     },
     testCases: [
@@ -161,29 +331,166 @@ Output: false
 - \`1 <= s.length <= 10^4\`
 - \`s\` consists of parentheses only \`'()[]{}'.\`
 `,
+    driverCode: {
+      c: `// region boilerplate
+#include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
+
+// endregion
+bool isValid(char* s) {
+    // Write your code here...
+    return false;
+}
+// region boilerplate
+
+int main() {
+    char s[1024];
+    if (fgets(s, 1024, stdin)) {
+        s[strcspn(s, "\\n")] = 0; // Remove newline
+        if (isValid(s)) {
+            printf("true");
+        } else {
+            printf("false");
+        }
+    }
+    return 0;
+}
+// endregion`,
+      cpp: `// region boilerplate
+#include <iostream>
+#include <string>
+#include <stack>
+
+using namespace std;
+
+class Solution {
+public:
+// endregion
+    bool isValid(string s) {
+        // Write your code here...
+        return false;
+    }
+// region boilerplate
+};
+
+int main() {
+    string s;
+    getline(cin, s);
+    Solution sol;
+    if (sol.isValid(s)) {
+        cout << "true";
+    } else {
+        cout << "false";
+    }
+    return 0;
+}
+// endregion`,
+      java: `// region boilerplate
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (sc.hasNextLine()) {
+            String s = sc.nextLine();
+            boolean result = isValid(s);
+            System.out.println(result);
+        }
+        sc.close();
+    }
+// endregion
+    public static boolean isValid(String s) {
+        // Write your code here...
+        return false;
+    }
+// region boilerplate
+}
+// endregion`,
+      javascript: `/**
+ * @param {string} s
+ * @return {boolean}
+ */
+var isValid = function(s) {
+    // Write your code here...
+};
+
+// region boilerplate
+const fs = require('fs');
+try {
+    const s = fs.readFileSync(0, 'utf-8').trim();
+    console.log(isValid(s));
+} catch(e) {}
+// endregion`,
+      python: `def is_valid(s):
+    # Write your code here...
+    pass
+
+# region boilerplate
+if __name__ == "__main__":
+    import sys
+    s = sys.stdin.read().strip()
+    print("true" if is_valid(s) else "false")
+# endregion`,
+      rust: `// region boilerplate
+struct Solution;
+// endregion
+
+impl Solution {
+    pub fn is_valid(s: String) -> bool {
+        // Write your code here...
+        false
+    }
+}
+
+// region boilerplate
+use std::io::{self, BufRead};
+
+fn main() {
+    let stdin = io::stdin();
+    if let Some(Ok(s)) = stdin.lock().lines().next() {
+        let result = Solution::is_valid(s);
+        println!("{}", result);
+    }
+}
+// endregion`,
+      typescript: `function isValid(s: string): boolean {
+    // Write your code here...
+    return false;
+}
+
+// region boilerplate
+import * as fs from 'fs';
+
+try {
+    const s = fs.readFileSync(0, 'utf-8').trim();
+    console.log(isValid(s));
+} catch(e) {}
+// endregion`,
+    },
     testCases: [
       {
-        input: '"()"',
+        input: "()",
         expectedOutput: "true",
         isHidden: false,
       },
       {
-        input: '"()[]{}"',
+        input: "()[]{}",
         expectedOutput: "true",
         isHidden: false,
       },
       {
-        input: '"(]"',
+        input: "(]",
         expectedOutput: "false",
         isHidden: false,
       },
       {
-        input: '"([)]"',
+        input: "([)]",
         expectedOutput: "false",
         isHidden: true,
       },
       {
-        input: '"{[]}"',
+        input: "{[]}",
         expectedOutput: "true",
         isHidden: true,
       },
@@ -232,27 +539,27 @@ Output: [0]
 `,
     testCases: [
       {
-        input: '{"list1": [1,2,4], "list2": [1,3,4]}',
+        input: "[1,2,4]\n[1,3,4]",
         expectedOutput: "[1,1,2,3,4,4]",
         isHidden: false,
       },
       {
-        input: '{"list1": [], "list2": []}',
+        input: "[]\n[]",
         expectedOutput: "[]",
         isHidden: false,
       },
       {
-        input: '{"list1": [], "list2": [0]}',
+        input: "[]\n[0]",
         expectedOutput: "[0]",
         isHidden: false,
       },
       {
-        input: '{"list1": [1], "list2": [2]}',
+        input: "[1]\n[2]",
         expectedOutput: "[1,2]",
         isHidden: true,
       },
       {
-        input: '{"list1": [1,3,5], "list2": [2,4,6]}',
+        input: "[1,3,5]\n[2,4,6]",
         expectedOutput: "[1,2,3,4,5,6]",
         isHidden: true,
       },
@@ -296,27 +603,27 @@ Explanation: In this case, no transactions are done and the max profit = 0.
 `,
     testCases: [
       {
-        input: "[7,1,5,3,6,4]",
+        input: "7,1,5,3,6,4",
         expectedOutput: "5",
         isHidden: false,
       },
       {
-        input: "[7,6,4,3,1]",
+        input: "7,6,4,3,1",
         expectedOutput: "0",
         isHidden: false,
       },
       {
-        input: "[2,4,1]",
+        input: "2,4,1",
         expectedOutput: "2",
         isHidden: false,
       },
       {
-        input: "[1,2]",
+        input: "1,2",
         expectedOutput: "1",
         isHidden: true,
       },
       {
-        input: "[3,2,6,5,0,3]",
+        input: "3,2,6,5,0,3",
         expectedOutput: "4",
         isHidden: true,
       },
@@ -364,29 +671,172 @@ Since an empty string reads the same forward and backward, it is a palindrome.
 - \`1 <= s.length <= 2 * 10^5\`
 - \`s\` consists only of printable ASCII characters.
 `,
+    driverCode: {
+      c: `// region boilerplate
+#include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
+#include <ctype.h>
+
+// endregion
+bool isPalindrome(char* s) {
+    // Write your code here...
+    return false;
+}
+// region boilerplate
+
+int main() {
+    char s[200005];
+    if (fgets(s, 200005, stdin)) {
+        s[strcspn(s, "\\n")] = 0; // Remove newline
+        if (isPalindrome(s)) {
+            printf("true");
+        } else {
+            printf("false");
+        }
+    }
+    return 0;
+}
+// endregion`,
+      cpp: `// region boilerplate
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+class Solution {
+public:
+// endregion
+    bool isPalindrome(string s) {
+        // Write your code here...
+        return false;
+    }
+// region boilerplate
+};
+
+int main() {
+    string s;
+    getline(cin, s);
+    Solution sol;
+    if (sol.isPalindrome(s)) {
+        cout << "true";
+    } else {
+        cout << "false";
+    }
+    return 0;
+}
+// endregion`,
+      java: `// region boilerplate
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (sc.hasNextLine()) {
+            String s = sc.nextLine();
+            boolean result = isPalindrome(s);
+            System.out.println(result);
+        }
+        sc.close();
+    }
+// endregion
+    public static boolean isPalindrome(String s) {
+        // Write your code here...
+        return false;
+    }
+// region boilerplate
+}
+// endregion`,
+      javascript: `/**
+ * @param {string} s
+ * @return {boolean}
+ */
+var isPalindrome = function(s) {
+    // Write your code here...
+};
+
+// region boilerplate
+const fs = require('fs');
+try {
+    // Read entire input, split by newline, take first line
+    // preserve spaces exactly as given (except newline)
+    const input = fs.readFileSync(0, 'utf-8');
+    const s = input.split('\\n')[0]; 
+    console.log(isPalindrome(s));
+} catch(e) {}
+// endregion`,
+      python: `def is_palindrome(s):
+    # Write your code here...
+    pass
+
+# region boilerplate
+if __name__ == "__main__":
+    import sys
+    # Read strict line, remove only trailing newline
+    input_str = sys.stdin.read().split('\\n')[0]
+    print("true" if is_palindrome(input_str) else "false")
+# endregion`,
+      rust: `// region boilerplate
+struct Solution;
+// endregion
+
+impl Solution {
+    pub fn is_palindrome(s: String) -> bool {
+        // Write your code here...
+        false
+    }
+}
+
+// region boilerplate
+use std::io::{self, BufRead};
+
+fn main() {
+    let stdin = io::stdin();
+    if let Some(Ok(s)) = stdin.lock().lines().next() {
+        let result = Solution::is_palindrome(s);
+        println!("{}", result);
+    }
+}
+// endregion`,
+      typescript: `function isPalindrome(s: string): boolean {
+    // Write your code here...
+    return false;
+}
+
+// region boilerplate
+import * as fs from 'fs';
+
+try {
+    const input = fs.readFileSync(0, 'utf-8');
+    const s = input.split('\\n')[0];
+    console.log(isPalindrome(s));
+} catch(e) {}
+// endregion`,
+    },
     testCases: [
       {
-        input: '"A man, a plan, a canal: Panama"',
+        input: "A man, a plan, a canal: Panama",
         expectedOutput: "true",
         isHidden: false,
       },
       {
-        input: '"race a car"',
+        input: "race a car",
         expectedOutput: "false",
         isHidden: false,
       },
       {
-        input: '" "',
+        input: " ",
         expectedOutput: "true",
         isHidden: false,
       },
       {
-        input: '"ab_a"',
+        input: "ab_a",
         expectedOutput: "true",
         isHidden: true,
       },
       {
-        input: '"0P"',
+        input: "0P",
         expectedOutput: "false",
         isHidden: true,
       },

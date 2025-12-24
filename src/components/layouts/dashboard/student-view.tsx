@@ -23,6 +23,7 @@ import { StatsCard } from "./stats-card";
 interface StudentViewProps {
   stats: {
     totalSolved: number;
+    totalSubmissions: number;
     // Mocking these for now as they might not be passed yet
     streak?: number;
     rank?: number;
@@ -147,25 +148,25 @@ export function StudentView({
         <div className="flex flex-col gap-4">
           <StatsCard
             title="Current Streak"
-            value={stats.streak || 5}
+            value={stats.streak || 0}
             icon={Flame}
             description="days on fire!"
             className="bg-orange-500/10 border-orange-500/50"
             iconClassName="bg-orange-500/20 text-orange-600"
-            trend={{ value: 1, direction: "up" }}
+            // trend={{ value: 1, direction: "up" }}
           />
           <StatsCard
             title="Problems Solved"
             value={stats.totalSolved}
             icon={CheckCircle}
-            description="total solved"
+            description={`${stats.totalSubmissions || 0} total submissions`}
             className="bg-green-500/10 border-green-500/50"
             iconClassName="bg-green-500/20 text-green-600"
-            trend={{ value: 12, direction: "up", label: "this week" }}
+            // trend={{ value: 12, direction: "up", label: "this week" }}
           />
           <StatsCard
             title="Global Rank"
-            value={`#${stats.rank || 420}`}
+            value={stats.rank ? `#${stats.rank}` : "-"}
             icon={Trophy}
             description="top 15%"
             className="bg-yellow-500/10 border-yellow-500/50"
