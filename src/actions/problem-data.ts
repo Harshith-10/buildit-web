@@ -123,7 +123,15 @@ export const getUserSubmissions = async (
 
 // ... runCode implementation ...
 
+import { z } from "zod";
 import { executeTestcases } from "@/actions/code-execution";
+
+const submitSolutionSchema = z.object({
+  code: z.string().min(1, "Code cannot be empty"),
+  language: z.string().min(1, "Language is required"),
+  problemId: z.string().uuid("Invalid problem ID"),
+  version: z.string().optional().default("*"),
+});
 
 export const submitSolution = async (
   code: string,
@@ -139,9 +147,17 @@ export const submitSolution = async (
     throw new Error("Unauthorized");
   }
 
+  // Validate inputs
+  const validatedInput = submitSolutionSchema.parse({
+    code,
+    language,
+    problemId,
+    version,
+  });
+
   // 1. Fetch Problem with ALL test cases
   const problem = await db.query.problems.findFirst({
-    where: eq(problems.id, problemId),
+    where: eq(problems.id, validatedInput.problemId),
     with: {
       testCases: true,
     },
@@ -150,37 +166,20 @@ export const submitSolution = async (
   if (!problem) throw new Error("Problem not found");
 
   // 2. Prepare Payload
-  const driverCode = (problem.driverCode as Record<string, string>)?.[language];
-  // If driver code exists, inject user code.
-  // Usually driver code has a placeholder like // USER_CODE or it wraps the user code.
-  // The user implemented "Driver Code Folding" earlier.
-  // Looking at previous conversations, driver code is likely wrapping the solution.
-  // If driverCode is stored, we might need to send it.
-  // Piston usually takes 'files'.
-  // If driverCode is present, we should probable construct the file to include it?
-  // Previous conversation "Implement Driver Code Folding" might shed light.
-  // Using simple concatenation for now if driverCode has a replacement marker?
-  // Or just sending user code if no driver code.
-  // The user didn't specify driver code logic here, but mentioned it in history.
-  // I'll assume for now we send user code directly, or if there's driver code, we might need to handle it.
-  // However, usually `executeTestcases` handles the execution.
-  // Let's assume the user code is complete or the Piston environment handles it.
-  // Actually, checking `executeTestcases` in `code-execution.ts`, it takes `files` and `testcases`.
-
-  // Refined: If there is driver code, we probably need to merge it?
-  // Let's stick to simple execution for now unless I see a clear "merge" requirement.
-  // User mentions "consider @[src/actions/code-execution.ts]".
+  // const driverCode = (problem.driverCode as Record<string, string>)?.[validatedInput.language];
+  // Note: Driver code logic kept as is (commented out/simple) per original implementation for now,
+  // until explicit requirement to merge it is clarified or implemented.
 
   const payload = {
-    language,
-    version,
+    language: validatedInput.language,
+    version: validatedInput.version,
     files: [
       {
-        content: code,
+        content: validatedInput.code,
       },
     ],
     testcases: problem.testCases.map((tc) => ({
-      id: tc.id,
+      id: tc.id.toString(), // ensure ID is string for Piston
       input: tc.input,
       expectedOutput: tc.expectedOutput,
     })),
@@ -189,27 +188,65 @@ export const submitSolution = async (
   // 3. Execute
   const results = await executeTestcases(payload);
 
-  // 4. Validate
-  // results.testcases has passed/failed status
-  const allPassed = results.testcases.every((tc) => tc.passed);
-  const status = allPassed ? "accepted" : "wrong_answer"; // Or runtime_error if compile failed
+  if (results.message && !results.testcases) {
+    // Compilation error or API error
+    return {
+      status: "runtime_error",
+      runtimeMs: 0,
+      memoryKb: 0,
+      message: results.message,
+      testCases: [],
+    };
+  }
 
-  // Calculate average runtime/memory? Or max?
-  // Usually sum or max.
+  // 4. Validate & Filter Results
+  // Map execution results back to problem test cases to check isHidden
+  const testCaseResults = results.testcases.map((tcResult) => {
+    const originalTestCase = problem.testCases.find(
+      (ptc) => ptc.id.toString() === tcResult.id,
+    );
+    return {
+      ...tcResult,
+      isHidden: originalTestCase?.isHidden ?? false,
+    };
+  });
+
+  const allPassed = testCaseResults.every((tc) => tc.passed);
+  const status = allPassed ? "accepted" : "wrong_answer";
+
+  // Logic: Show all Public test cases + First Failed test case (if any)
+  const publicTestCases = testCaseResults.filter((tc) => !tc.isHidden);
+  const firstFailedTestCase = testCaseResults.find((tc) => !tc.passed);
+
+  const clientTestCases = [...publicTestCases];
+
+  // If there is a failure, and it's NOT already in the public list (i.e. it's hidden), add it.
+  if (firstFailedTestCase && firstFailedTestCase.isHidden) {
+    // REDACT info for hidden failure
+    const redactedFailure = {
+      ...firstFailedTestCase,
+      input: "[Hidden]",
+      expectedOutput: "[Hidden]",
+      actualOutput: "[Hidden]",
+      // We keep run_details (stdout/stderr) but maybe we should be careful there too?
+      // Usually stderr might leak info, but standard runner output is often needed for debugging errors (like exceptions).
+      // For now, only hiding input/output as per plan.
+    };
+    clientTestCases.push(redactedFailure);
+  }
+
+  // Sort by ID or order to keep consistent? Piston doesn't guarantee order, but we mapped by ID.
+  // We can sort if needed, but append is fine for "Public... then Failure".
+
+  // Calculate stats based on ALL run testcases (accurate performance metrics)
   const runtimeMs =
-    results.testcases.reduce((acc, tc) => acc + tc.run_details.wall_time, 0) /
-    results.testcases.length; // Average?
-  // Wait, `wall_time` is in seconds? `code-execution.ts` says `cpu_time` and `wall_time`. Usually ms or s? Piston v2 is usually ms?
-  // Piston output for limit is usually implicit.
-  // Let's assume milliseconds if not specified. Piston usually returns seconds?
-  // checking code-execution: `wall_time` is number.
-  // `time` in submissions is `integer("runtime_ms")`.
-  // I should check `code-execution` output. Piston CPU time is usually seconds.
-  // I will assume it is seconds and convert to MS.
+    results.testcases.reduce(
+      (acc, tc) => acc + (tc.run_details.wall_time || 0),
+      0,
+    ) / (results.testcases.length || 1);
 
-  // Calculate max memory usage
   const memoryKb = Math.max(
-    ...results.testcases.map((tc) => tc.run_details.memory),
+    ...results.testcases.map((tc) => tc.run_details.memory || 0),
   );
 
   // 5. Save Submission
@@ -218,11 +255,14 @@ export const submitSolution = async (
     .values({
       userId: session.user.id,
       problemId: problem.id,
-      answerData: { code, language, version }, // store simple JSON
-      status: results.message ? "runtime_error" : status, // specific error handling
-      runtimeMs: Math.floor(runtimeMs * 1000), // convert s to ms if needed
-      memoryKb: Math.floor(memoryKb / 1024), // bytes to kb? Piston returns bytes?
-      // Let's verify units. Piston 'memory' is usually bytes. 'cpu_time' is seconds.
+      answerData: {
+        code: validatedInput.code,
+        language: validatedInput.language,
+        version: validatedInput.version,
+      },
+      status: status,
+      runtimeMs: Math.floor(runtimeMs * 1000),
+      memoryKb: Math.floor(memoryKb / 1024),
     })
     .returning();
 
@@ -231,6 +271,6 @@ export const submitSolution = async (
     runtimeMs: submission.runtimeMs,
     memoryKb: submission.memoryKb,
     message: results.message || (allPassed ? "Accepted" : "Wrong Answer"),
-    testCases: results.testcases, // Optional: return details to user
+    testCases: clientTestCases,
   };
 };
