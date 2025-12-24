@@ -25,15 +25,15 @@ interface ProblemItem {
   slug: string;
 }
 
+import { useParams } from "next/navigation";
+
 interface ProblemSidebarProps {
   problems: ProblemItem[];
-  activeProblemSlug: string;
 }
 
-export function ProblemSidebar({
-  problems,
-  activeProblemSlug,
-}: ProblemSidebarProps) {
+export function ProblemSidebar({ problems }: ProblemSidebarProps) {
+  const params = useParams();
+  const activeProblemSlug = params?.slug as string;
   // const { toggleSidebar } = useSidebar();
 
   return (

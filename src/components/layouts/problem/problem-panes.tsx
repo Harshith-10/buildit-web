@@ -38,8 +38,7 @@ export default function ProblemPanes({
     lastLanguage,
     setLastLanguage,
     lastLanguageVersion,
-    preferences,
-    setPreferences,
+    preferences
   } = useProblemStore();
 
   const [mounted, setMounted] = useState(false);
