@@ -1,10 +1,10 @@
-"use client";
+import Leaderboard from "@/components/layouts/leaderboard/leaderboard";
 
-import UnderConstruction from "@/components/common/under-construction";
-import { usePageName } from "@/hooks/use-page-name";
+export const metadata = {
+  title: "Leaderboard | BuildIt",
+  description: "Global rankings and top performers",
+};
 
 export default function LeaderboardPage() {
-  usePageName("Leaderboard");
-
-  return <UnderConstruction />;
+  return <Leaderboard />;
 }
