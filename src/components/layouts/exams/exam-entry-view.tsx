@@ -107,7 +107,7 @@ export function ExamEntryView({
   const hasMultipleSessions = activeSessions.length > 1;
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-background">
+    <div className="min-h-screen w-full flex items-center justify-center p-4 bg-background">
       <div className="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="flex flex-col gap-6">
           <div>

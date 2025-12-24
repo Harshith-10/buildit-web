@@ -1,7 +1,7 @@
-import UnderConstruction from "@/components/common/under-construction";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Problem } from "@/types/problem";
 import ProblemDescription from "./problem-description";
+import ProblemSubmissions from "./problem-submissions";
 
 export default function ProblemInfo({ problem }: { problem: Problem }) {
   return (
@@ -17,7 +17,7 @@ export default function ProblemInfo({ problem }: { problem: Problem }) {
       </TabsContent>
       <TabsContent value="submissions" className="flex-1 overflow-hidden">
         {/* <ProblemEditorial problem={problem} /> */}
-        <UnderConstruction />
+        <ProblemSubmissions problemId={problem.id} />
       </TabsContent>
     </Tabs>
   );

@@ -1,16 +1,9 @@
 "use server";
 
-import { count, desc, eq, sql } from "drizzle-orm";
+import { and, count, desc, eq, sql } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 import db from "@/db";
-import {
-  dailyProblems,
-  examSessions,
-  exams,
-  problems,
-  submissions,
-  user,
-} from "@/db/schema";
+import { dailyProblems, exams, problems, submissions, user } from "@/db/schema";
 
 export async function ensureDailyProblem() {
   const today = new Date().toISOString().split("T")[0];
@@ -51,13 +44,15 @@ export const getStudentDashboardData = unstable_cache(
   async (userId: string) => {
     const dailyProblem = await ensureDailyProblem();
 
-    const stats = await db
+    // Drizzle count distinct is cleaner with sql:
+    const [realStats] = await db
       .select({
-        totalSolved: count(submissions.id),
+        totalSolved:
+          sql<number>`count(DISTINCT ${submissions.problemId})`.mapWith(Number),
+        totalSubmissions: count(submissions.id),
       })
       .from(submissions)
-      .innerJoin(examSessions, eq(submissions.sessionId, examSessions.id))
-      .where(eq(examSessions.userId, userId));
+      .where(eq(submissions.userId, userId));
 
     const upcomingExams = await db
       .select()
@@ -67,7 +62,7 @@ export const getStudentDashboardData = unstable_cache(
 
     return {
       dailyProblem,
-      stats: stats[0],
+      stats: realStats || { totalSolved: 0, totalSubmissions: 0 },
       upcomingExams,
     };
   },

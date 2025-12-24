@@ -9,7 +9,9 @@
     "lint": "biome check",
     "format": "biome format --write",
     "fixlint": "biome check --write",
-    "db:seed": "tsx scripts/seed/data.ts"
+    "db:seed:users": "tsx scripts/seed/users.ts",
+    "db:seed": "tsx scripts/seed/data.ts",
+    "db:reset": "tsx scripts/reset-db.ts"
   },
   "dependencies": {
     "@codemirror/lang-cpp": "^6.0.3",

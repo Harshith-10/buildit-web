@@ -7,6 +7,7 @@ import {
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
+import { user } from "./auth";
 import { submissionStatus } from "./enums";
 import { examSessions } from "./exams";
 import { problems } from "./problems";
@@ -15,7 +16,8 @@ export const submissions = pgTable(
   "submissions",
   {
     id: uuid().defaultRandom().primaryKey().notNull(),
-    sessionId: uuid("session_id").notNull(),
+    sessionId: uuid("session_id"),
+    userId: text("user_id").references(() => user.id),
     problemId: uuid("problem_id").notNull(),
     answerData: jsonb("answer_data").notNull(),
     status: submissionStatus().default("pending").notNull(),

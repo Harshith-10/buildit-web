@@ -160,6 +160,7 @@ interface ProblemEditorHeaderProps {
   onVersionChange: (ver: string) => void;
   languages?: Runtime[];
   onRun?: () => Promise<void>;
+  onSubmit?: () => Promise<void>;
   isExecuting?: boolean;
 }
 
@@ -170,10 +171,12 @@ export function ProblemEditorHeader({
   onVersionChange,
   languages,
   onRun,
+  onSubmit,
   isExecuting,
 }: ProblemEditorHeaderProps) {
-  // Rate limiting ref
+  // Rate limiting ref for run
   const lastExecutionTime = useRef<number>(0);
+  const lastSubmissionTime = useRef<number>(0);
 
   // Get unique languages
   const uniqueLanguages = useMemo(() => {
@@ -199,18 +202,32 @@ export function ProblemEditorHeader({
   const handleRunClick = async () => {
     if (!onRun) return;
 
+    // const now = Date.now();
+    // if (now - lastExecutionTime.current < 5000) {
+    //   toast.error("Please wait 5 seconds before running again.");
+    //   return;
+    // }
+
+    // lastExecutionTime.current = now;
+    await onRun();
+  };
+
+  const handleSubmitClick = async () => {
+    if (!onSubmit) return;
+
     const now = Date.now();
-    if (now - lastExecutionTime.current < 5000) {
-      toast.error("Please wait 5 seconds before running again.");
+    if (now - lastSubmissionTime.current < 5000) {
+      toast.error("Please wait 5 seconds before submitting again.");
       return;
     }
 
-    lastExecutionTime.current = now;
-    await onRun();
+    lastSubmissionTime.current = now;
+    await onSubmit();
   };
 
   return (
     <div className="w-full items-center justify-between flex gap-2 p-2 border-b border-border bg-background">
+      {/* ... Selects ... */}
       <div className="flex items-center gap-2">
         <Select value={language} onValueChange={onLanguageChange}>
           <SelectTrigger className="min-w-[120px]">
@@ -268,7 +285,7 @@ export function ProblemEditorHeader({
           <Button
             size="sm"
             className="w-fit bg-green-600 text-white hover:bg-green-700"
-            onClick={handleRunClick}
+            onClick={handleSubmitClick}
             disabled={isExecuting}
           >
             <Send className="h-4 w-4 mr-2" />
