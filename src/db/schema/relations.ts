@@ -18,6 +18,7 @@ export const userRelations = relations(user, ({ many }) => ({
   usersToGroups: many(usersToGroups),
   examSessions: many(examSessions),
   accounts: many(account),
+  submissions: many(submissions),
 }));
 
 export const usersToGroupsRelations = relations(usersToGroups, ({ one }) => ({
@@ -81,7 +82,7 @@ export const examSessionsRelations = relations(
     }),
     submissions: many(submissions),
     sessionProblems: many(sessionProblems),
-  }),
+  })
 );
 
 export const examsRelations = relations(exams, ({ one, many }) => ({
@@ -109,6 +110,10 @@ export const submissionsRelations = relations(submissions, ({ one, many }) => ({
     references: [problems.id],
   }),
   jobLogs: many(jobLogs),
+  user: one(user, {
+    fields: [submissions.userId],
+    references: [user.id],
+  }),
 }));
 
 export const jobLogsRelations = relations(jobLogs, ({ one }) => ({
@@ -125,7 +130,7 @@ export const sessionProblemsRelations = relations(
       fields: [sessionProblems.sessionId],
       references: [examSessions.id],
     }),
-  }),
+  })
 );
 
 export const dailyProblemsRelations = relations(
@@ -135,5 +140,5 @@ export const dailyProblemsRelations = relations(
       fields: [dailyProblemsSchema.problemId],
       references: [problems.id],
     }),
-  }),
+  })
 );
