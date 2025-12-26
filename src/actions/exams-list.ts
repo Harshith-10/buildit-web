@@ -51,13 +51,13 @@ export async function getExams({
   // Sorting
   const statusOrder = sql`
     CASE 
-      WHEN ${exams.startTime} <= ${currentTimestamp} AND ${exams.endTime} >= ${currentTimestamp} THEN 1
-      WHEN ${exams.startTime} > ${currentTimestamp} THEN 2
+      WHEN ${exams.startTime} <= (CURRENT_TIMESTAMP AT TIME ZONE 'UTC') AND ${exams.endTime} >= (CURRENT_TIMESTAMP AT TIME ZONE 'UTC') THEN 1
+      WHEN ${exams.startTime} > (CURRENT_TIMESTAMP AT TIME ZONE 'UTC') THEN 2
       ELSE 3
     END
   `;
 
-  let orderBy: any[] = [statusOrder, desc(exams.createdAt)]; // Default sort
+  let orderBy: any[] = [asc(statusOrder), desc(exams.createdAt)]; // Default sort
 
   if (sort === "title-asc") orderBy = [asc(exams.title)];
   if (sort === "title-desc") orderBy = [desc(exams.title)];

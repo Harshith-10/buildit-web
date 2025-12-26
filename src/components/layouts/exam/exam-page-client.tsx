@@ -71,7 +71,10 @@ export default function ExamPageClient({
 
   return (
     <>
-      <SecurityMonitor sessionId={sessionId} onViolation={handleViolation} />
+      <SecurityMonitor
+        sessionId={sessionId}
+        onViolation={() => handleViolation("focus_lost")}
+      />
       <SidebarProvider>
         <main className="flex h-screen w-full">
           <ExamSidebar

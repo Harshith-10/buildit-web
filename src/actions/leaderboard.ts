@@ -95,7 +95,7 @@ export async function getLeaderboardData() {
     userId: string;
     totalScore: number;
     lastActive: Date;
-    user: (typeof allSubmissions)[0]["userId"];
+    user: (typeof allSubmissions)[0]["user"];
     language: string;
     totalTests: number;
     passedTests: number;
@@ -104,7 +104,7 @@ export async function getLeaderboardData() {
   for (const [userId, problemsMap] of userBestSubmissions.entries()) {
     let totalScore = 0;
     let lastActive = new Date(0); // Epoch
-    let userObj = null;
+    let userObj: (typeof allSubmissions)[0]["user"] = null;
     let totalTests = 0;
     let passedTests = 0;
     const languages = new Map<string, number>();
@@ -115,7 +115,7 @@ export async function getLeaderboardData() {
     // Let's mock the "test cases" count based on score for visual flair.
 
     for (const [problemId, sub] of problemsMap.entries()) {
-      userObj = sub.userId;
+      userObj = sub.user;
       const score = sub.score ?? 0;
       totalScore += score;
 
