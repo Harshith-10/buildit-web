@@ -28,6 +28,9 @@ export default function SignIn() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [usernameError, setUsernameError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [generalError, setGeneralError] = useState("");
 
   const { checkPinStatus, authCompleted } = usePinStore();
 
@@ -41,6 +44,23 @@ export default function SignIn() {
   }, [authCompleted, loading, router, redirectTo]);
 
   const handleSignIn = async () => {
+    // Clear previous errors
+    setUsernameError("");
+    setPasswordError("");
+    setGeneralError("");
+
+    // Validate empty fields
+    let hasError = false;
+    if (!username.trim()) {
+      setUsernameError("Please enter your Roll Number / Faculty ID");
+      hasError = true;
+    }
+    if (!password.trim()) {
+      setPasswordError("Please enter your password");
+      hasError = true;
+    }
+    if (hasError) return;
+
     await signIn.username(
       {
         username,
@@ -65,8 +85,17 @@ export default function SignIn() {
             await checkPinStatus("");
           }
         },
+        onError: (ctx) => {
+          setGeneralError(ctx.error.message || "Invalid credentials");
+        },
       },
     );
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !loading) {
+      handleSignIn();
+    }
   };
 
   return (
@@ -80,6 +109,9 @@ export default function SignIn() {
         </CardHeader>
         <CardContent>
           <div className="grid gap-4">
+            {generalError && (
+              <p className="text-sm text-destructive">{generalError}</p>
+            )}
             <div className="grid gap-2">
               <Label htmlFor="username">Roll Number / Faculty ID</Label>
               <Input
@@ -89,9 +121,15 @@ export default function SignIn() {
                 required
                 onChange={(e) => {
                   setUsername(e.target.value);
+                  if (usernameError) setUsernameError("");
                 }}
+                onKeyDown={handleKeyDown}
                 value={username}
+                className={usernameError ? "border-destructive" : ""}
               />
+              {usernameError && (
+                <p className="text-sm text-destructive">{usernameError}</p>
+              )}
             </div>
 
             <div className="grid gap-2">
@@ -111,8 +149,16 @@ export default function SignIn() {
                 placeholder="password"
                 autoComplete="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (passwordError) setPasswordError("");
+                }}
+                onKeyDown={handleKeyDown}
+                className={passwordError ? "border-destructive" : ""}
               />
+              {passwordError && (
+                <p className="text-sm text-destructive">{passwordError}</p>
+              )}
             </div>
 
             <Button
