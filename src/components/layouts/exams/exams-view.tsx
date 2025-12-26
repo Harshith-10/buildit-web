@@ -1,7 +1,7 @@
 "use client";
 
 import { format } from "date-fns";
-import { ArrowRight, Calendar, Clock } from "lucide-react";
+import { ArrowRight, Calendar, Clock, Info, Play } from "lucide-react";
 import Link from "next/link";
 import type { GetExamsParams } from "@/actions/exams-list";
 import { DataItemsView } from "@/components/common/data-items/data-items-root";
@@ -90,7 +90,7 @@ export function ExamsView({ data, total }: ExamsViewProps) {
             <TooltipTrigger asChild>
               <Button asChild size="icon" variant="ghost" className="h-8 w-8">
                 <Link href={`/exams/${item.id}`}>
-                  <ArrowRight className="h-4 w-4" />
+                  <Info className="h-4 w-4" />
                 </Link>
               </Button>
             </TooltipTrigger>
@@ -107,7 +107,7 @@ export function ExamsView({ data, total }: ExamsViewProps) {
                 className="h-8 w-8 text-primary"
               >
                 <Link href={`/exam/${item.id}`}>
-                  <Calendar className="h-4 w-4" />
+                  <Play className="h-4 w-4" />
                 </Link>
               </Button>
             </TooltipTrigger>
