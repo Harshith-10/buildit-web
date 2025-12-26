@@ -10,7 +10,7 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import getPageName from "@/lib/get-page-name";
+import getPageName from "@/lib/react/get-page-name";
 import { usePageNameStore } from "@/stores/use-page-name-store";
 import { Button } from "../ui/button";
 import {

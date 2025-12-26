@@ -23,7 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getLanguageName } from "@/lib/languages";
+import { getLanguageName } from "@/lib/utils/languages";
 
 interface ProblemEditorProps {
   value: string;

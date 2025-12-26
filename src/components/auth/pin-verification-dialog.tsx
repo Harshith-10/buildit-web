@@ -16,7 +16,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { getDeviceName } from "@/lib/fingerprint";
+import { getDeviceName } from "@/lib/utils/fingerprint";
 import { usePinStore } from "@/stores/pin-store";
 
 export default function PinVerificationDialog() {

@@ -81,12 +81,10 @@ export const getSessionProblems = cache(async (sessionId: string) => {
   return problemsWithTestCases;
 });
 
-// Store violations in memory for now (in production, use a violations table)
-const sessionViolations = new Map<string, number>();
-
 export async function recordViolation(
   sessionId: string,
-  _violationType: string,
+  violationType: string,
+  meta?: any,
 ) {
   const session = await getExamSession(sessionId);
 
@@ -98,28 +96,58 @@ export async function recordViolation(
     return { violations: 0, terminated: true };
   }
 
-  // Get current violations count
-  const currentViolations = sessionViolations.get(sessionId) || 0;
-  const newViolationCount = currentViolations + 1;
+  // Fetch current details
+  const currentDetails = (session.terminationDetails as any) || {
+    events: [],
+    violationCount: 0,
+  };
 
-  // Store the updated count
-  sessionViolations.set(sessionId, newViolationCount);
+  const newViolationCount = (currentDetails.violationCount || 0) + 1;
+  const newEvents = [
+    ...(currentDetails.events || []),
+    {
+      type: violationType,
+      timestamp: new Date().toISOString(),
+      ...meta,
+    },
+  ];
+
+  const updatedDetails = {
+    ...currentDetails,
+    events: newEvents,
+    violationCount: newViolationCount,
+    lastViolation: new Date().toISOString(),
+  };
 
   // If violations >= 3, terminate the exam
   if (newViolationCount >= 3) {
     await db
       .update(examSessions)
-      .set({ status: "terminated" })
+      .set({
+        status: "terminated",
+        terminationReason: "malpractice",
+        terminationDetails: updatedDetails,
+      })
       .where(eq(examSessions.id, sessionId));
 
     return { violations: newViolationCount, terminated: true };
   }
 
+  // Just update the details
+  await db
+    .update(examSessions)
+    .set({
+      terminationDetails: updatedDetails,
+    })
+    .where(eq(examSessions.id, sessionId));
+
   return { violations: newViolationCount, terminated: false };
 }
 
 export async function getViolationCount(sessionId: string) {
-  return sessionViolations.get(sessionId) || 0;
+  const session = await getExamSession(sessionId);
+  if (!session) return 0;
+  return (session.terminationDetails as any)?.violationCount || 0;
 }
 
 export async function endExamSession(sessionId: string) {
@@ -133,19 +161,19 @@ export async function checkSessionValidity(sessionId: string, userId: string) {
   const session = await getExamSession(sessionId);
 
   if (!session) {
-    return { valid: false, reason: "Session not found" };
+    return { valid: false, reason: "session_not_found" };
   }
 
   if (session.userId !== userId) {
-    return { valid: false, reason: "Unauthorized access" };
+    return { valid: false, reason: "unauthorized_access" };
   }
 
   if (session.status === "submitted") {
-    return { valid: false, reason: "Exam already submitted" };
+    return { valid: false, reason: "exam_already_submitted" };
   }
 
   if (session.status === "terminated") {
-    return { valid: false, reason: "Exam was terminated" };
+    return { valid: false, reason: "exam_terminated" };
   }
 
   const now = new Date();
@@ -156,7 +184,7 @@ export async function checkSessionValidity(sessionId: string, userId: string) {
       .set({ status: "submitted" })
       .where(eq(examSessions.id, sessionId));
 
-    return { valid: false, reason: "Exam time expired" };
+    return { valid: false, reason: "exam_time_expired" };
   }
 
   return { valid: true };

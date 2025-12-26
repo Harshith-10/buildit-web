@@ -17,7 +17,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { getGreeting } from "@/lib/get-greeting";
+import { getGreeting } from "@/lib/utils/get-greeting";
 import { StatsCard } from "./stats-card";
 
 interface StudentViewProps {

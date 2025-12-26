@@ -45,6 +45,8 @@ export const examSessions = pgTable(
     lockedIp: text("locked_ip"),
     startedAt: timestamp("started_at").defaultNow(),
     expiresAt: timestamp("expires_at").notNull(),
+    terminationReason: text("termination_reason"),
+    terminationDetails: jsonb("termination_details"),
   },
   (table) => [
     foreignKey({

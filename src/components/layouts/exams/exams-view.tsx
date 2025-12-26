@@ -3,8 +3,18 @@
 import { format } from "date-fns";
 import { ArrowRight, Calendar, Clock, Info, Play } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import type { GetExamsParams } from "@/actions/exams-list";
 import { DataItemsView } from "@/components/common/data-items/data-items-root";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,11 +41,25 @@ interface ExamsViewProps {
   data: Exam[];
   total: number;
   initialParams?: GetExamsParams;
+  error?: string | null;
+  terminationDetails?: any;
 }
 
-export function ExamsView({ data, total }: ExamsViewProps) {
+export function ExamsView({
+  data,
+  total,
+  error,
+  terminationDetails,
+}: ExamsViewProps) {
   usePageName("Exams");
   const session = useSession();
+  const [showError, setShowError] = useState(false);
+
+  useEffect(() => {
+    if (error) {
+      setShowError(true);
+    }
+  }, [error]);
 
   // Helper for Status Badge
   const getStatus = (start: Date, end: Date) => {
@@ -155,45 +179,101 @@ export function ExamsView({ data, total }: ExamsViewProps) {
   );
 
   return (
-    <DataItemsView
-      title="Exams"
-      description="Manage and view all exams."
-      data={data}
-      totalItems={total}
-      columns={columns}
-      renderCard={renderCard}
-      defaultView="card"
-      availableViews={["card", "table"]}
-      filters={[
-        {
-          label: "Status",
-          key: "status",
-          options: [
-            { label: "Upcoming", value: "upcoming" },
-            { label: "Ongoing", value: "ongoing" },
-            { label: "Completed", value: "completed" },
-          ],
-        },
-      ]}
-      sortOptions={[
-        { label: "Newest Created", value: "created-desc" }, // Default logic in server action handles null, but we can match
-        { label: "Date (Ascending)", value: "date-asc" },
-        { label: "Date (Descending)", value: "date-desc" },
-        { label: "Title (A-Z)", value: "title-asc" },
-      ]}
-      createAction={
-        session?.data?.user.role === "instructor" ||
-        session?.data?.user.role === "admin"
-          ? {
-              label: "Create Exam",
-              onClick: () => {
-                // This should probably navigate to a create page or open a modal.
-                // For now, let's assume navigation.
-                window.location.href = "/exams/create";
-              },
-            }
-          : undefined
-      }
-    />
+    <>
+      <DataItemsView
+        title="Exams"
+        description="Manage and view all exams."
+        data={data}
+        totalItems={total}
+        columns={columns}
+        renderCard={renderCard}
+        defaultView="card"
+        availableViews={["card", "table"]}
+        filters={[
+          {
+            label: "Status",
+            key: "status",
+            options: [
+              { label: "Upcoming", value: "upcoming" },
+              { label: "Ongoing", value: "ongoing" },
+              { label: "Completed", value: "completed" },
+            ],
+          },
+        ]}
+        sortOptions={[
+          { label: "Newest Created", value: "created-desc" }, // Default logic in server action handles null, but we can match
+          { label: "Date (Ascending)", value: "date-asc" },
+          { label: "Date (Descending)", value: "date-desc" },
+          { label: "Title (A-Z)", value: "title-asc" },
+        ]}
+        createAction={
+          session?.data?.user.role === "instructor" ||
+          session?.data?.user.role === "admin"
+            ? {
+                label: "Create Exam",
+                onClick: () => {
+                  // This should probably navigate to a create page or open a modal.
+                  // For now, let's assume navigation.
+                  window.location.href = "/exams/create";
+                },
+              }
+            : undefined
+        }
+      />
+
+      <AlertDialog open={showError} onOpenChange={setShowError}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {error === "exam_terminated" ? "Exam Terminated" : "Error"}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {error === "invalid_session" ? (
+                "The exam session is invalid or has expired."
+              ) : error === "exam_terminated" ? (
+                <div className="space-y-4">
+                  <p>
+                    The exam has been terminated due to security violations.
+                  </p>
+                  {terminationDetails && (
+                    <div className="bg-muted p-4 rounded-md text-sm">
+                      <p className="font-semibold mb-2"> violation Log:</p>
+                      <ul className="list-disc pl-4 space-y-1">
+                        {terminationDetails.events?.map(
+                          (event: any, i: number) => (
+                            <li key={i}>
+                              <span className="font-medium">
+                                {event.type === "fullscreen_exit"
+                                  ? "Exited Fullscreen"
+                                  : event.type === "tab_switch"
+                                    ? "Switched Tab"
+                                    : event.type}
+                              </span>{" "}
+                              <span className="text-muted-foreground text-xs">
+                                at {new Date(event.timestamp).toLocaleString()}
+                              </span>
+                            </li>
+                          ),
+                        )}
+                      </ul>
+                      <p className="mt-2 font-semibold text-destructive">
+                        Total Violations: {terminationDetails.violationCount}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                "An unexpected error occurred."
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => setShowError(false)}>
+              Close
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }

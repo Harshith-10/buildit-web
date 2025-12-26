@@ -36,7 +36,7 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { authClient, useSession } from "@/lib/auth-client";
-import { getDeviceFingerprint } from "@/lib/fingerprint";
+import { getDeviceFingerprint } from "@/lib/utils/fingerprint";
 
 export default function SecuritySettings() {
   const { data: session } = useSession();

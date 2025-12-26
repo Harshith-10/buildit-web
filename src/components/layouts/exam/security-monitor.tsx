@@ -36,7 +36,9 @@ export function SecurityMonitor({
     setViolationType(type);
 
     try {
-      const result = await recordViolation(sessionId, type);
+      const result = await recordViolation(sessionId, type, {
+        timestamp: new Date().toISOString(),
+      });
       const newCount = result.violations;
       setViolations(newCount);
       onViolation?.(newCount);
@@ -117,7 +119,7 @@ export function SecurityMonitor({
 
   const handleTerminationClose = () => {
     setShowTermination(false);
-    router.push("/exams");
+    router.push(`/exams?error=exam_terminated&sessionId=${sessionId}`);
   };
 
   return (

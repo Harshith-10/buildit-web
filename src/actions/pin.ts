@@ -5,7 +5,7 @@ import { headers } from "next/headers";
 import db from "@/db";
 import { account, device, session } from "@/db/schema";
 import { auth } from "@/lib/auth";
-import { hashPin, verifyPin as verifyPinHash } from "@/lib/pin-hash";
+import { hashPin, verifyPin as verifyPinHash } from "@/lib/exam/pin-hash";
 
 export interface PinStatusResult {
   pinEnabled: boolean;

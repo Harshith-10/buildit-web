@@ -27,7 +27,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getGreeting } from "@/lib/get-greeting";
+import { getGreeting } from "@/lib/utils/get-greeting";
 import { ChartCard } from "./chart-card";
 import { StatsCard } from "./stats-card";
 

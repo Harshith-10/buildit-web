@@ -14,12 +14,13 @@ import { auth } from "@/lib/auth";
 
 interface PageProps {
   params: Promise<{
-    sessionId: string;
+    examId: string;
   }>;
 }
 
 export default async function ExamPage({ params }: PageProps) {
-  const { sessionId } = await params;
+  const { examId } = await params;
+  const sessionId = examId;
 
   // Get current user
   const session = await auth.api.getSession({
@@ -65,9 +66,7 @@ export default async function ExamPage({ params }: PageProps) {
   // 3. We have a session, validate it
   const validation = await checkSessionValidity(sessionId, session.user.id);
   if (!validation.valid) {
-    redirect(
-      `/exams?error=${encodeURIComponent(validation.reason || "Invalid session")}`,
-    );
+    redirect(`/exams?error=${validation.reason || "invalid_session"}`);
   }
 
   // 4. Fetch problems and languages

@@ -5,7 +5,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import db from "@/db";
 import { examSessions, exams, sessionProblems } from "@/db/schema";
-import { generateQuestionSet } from "@/lib/exam-engine";
+import { generateQuestionSet } from "@/lib/exam/exam-engine";
 import type { ExamConfig } from "@/types/exam-config";
 
 export async function startExamAction(

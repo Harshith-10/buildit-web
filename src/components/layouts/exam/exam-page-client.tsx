@@ -40,6 +40,7 @@ export default function ExamPageClient({
 }: ExamPageClientProps) {
   const [showEndDialog, setShowEndDialog] = useState(false);
   const [isEnding, setIsEnding] = useState(false);
+  const [isMalpracticeEnabled, setIsMalpracticeEnabled] = useState(true);
 
   const {
     currentProblem,
@@ -71,46 +72,48 @@ export default function ExamPageClient({
 
   return (
     <>
-      <SecurityMonitor
-        sessionId={sessionId}
-        onViolation={() => handleViolation("focus_lost")}
-      />
-      <SidebarProvider>
-        <main className="flex h-screen w-full">
-          <ExamSidebar
-            problems={problems.map((p, idx) => ({
-              id: p.id,
-              title: p.title,
-              difficulty: p.difficulty,
-              slug: `problem-${idx + 1}`,
-            }))}
-            activeProblemId={currentProblem.id}
-            onProblemSelect={(id) => {
-              const idx = problems.findIndex((p) => p.id === id);
-              if (idx !== -1) navigateTo(idx);
-            }}
-            attemptedProblems={attemptedProblems}
-            onEndExam={() => setShowEndDialog(true)}
+      {isMalpracticeEnabled && (
+        <SecurityMonitor
+          sessionId={sessionId}
+          onViolation={() => handleViolation("focus_lost")}
+        />
+      )}
+      <main className="flex h-screen w-full">
+        <ExamSidebar
+          problems={problems.map((p, idx) => ({
+            id: p.id,
+            title: p.title,
+            difficulty: p.difficulty,
+            slug: `problem-${idx + 1}`,
+          }))}
+          activeProblemId={currentProblem.id}
+          onProblemSelect={(id) => {
+            const idx = problems.findIndex((p) => p.id === id);
+            if (idx !== -1) navigateTo(idx);
+          }}
+          attemptedProblems={attemptedProblems}
+          onEndExam={() => setShowEndDialog(true)}
+        />
+        <div className="h-screen w-full flex flex-col overflow-hidden">
+          <ExamHeader
+            examTitle={sessionData.examTitle}
+            timeLeft={timeLeft}
+            status={sessionData.status}
+            malpracticeEnabled={isMalpracticeEnabled}
+            onToggleMalpractice={setIsMalpracticeEnabled}
           />
-          <div className="h-screen w-full flex flex-col overflow-hidden">
-            <ExamHeader
-              examTitle={sessionData.examTitle}
-              timeLeft={timeLeft}
-              status={sessionData.status}
-            />
-            <ExamPanes
-              problem={currentProblem}
-              languages={languages}
-              onCodeChange={handleCodeChange}
-              initialCode={codeStorage.get(currentProblem.id)}
-              onNext={() => navigateTo(currentProblemIndex + 1)}
-              onPrevious={() => navigateTo(currentProblemIndex - 1)}
-              hasNext={currentProblemIndex < problems.length - 1}
-              hasPrevious={currentProblemIndex > 0}
-            />
-          </div>
-        </main>
-      </SidebarProvider>
+          <ExamPanes
+            problem={currentProblem}
+            languages={languages}
+            onCodeChange={handleCodeChange}
+            initialCode={codeStorage.get(currentProblem.id)}
+            onNext={() => navigateTo(currentProblemIndex + 1)}
+            onPrevious={() => navigateTo(currentProblemIndex - 1)}
+            hasNext={currentProblemIndex < problems.length - 1}
+            hasPrevious={currentProblemIndex > 0}
+          />
+        </div>
+      </main>
 
       <AlertDialog open={showEndDialog} onOpenChange={setShowEndDialog}>
         <AlertDialogContent>

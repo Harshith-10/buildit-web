@@ -4,8 +4,6 @@ import {
   AlertTriangle,
   CheckCircle2,
   Info,
-  LogOut,
-  Maximize,
   MonitorOff,
   Play,
   ShieldAlert,
@@ -28,8 +26,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { authClient, useSession } from "@/lib/auth-client";
-import { getDeviceFingerprint } from "@/lib/fingerprint";
 import { cn } from "@/lib/utils";
+import { getDeviceFingerprint } from "@/lib/utils/fingerprint";
 
 interface ExamEntryViewProps {
   examId: string;
@@ -42,7 +40,6 @@ export function ExamEntryView({
   examTitle,
   durationMinutes,
 }: ExamEntryViewProps) {
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const [activeSessions, setActiveSessions] = useState<any[]>([]);
   const [loadingSessions, setLoadingSessions] = useState(true);
   const [terminating, setTerminating] = useState(false);
@@ -51,17 +48,6 @@ export function ExamEntryView({
   const { data } = useSession();
   if (!data) redirect("/auth");
   const { user, session } = data;
-
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
-
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
-    return () => {
-      document.removeEventListener("fullscreenchange", handleFullscreenChange);
-    };
-  }, []);
 
   const fetchSessions = useCallback(async () => {
     setLoadingSessions(true);
@@ -79,29 +65,8 @@ export function ExamEntryView({
     fetchSessions();
   }, [fetchSessions]);
 
-  const enterFullscreen = async () => {
-    try {
-      await document.documentElement.requestFullscreen();
-    } catch (err) {
-      console.error("Error attempting to enable fullscreen:", err);
-    }
-  };
-
   const startExam = async () => {
     try {
-      // Enter fullscreen first
-      if (!document.fullscreenElement) {
-        try {
-          await document.documentElement.requestFullscreen();
-          // Wait a moment for fullscreen to activate
-          await new Promise((resolve) => setTimeout(resolve, 300));
-        } catch (err) {
-          toast.error("Please allow fullscreen mode to start the exam");
-          console.error("Fullscreen error:", err);
-          return;
-        }
-      }
-
       setIsStarting(true);
       toast.loading("Starting exam...");
 
@@ -261,52 +226,29 @@ export function ExamEntryView({
                 <ol className="list-decimal list-inside text-sm text-muted-foreground space-y-1">
                   <li>Close all other tabs and applications.</li>
                   <li>Ensure you have a stable internet connection.</li>
-                  <li>Click "Enter Fullscreen" below.</li>
-                  <li>Click "Start Exam" once enabled.</li>
+                  <li>Click "Start Exam" below.</li>
                 </ol>
               </div>
             </CardContent>
             <CardFooter className="flex flex-col gap-3">
-              {!isFullscreen ? (
-                <Button
-                  size="lg"
-                  className="w-full gap-2"
-                  onClick={enterFullscreen}
-                  disabled={hasMultipleSessions}
-                >
-                  {hasMultipleSessions ? (
-                    <>
-                      <LogOut className="h-4 w-4" /> Terminate Sessions First
-                    </>
-                  ) : (
-                    <>
-                      <Maximize className="h-4 w-4" /> Enter Fullscreen
-                    </>
-                  )}
-                </Button>
-              ) : (
-                <Button
-                  size="lg"
-                  className="w-full gap-2 bg-green-600 hover:bg-green-700"
-                  onClick={startExam}
-                  disabled={hasMultipleSessions || isStarting}
-                >
-                  <Play className="h-4 w-4" />{" "}
-                  {isStarting ? "Starting..." : "Start Exam"}
-                </Button>
-              )}
+              <Button
+                size="lg"
+                className="w-full gap-2 bg-green-600 hover:bg-green-700"
+                onClick={startExam}
+                disabled={hasMultipleSessions || isStarting}
+              >
+                <Play className="h-4 w-4" />{" "}
+                {isStarting ? "Starting..." : "Start Exam"}
+              </Button>
               <p
                 className={cn(
-                  "text-xs text-center transition-colors",
-                  isFullscreen ? "text-green-500" : "text-muted-foreground",
+                  "text-xs text-center transition-colors text-muted-foreground",
                   hasMultipleSessions && "text-destructive font-medium",
                 )}
               >
                 {hasMultipleSessions
                   ? "Multiple sessions detected. Please resolve."
-                  : isFullscreen
-                    ? "Fullscreen mode active. You can now start."
-                    : "Fullscreen mode required"}
+                  : "Good luck!"}
               </p>
             </CardFooter>
           </Card>

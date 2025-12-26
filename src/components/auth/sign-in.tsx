@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRedirectTo } from "@/hooks/use-redirect-to";
 import { signIn } from "@/lib/auth-client";
-import { getDeviceFingerprint } from "@/lib/fingerprint";
+import { getDeviceFingerprint } from "@/lib/utils/fingerprint";
 import { usePinStore } from "@/stores/pin-store";
 import PinSetupDialog from "./pin-setup-dialog";
 import PinVerificationDialog from "./pin-verification-dialog";

@@ -1,4 +1,6 @@
+import { getExamSession } from "@/actions/exam-session";
 import { getExams } from "@/actions/exams-list";
+import { searchParamsCache } from "@/lib/search-params/exams";
 import { ExamsView } from "../../../components/layouts/exams/exams-view";
 
 export default async function ExamsPage({
@@ -6,25 +8,37 @@ export default async function ExamsPage({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const params = await searchParams;
+  const {
+    page,
+    q: search,
+    status,
+    sort,
+    error,
+    sessionId,
+  } = await searchParamsCache.parse(searchParams);
 
-  const page = typeof params.page === "string" ? parseInt(params.page, 10) : 1;
-  const search = typeof params.q === "string" ? params.q : undefined;
-  const status =
-    typeof params.status === "string" &&
-    ["upcoming", "ongoing", "completed"].includes(params.status)
-      ? (params.status as "upcoming" | "ongoing" | "completed")
-      : undefined;
-  const sort = typeof params.sort === "string" ? params.sort : undefined;
-  const _view = typeof params.view === "string" ? params.view : undefined;
+  let terminationDetails = null;
+  if (sessionId && error === "exam_terminated") {
+    const session = await getExamSession(sessionId);
+    if (session?.terminationDetails) {
+      terminationDetails = session.terminationDetails;
+    }
+  }
 
   const { data, total } = await getExams({
     page,
-    search,
-    status,
-    sort,
+    search: search || undefined, // nuqs returns "" by default, getExams expects string | undefined
+    status: status || undefined,
+    sort: sort || undefined, // getExams handles default sort logic, but we can pass it explicitly
     perPage: 10,
   });
 
-  return <ExamsView data={data} total={total} />;
+  return (
+    <ExamsView
+      data={data}
+      total={total}
+      error={error}
+      terminationDetails={terminationDetails}
+    />
+  );
 }

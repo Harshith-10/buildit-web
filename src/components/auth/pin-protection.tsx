@@ -3,7 +3,7 @@
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import PinVerificationDialog from "@/components/auth/pin-verification-dialog";
-import { getDeviceFingerprint } from "@/lib/fingerprint";
+import { getDeviceFingerprint } from "@/lib/utils/fingerprint";
 import { usePinStore } from "@/stores/pin-store";
 
 interface PinProtectionProps {

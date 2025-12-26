@@ -19,7 +19,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { getGreeting } from "@/lib/get-greeting";
+import { getGreeting } from "@/lib/utils/get-greeting";
 import { ChartCard } from "./chart-card";
 import { StatsCard } from "./stats-card";
 
