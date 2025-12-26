@@ -27,16 +27,16 @@ import {
 } from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { authClient, useSession } from "@/lib/auth-client";
 import { getDeviceFingerprint } from "@/lib/fingerprint";
-import {
-  Select,
-  SelectItem,
-  SelectValue,
-  SelectContent,
-  SelectTrigger,
-} from "@/components/ui/select";
 
 export default function SecuritySettings() {
   const { data: session } = useSession();
@@ -252,7 +252,10 @@ export default function SecuritySettings() {
                   )}
                 </div>
 
-                <form onSubmit={handlePinSetup} className="flex-1 flex flex-col gap-4">
+                <form
+                  onSubmit={handlePinSetup}
+                  className="flex-1 flex flex-col gap-4"
+                >
                   <div className="flex-1 grid grid-cols-2 gap-6">
                     <div className="flex flex-col gap-2">
                       <Label>PIN Strategy</Label>

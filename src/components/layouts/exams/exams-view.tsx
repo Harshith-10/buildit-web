@@ -1,21 +1,19 @@
 "use client";
 
 import { format } from "date-fns";
-import { ArrowRight, Calendar, Clock, Eye, MoreHorizontal } from "lucide-react";
+import { ArrowRight, Calendar, Clock } from "lucide-react";
 import Link from "next/link";
 import type { GetExamsParams } from "@/actions/exams-list";
 import { DataItemsView } from "@/components/common/data-items/data-items-root";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { usePageName } from "@/hooks/use-page-name";
 import { useSession } from "@/lib/auth-client";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface Exam {
   id: string;
@@ -87,21 +85,39 @@ export function ExamsView({ data, total }: ExamsViewProps) {
     {
       header: "Actions",
       accessorKey: (item: Exam) => (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Link 
-              href={`/exams/${item.id}`} 
-              className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9"
-            >
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </TooltipTrigger>
-          <TooltipContent side="right">
-            <p>View Exam</p>
-          </TooltipContent>
-        </Tooltip>
+        <div className="flex items-center gap-2">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button asChild size="icon" variant="ghost" className="h-8 w-8">
+                <Link href={`/exams/${item.id}`}>
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>View Details</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                asChild
+                size="icon"
+                variant="ghost"
+                className="h-8 w-8 text-primary"
+              >
+                <Link href={`/exam/${item.id}`}>
+                  <Calendar className="h-4 w-4" />
+                </Link>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Start Exam</p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
       ),
-      className: "w-[50px]",
+      className: "w-[100px]",
     },
   ];
 
@@ -109,7 +125,6 @@ export function ExamsView({ data, total }: ExamsViewProps) {
     <div className="flex flex-col h-full border rounded-xl p-6 hover:border-primary/50 transition-colors bg-card text-card-foreground shadow-sm">
       <div className="flex justify-between items-start mb-4">
         <div className="p-2 bg-primary/10 rounded-lg">
-          {/* Placeholder Icon or actual icon if available */}
           <Calendar className="h-6 w-6 text-primary" />
         </div>
         {getStatus(item.startTime, item.endTime)}
@@ -128,9 +143,12 @@ export function ExamsView({ data, total }: ExamsViewProps) {
         </div>
       </div>
 
-      <div className="mt-auto pt-4 border-t w-full">
-        <Button asChild className="w-full gap-2">
-          <Link href={`/exam/${item.id}/start`}>View Exam</Link>
+      <div className="mt-auto pt-4 border-t w-full grid grid-cols-2 gap-2">
+        <Button asChild variant="outline" className="w-full">
+          <Link href={`/exams/${item.id}`}>View Details</Link>
+        </Button>
+        <Button asChild className="w-full">
+          <Link href={`/exam/${item.id}`}>Start Exam</Link>
         </Button>
       </div>
     </div>

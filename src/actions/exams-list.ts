@@ -49,11 +49,20 @@ export async function getExams({
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
   // Sorting
-  let orderBy = desc(exams.createdAt); // Default
-  if (sort === "title-asc") orderBy = asc(exams.title);
-  if (sort === "title-desc") orderBy = desc(exams.title);
-  if (sort === "date-asc") orderBy = asc(exams.startTime);
-  if (sort === "date-desc") orderBy = desc(exams.startTime);
+  const statusOrder = sql`
+    CASE 
+      WHEN ${exams.startTime} <= ${currentTimestamp} AND ${exams.endTime} >= ${currentTimestamp} THEN 1
+      WHEN ${exams.startTime} > ${currentTimestamp} THEN 2
+      ELSE 3
+    END
+  `;
+
+  let orderBy: any[] = [statusOrder, desc(exams.createdAt)]; // Default sort
+
+  if (sort === "title-asc") orderBy = [asc(exams.title)];
+  if (sort === "title-desc") orderBy = [desc(exams.title)];
+  if (sort === "date-asc") orderBy = [asc(exams.startTime)];
+  if (sort === "date-desc") orderBy = [desc(exams.startTime)];
 
   // Data Query
   const data = await db
@@ -62,7 +71,7 @@ export async function getExams({
     .where(whereClause)
     .limit(perPage)
     .offset((page - 1) * perPage)
-    .orderBy(orderBy);
+    .orderBy(...orderBy);
 
   // Count Query
   // Note: Drizzle optimized count is better, but simple sql count is fine for now.

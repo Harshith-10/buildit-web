@@ -2,7 +2,6 @@
 
 import { CheckCircle2, Circle, FileText, Power } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
@@ -14,6 +13,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
@@ -39,6 +39,8 @@ export function ExamSidebar({
   attemptedProblems,
   onEndExam,
 }: ExamSidebarProps) {
+  const { open } = useSidebar();
+
   return (
     <Sidebar collapsible="icon" className="border-r-0">
       <SidebarHeader>
@@ -115,20 +117,14 @@ export function ExamSidebar({
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <Button
-              variant="destructive"
-              className="w-full gap-2"
+            <SidebarMenuButton
+              className="w-full gap-2 cursor-pointer flex items-center justify-center bg-destructive hover:bg-destructive/80 active:bg-destructive/70 text-destructive-foreground"
               onClick={onEndExam}
               disabled={!onEndExam}
             >
               <Power className="w-4 h-4" />
-              <span>End Exam</span>
-            </Button>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <div className="px-2 py-1 text-xs text-muted-foreground">
-              Click on a question to navigate
-            </div>
+              End Exam
+            </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>

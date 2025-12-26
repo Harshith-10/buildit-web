@@ -43,7 +43,7 @@ export default function ProblemSubmissions({
     // Optional: Refresh periodically or listen to an event
     const interval = setInterval(fetchSubmissions, 5000);
     return () => clearInterval(interval);
-  }, [problemId]);
+  }, [fetchSubmissions]);
 
   if (loading && submissions.length === 0) {
     return (

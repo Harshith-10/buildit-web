@@ -12,7 +12,11 @@ interface ThemeToggleProps {
   className?: string;
 }
 
-export default function ThemeToggle({ size = "icon", variant = "outline", className }: ThemeToggleProps) {
+export default function ThemeToggle({
+  size = "icon",
+  variant = "outline",
+  className,
+}: ThemeToggleProps) {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 

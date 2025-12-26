@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { eq, isNull, sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import db from "../src/db";
 import { problems } from "../src/db/schema";
 
@@ -29,11 +29,13 @@ async function fixSlugs() {
 
     // Update each problem with a slug
     for (const problem of problemsWithoutSlugs) {
-      const slug = problem.title
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-|-$/g, "")
-        + "-" + problem.id.substring(0, 8);
+      const slug =
+        problem.title
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-|-$/g, "") +
+        "-" +
+        problem.id.substring(0, 8);
 
       await db
         .update(problems)
@@ -45,21 +47,25 @@ async function fixSlugs() {
 
     // Add unique constraint if it doesn't exist
     console.log("Adding unique constraint to slug column...");
-    await db.execute(sql`
+    await db
+      .execute(sql`
       ALTER TABLE problems 
       ADD CONSTRAINT problems_slug_unique UNIQUE (slug)
-    `).catch(() => {
-      console.log("Constraint already exists or failed to add");
-    });
+    `)
+      .catch(() => {
+        console.log("Constraint already exists or failed to add");
+      });
 
     // Make slug NOT NULL
     console.log("Making slug column NOT NULL...");
-    await db.execute(sql`
+    await db
+      .execute(sql`
       ALTER TABLE problems 
       ALTER COLUMN slug SET NOT NULL
-    `).catch(() => {
-      console.log("Column already NOT NULL or failed to update");
-    });
+    `)
+      .catch(() => {
+        console.log("Column already NOT NULL or failed to update");
+      });
 
     console.log("✅ All slugs fixed successfully!");
   } catch (error) {

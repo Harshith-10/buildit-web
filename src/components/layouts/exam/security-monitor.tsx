@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { recordViolation } from "@/actions/exam-session";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,7 +12,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { recordViolation } from "@/actions/exam-session";
 
 interface SecurityMonitorProps {
   sessionId: string;
@@ -31,7 +31,7 @@ export function SecurityMonitor({
 
   const handleViolation = async (type: string) => {
     if (isProcessingViolation.current) return;
-    
+
     isProcessingViolation.current = true;
     setViolationType(type);
 
@@ -96,11 +96,11 @@ export function SecurityMonitor({
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       document.removeEventListener("contextmenu", preventContextMenu);
     };
-  }, [sessionId]);
+  }, [handleViolation]);
 
   const handleWarningClose = async () => {
     setShowWarning(false);
-    
+
     // Force re-enter fullscreen
     if (!document.fullscreenElement) {
       try {

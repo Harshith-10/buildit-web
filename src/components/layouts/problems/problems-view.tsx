@@ -1,17 +1,11 @@
 "use client";
 
 import { format } from "date-fns";
-import { ArrowRight, Calendar, Eye, MoreHorizontal } from "lucide-react";
+import { ArrowRight, Calendar } from "lucide-react";
 import Link from "next/link";
 import { DataItemsView } from "@/components/common/data-items/data-items-root";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { usePageName } from "@/hooks/use-page-name";
 import { useSession } from "@/lib/auth-client";
 

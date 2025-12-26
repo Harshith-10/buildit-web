@@ -2,7 +2,6 @@
 
 import { CheckCircle2, ChevronLeft, Circle, FileText } from "lucide-react";
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
 import {
   Sidebar,
   SidebarContent,
@@ -14,6 +13,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
@@ -34,7 +34,7 @@ interface ProblemSidebarProps {
 export function ProblemSidebar({ problems }: ProblemSidebarProps) {
   const params = useParams();
   const activeProblemSlug = params?.slug as string;
-  // const { toggleSidebar } = useSidebar();
+  const { open } = useSidebar();
 
   return (
     <Sidebar collapsible="icon" className="border-r-0">
@@ -54,13 +54,29 @@ export function ProblemSidebar({ problems }: ProblemSidebarProps) {
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
+          <SidebarMenuItem
+            className={cn("grid grid-cols-3", open ? "" : "hidden")}
+          >
+            <span className="flex items-center gap-2 col-span-1 text-xs justify-center">
+              <div className="p-1 bg-green-500 rounded-full"></div>
+              Easy
+            </span>
+            <span className="flex items-center gap-2 col-span-1 text-xs justify-center">
+              <div className="p-1 bg-yellow-500 rounded-full"></div>
+              Medium
+            </span>
+            <span className="flex items-center gap-2 col-span-1 text-xs justify-center">
+              <div className="p-1 bg-red-500 rounded-full"></div>
+              Hard
+            </span>
+          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {problems.map((problem) => {
+              {problems.map((problem, idx) => {
                 const isActive = activeProblemSlug === problem.slug;
                 return (
                   <SidebarMenuItem key={problem.id}>
@@ -68,7 +84,10 @@ export function ProblemSidebar({ problems }: ProblemSidebarProps) {
                       asChild
                       isActive={isActive}
                       tooltip={problem.title}
-                      className="h-auto py-2"
+                      className={cn(
+                        "h-auto py-2",
+                        idx % 2 === 0 ? "bg-muted-foreground/10" : "",
+                      )}
                     >
                       <Link href={`/problem/${problem.slug}`}>
                         {problem.status === "solved" ? (
@@ -80,24 +99,19 @@ export function ProblemSidebar({ problems }: ProblemSidebarProps) {
                             className={`w-4 h-4 shrink-0 ${isActive ? "text-primary-foreground" : "text-muted-foreground"}`}
                           />
                         )}
-                        <div className="flex flex-col gap-0.5 overflow-hidden w-full">
-                          <span className="truncate font-medium text-xs">
+                        <div className="flex items-center justify-between gap-0.5 overflow-hidden w-full">
+                          <span className="truncate font-medium text-sm">
                             {problem.title}
                           </span>
-                          <Badge
-                            variant="secondary"
+                          <div
                             className={cn(
-                              "text-[9px] px-1 py-0 h-3.5 border font-normal w-fit capitalize",
-                              problem.difficulty === "easy" &&
-                                "text-green-600 border-green-200 bg-green-50",
+                              "p-1 rounded-full",
+                              problem.difficulty === "easy" && "bg-green-500",
                               problem.difficulty === "medium" &&
-                                "text-yellow-600 border-yellow-200 bg-yellow-50",
-                              problem.difficulty === "hard" &&
-                                "text-red-600 border-red-200 bg-red-50",
+                                "bg-yellow-500",
+                              problem.difficulty === "hard" && "bg-red-500",
                             )}
-                          >
-                            {problem.difficulty}
-                          </Badge>
+                          ></div>
                         </div>
                       </Link>
                     </SidebarMenuButton>
@@ -112,7 +126,10 @@ export function ProblemSidebar({ problems }: ProblemSidebarProps) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href="/dashboard">
+              <Link
+                href="/dashboard"
+                className="flex items-center justify-center"
+              >
                 <ChevronLeft className="w-4 h-4" />
                 <span>Back to Dashboard</span>
               </Link>

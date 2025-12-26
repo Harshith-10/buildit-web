@@ -175,7 +175,7 @@ export function ProblemEditorHeader({
   isExecuting,
 }: ProblemEditorHeaderProps) {
   // Rate limiting ref for run
-  const lastExecutionTime = useRef<number>(0);
+  const _lastExecutionTime = useRef<number>(0);
   const lastSubmissionTime = useRef<number>(0);
 
   // Get unique languages

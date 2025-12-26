@@ -1,19 +1,11 @@
 "use client";
 
 import {
-  BookOpen,
   ChevronsUpDown,
-  Clock,
-  Code2,
-  FileText,
   Flame,
-  History,
-  LayoutDashboard,
   LifeBuoy,
-  Play,
   Settings,
   Target,
-  Trophy,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -67,9 +59,7 @@ interface AppSidebarProps {
   sections: SidebarSection[];
 }
 
-export default function AppSidebar({
-  sections,
-}: AppSidebarProps) {
+export default function AppSidebar({ sections }: AppSidebarProps) {
   const { open } = useSidebar();
   const currentRoute = usePathname();
   //   const [user, setUser] = useState<UserFullData | null>(null);

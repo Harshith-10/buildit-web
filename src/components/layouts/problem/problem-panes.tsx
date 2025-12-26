@@ -38,7 +38,7 @@ export default function ProblemPanes({
     lastLanguage,
     setLastLanguage,
     lastLanguageVersion,
-    preferences
+    preferences,
   } = useProblemStore();
 
   const [mounted, setMounted] = useState(false);
@@ -227,7 +227,7 @@ export default function ProblemPanes({
           setActiveTab("results");
         }
       }
-    // biome-ignore lint/suspicious/noExplicitAny: Capture all errors
+      // biome-ignore lint/suspicious/noExplicitAny: Capture all errors
     } catch (e: any) {
       toast.error(e.message || "Submission failed");
     } finally {

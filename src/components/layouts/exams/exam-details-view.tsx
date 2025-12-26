@@ -10,6 +10,8 @@ import {
   User,
 } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { getExamCreatedBy } from "@/actions/exam-details";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,8 +24,6 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { usePageName } from "@/hooks/use-page-name";
 import type { ExamConfig } from "@/types/exam-config";
-import { getExamCreatedBy } from "@/actions/exam-details";
-import { useEffect, useState } from "react";
 
 interface Exam {
   id: string;
@@ -89,7 +89,7 @@ export function ExamDetailsView({ exam }: ExamDetailsViewProps) {
         <div className="flex gap-2">
           {isOngoing ? (
             <Button size="lg" className="gap-2" asChild>
-              <Link href={`/exam/${exam.id}/start`}>
+              <Link href={`/exam/${exam.id}`}>
                 <PlayCircle className="h-5 w-5" /> Start Exam
               </Link>
             </Button>

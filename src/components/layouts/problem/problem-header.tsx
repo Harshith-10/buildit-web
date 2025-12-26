@@ -3,8 +3,6 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import type { Problem } from "@/types/problem";
-import UserInfo from "../exam/user-info";
-import ThemeToggle from "@/components/common/theme-toggle";
 
 interface ProblemHeaderProps {
   problem: Problem;

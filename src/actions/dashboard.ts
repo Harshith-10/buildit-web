@@ -1,6 +1,6 @@
 "use server";
 
-import { and, count, desc, eq, sql } from "drizzle-orm";
+import { count, desc, eq, sql } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 import db from "@/db";
 import { dailyProblems, exams, problems, submissions, user } from "@/db/schema";

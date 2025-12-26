@@ -12,6 +12,9 @@ export const getExam = cache(async (examId: string) => {
 
 export const getExamCreatedBy = cache(async (examId: string) => {
   const [exam] = await db.select().from(exams).where(eq(exams.id, examId));
-  const [creator] = await db.select().from(user).where(eq(user.id, exam.createdBy));
+  const [creator] = await db
+    .select()
+    .from(user)
+    .where(eq(user.id, exam.createdBy));
   return creator.name;
 });

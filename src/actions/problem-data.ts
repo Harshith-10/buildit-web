@@ -221,7 +221,7 @@ export const submitSolution = async (
   const clientTestCases = [...publicTestCases];
 
   // If there is a failure, and it's NOT already in the public list (i.e. it's hidden), add it.
-  if (firstFailedTestCase && firstFailedTestCase.isHidden) {
+  if (firstFailedTestCase?.isHidden) {
     // REDACT info for hidden failure
     const redactedFailure = {
       ...firstFailedTestCase,

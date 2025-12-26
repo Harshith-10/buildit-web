@@ -12,9 +12,10 @@ import {
   Timer,
   User as UserIcon,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
+import { startExamAction } from "@/actions/startExam";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -27,9 +28,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { authClient, useSession } from "@/lib/auth-client";
-import { cn } from "@/lib/utils";
-import { startExamAction } from "@/actions/startExam";
 import { getDeviceFingerprint } from "@/lib/fingerprint";
+import { cn } from "@/lib/utils";
 
 interface ExamEntryViewProps {
   examId: string;
@@ -43,11 +43,14 @@ export function ExamEntryView({
   durationMinutes,
 }: ExamEntryViewProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const router = useRouter();
-  const { data: session } = useSession();
   const [activeSessions, setActiveSessions] = useState<any[]>([]);
   const [loadingSessions, setLoadingSessions] = useState(true);
   const [terminating, setTerminating] = useState(false);
+  const [isStarting, setIsStarting] = useState(false);
+
+  const { data } = useSession();
+  if (!data) redirect("/auth");
+  const { user, session } = data;
 
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -85,18 +88,13 @@ export function ExamEntryView({
   };
 
   const startExam = async () => {
-    if (!session?.user?.id) {
-      toast.error("Please log in to start the exam");
-      return;
-    }
-
     try {
       // Enter fullscreen first
       if (!document.fullscreenElement) {
         try {
           await document.documentElement.requestFullscreen();
           // Wait a moment for fullscreen to activate
-          await new Promise(resolve => setTimeout(resolve, 300));
+          await new Promise((resolve) => setTimeout(resolve, 300));
         } catch (err) {
           toast.error("Please allow fullscreen mode to start the exam");
           console.error("Fullscreen error:", err);
@@ -104,15 +102,17 @@ export function ExamEntryView({
         }
       }
 
+      setIsStarting(true);
       toast.loading("Starting exam...");
-      
+
       // Get device fingerprint on the client
       const fingerprint = await getDeviceFingerprint();
-      
+
       // Pass fingerprint to server action
-      await startExamAction(examId, session.user.id, fingerprint);
+      await startExamAction(examId, user.id, fingerprint);
       // The action will redirect to /exam/[sessionId] and fullscreen will be maintained
     } catch (error: any) {
+      setIsStarting(false);
       toast.dismiss();
       toast.error(error?.message || "Failed to start exam");
       console.error("Error starting exam:", error);
@@ -161,14 +161,12 @@ export function ExamEntryView({
             <CardContent className="text-sm space-y-2">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Name:</span>
-                <span className="font-medium">
-                  {session?.user?.name || "Loading..."}
-                </span>
+                <span className="font-medium">{user.name || "Loading..."}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Email:</span>
                 <span className="font-medium">
-                  {session?.user?.email || "Loading..."}
+                  {user.email || "Loading..."}
                 </span>
               </div>
               <div className="flex justify-between items-center">
@@ -291,9 +289,10 @@ export function ExamEntryView({
                   size="lg"
                   className="w-full gap-2 bg-green-600 hover:bg-green-700"
                   onClick={startExam}
-                  disabled={hasMultipleSessions}
+                  disabled={hasMultipleSessions || isStarting}
                 >
-                  <Play className="h-4 w-4" /> Start Exam
+                  <Play className="h-4 w-4" />{" "}
+                  {isStarting ? "Starting..." : "Start Exam"}
                 </Button>
               )}
               <p

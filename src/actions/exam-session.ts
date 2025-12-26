@@ -3,7 +3,13 @@
 import { and, eq } from "drizzle-orm";
 import { cache } from "react";
 import db from "@/db";
-import { examSessions, exams, problems, sessionProblems, testCases } from "@/db/schema";
+import {
+  examSessions,
+  exams,
+  problems,
+  sessionProblems,
+  testCases,
+} from "@/db/schema";
 
 export const getExamSession = cache(async (sessionId: string) => {
   const [session] = await db
@@ -12,6 +18,22 @@ export const getExamSession = cache(async (sessionId: string) => {
     .where(eq(examSessions.id, sessionId));
   return session;
 });
+
+export const getActiveExamSession = cache(
+  async (examId: string, userId: string) => {
+    const [session] = await db
+      .select()
+      .from(examSessions)
+      .where(
+        and(
+          eq(examSessions.examId, examId),
+          eq(examSessions.userId, userId),
+          eq(examSessions.status, "in_progress"),
+        ),
+      );
+    return session;
+  },
+);
 
 export const getExamSessionWithDetails = cache(async (sessionId: string) => {
   const [session] = await db
@@ -62,9 +84,12 @@ export const getSessionProblems = cache(async (sessionId: string) => {
 // Store violations in memory for now (in production, use a violations table)
 const sessionViolations = new Map<string, number>();
 
-export async function recordViolation(sessionId: string, violationType: string) {
+export async function recordViolation(
+  sessionId: string,
+  _violationType: string,
+) {
   const session = await getExamSession(sessionId);
-  
+
   if (!session) {
     throw new Error("Session not found");
   }
@@ -76,7 +101,7 @@ export async function recordViolation(sessionId: string, violationType: string) 
   // Get current violations count
   const currentViolations = sessionViolations.get(sessionId) || 0;
   const newViolationCount = currentViolations + 1;
-  
+
   // Store the updated count
   sessionViolations.set(sessionId, newViolationCount);
 
@@ -86,7 +111,7 @@ export async function recordViolation(sessionId: string, violationType: string) 
       .update(examSessions)
       .set({ status: "terminated" })
       .where(eq(examSessions.id, sessionId));
-    
+
     return { violations: newViolationCount, terminated: true };
   }
 
@@ -130,7 +155,7 @@ export async function checkSessionValidity(sessionId: string, userId: string) {
       .update(examSessions)
       .set({ status: "submitted" })
       .where(eq(examSessions.id, sessionId));
-    
+
     return { valid: false, reason: "Exam time expired" };
   }
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -8,6 +9,7 @@ import {
   type Runtime,
   type TestcaseResult,
 } from "@/actions/code-execution";
+import { Button } from "@/components/ui/button";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -17,8 +19,6 @@ import type { Problem } from "@/types/problem";
 import ProblemEditor, { ProblemEditorHeader } from "../problem/problem-editor";
 import ProblemInfo from "../problem/problem-info";
 import TestCasesPane from "../problem/problem-testcases";
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
 // Get boilerplate for selected language or default
 const getBoilerplate = (problem: Problem, lang: string) => {
@@ -82,7 +82,9 @@ export default function ExamPanes({
   } | null>(null);
   const [customInput, setCustomInput] = useState("");
 
-  const [code, setCode] = useState(initialCode || getBoilerplate(problem, "java"));
+  const [code, setCode] = useState(
+    initialCode || getBoilerplate(problem, "java"),
+  );
 
   // Update code when problem changes
   useEffect(() => {
@@ -91,7 +93,7 @@ export default function ExamPanes({
     } else {
       setCode(getBoilerplate(problem, selectedLanguage));
     }
-  }, [problem.id, initialCode, selectedLanguage]);
+  }, [problem.id, initialCode, selectedLanguage, problem]);
 
   const handleCodeChange = (newCode: string) => {
     setCode(newCode);

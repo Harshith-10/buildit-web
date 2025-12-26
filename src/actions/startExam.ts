@@ -29,11 +29,14 @@ export async function startExamAction(
   // 2. Security: Device Fingerprinting
   // Use provided fingerprint or fallback to server-side fingerprinting
   let currentFingerprint = deviceFingerprint;
-  
+
   if (!currentFingerprint) {
     // Fallback: Simple server-side fingerprint using IP + User-Agent
     const headersList = await headers();
-    const ip = headersList.get("x-forwarded-for") || headersList.get("x-real-ip") || "unknown";
+    const ip =
+      headersList.get("x-forwarded-for") ||
+      headersList.get("x-real-ip") ||
+      "unknown";
     const ua = headersList.get("user-agent") || "unknown";
     currentFingerprint = Buffer.from(`${ip}-${ua}`).toString("base64");
   }
@@ -63,15 +66,17 @@ export async function startExamAction(
   // 4. Generate the Questions (The "Engine" runs here)
   // We cast the JSON column to our type
   const config = exam.config as unknown as ExamConfig;
-  
+
   console.log("Exam config:", JSON.stringify(config, null, 2));
-  
+
   const selectedProblemIds = await generateQuestionSet(config);
-  
+
   console.log("Selected problem IDs:", selectedProblemIds);
 
   if (selectedProblemIds.length === 0) {
-    throw new Error("Configuration Error: No questions generated. Please check the exam configuration or ensure problems exist in the database.");
+    throw new Error(
+      "Configuration Error: No questions generated. Please check the exam configuration or ensure problems exist in the database.",
+    );
   }
 
   // 5. Create Session Transaction (Atomic)

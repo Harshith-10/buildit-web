@@ -1,9 +1,8 @@
 "use client";
 
-import { useSession } from "@/lib/auth-client";
-import Image from "next/image";
-import { Avatar, AvatarImage } from "../ui/avatar";
 import { AvatarFallback } from "@radix-ui/react-avatar";
+import { useSession } from "@/lib/auth-client";
+import { Avatar, AvatarImage } from "../ui/avatar";
 
 export default function UserInfo() {
   const session = useSession();

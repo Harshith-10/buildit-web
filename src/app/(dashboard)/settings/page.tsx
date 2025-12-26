@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export default function SettingsPage() {
   const [tab, setTab] = useQueryState(
     "tab",
-    parseAsString.withDefault("account")
+    parseAsString.withDefault("account"),
   );
 
   return (

@@ -23,7 +23,7 @@ export default async function ProblemPage({ params }: PageProps) {
   }
 
   return (
-    <div className="h-full w-full flex flex-col overflow-hidden">
+    <div className="h-screen w-full flex flex-col overflow-hidden">
       <ProblemHeader problem={problem} />
       <ProblemPanes problem={problem} languages={languages} />
     </div>
