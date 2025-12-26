@@ -43,15 +43,6 @@ const problemSchema = z.object({
   type: z.enum(["coding", "mcq_single", "mcq_multi", "true_false", "descriptive"]),
   difficulty: z.enum(["easy", "medium", "hard"]),
   description: z.string().min(1, "Description is required"),
-  // Content fields
-  problemStatement: z.string().min(1, "Problem statement is required"),
-  examples: z.string().optional(),
-  constraints: z.string().optional(),
-  hints: z.array(
-    z.object({
-      text: z.string().min(1, "Hint text is required"),
-    })
-  ).optional(),
   // Driver code fields (for coding problems)
   javaCode: z.string().optional(),
   // Grading metadata fields
@@ -68,6 +59,31 @@ const problemSchema = z.object({
 });
 
 type ProblemFormValues = z.infer<typeof problemSchema>;
+
+const DEFAULT_DESCRIPTION = `# Problem Title
+
+Provide a clear and concise problem description here.
+
+## Example 1:
+
+\`\`\`
+Input: [example input]
+Output: [example output]
+Explanation: [optional explanation]
+\`\`\`
+
+## Example 2:
+
+\`\`\`
+Input: [example input]
+Output: [example output]
+\`\`\`
+
+## Constraints:
+
+- [Constraint 1]
+- [Constraint 2]
+- [Constraint 3]`;
 
 export function CreateProblemForm() {
   const router = useRouter();
@@ -90,11 +106,7 @@ export function CreateProblemForm() {
       collectionId: "",
       type: "coding" as const,
       difficulty: "easy" as const,
-      description: "",
-      problemStatement: "",
-      examples: "",
-      constraints: "",
-      hints: [],
+      description: DEFAULT_DESCRIPTION,
       javaCode: "",
       timeLimit: "1000",
       memoryLimit: "256",
@@ -106,11 +118,6 @@ export function CreateProblemForm() {
   const { fields: testCaseFields, append: appendTestCase, remove: removeTestCase } = useFieldArray({
     control: form.control,
     name: "testCases",
-  });
-
-  const { fields: hintFields, append: appendHint, remove: removeHint } = useFieldArray({
-    control: form.control,
-    name: "hints",
   });
 
   // Load collections on mount
@@ -141,87 +148,15 @@ export function CreateProblemForm() {
     setIsSubmitting(true);
 
     try {
-      // Build content JSON in ProseMirror format
-      const contentBlocks: any[] = [];
-
-      // Add Description
-      if (values.description) {
-        contentBlocks.push(
-          {
-            type: "heading",
-            attrs: { level: 2 },
-            content: [{ type: "text", text: "Description" }],
-          },
-          {
-            type: "paragraph",
-            content: [{ type: "text", text: values.description }],
-          }
-        );
-      }
-
-      // Add Problem Statement
-      contentBlocks.push(
-        {
-          type: "heading",
-          attrs: { level: 2 },
-          content: [{ type: "text", text: "Problem Statement" }],
-        },
-        {
-          type: "paragraph",
-          content: [{ type: "text", text: values.problemStatement }],
-        }
-      );
-
-      // Add Examples
-      if (values.examples) {
-        contentBlocks.push(
-          {
-            type: "heading",
-            attrs: { level: 2 },
-            content: [{ type: "text", text: "Examples" }],
-          },
-          {
-            type: "paragraph",
-            content: [{ type: "text", text: values.examples }],
-          }
-        );
-      }
-
-      // Add Constraints
-      if (values.constraints) {
-        contentBlocks.push(
-          {
-            type: "heading",
-            attrs: { level: 2 },
-            content: [{ type: "text", text: "Constraints" }],
-          },
-          {
-            type: "paragraph",
-            content: [{ type: "text", text: values.constraints }],
-          }
-        );
-      }
-
-      // Add Hints
-      if (values.hints && values.hints.length > 0) {
-        contentBlocks.push(
-          {
-            type: "heading",
-            attrs: { level: 2 },
-            content: [{ type: "text", text: "Hints" }],
-          }
-        );
-        values.hints.forEach((hint) => {
-          contentBlocks.push({
-            type: "paragraph",
-            content: [{ type: "text", text: hint.text }],
-          });
-        });
-      }
-
+      // Build content JSON in ProseMirror format (simple wrapper for description)
       const content = {
         type: "doc",
-        content: contentBlocks,
+        content: [
+          {
+            type: "paragraph",
+            content: [{ type: "text", text: "See description for details." }],
+          },
+        ],
       };
 
       // Build driver code JSON (only if Java code is provided)
@@ -275,10 +210,9 @@ export function CreateProblemForm() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <Tabs value={tab ?? undefined} onValueChange={setTab}>
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="basic">Basic Info</TabsTrigger>
-            <TabsTrigger value="content">Content</TabsTrigger>
-            <TabsTrigger value="hints">Hints</TabsTrigger>
+            <TabsTrigger value="description">Description</TabsTrigger>
             <TabsTrigger value="code">Starter Code</TabsTrigger>
             <TabsTrigger value="tests">Test Cases</TabsTrigger>
           </TabsList>
@@ -441,156 +375,33 @@ export function CreateProblemForm() {
             </Card>
           </TabsContent>
 
-          {/* Content Tab */}
-          <TabsContent value="content">
+          {/* Description Tab */}
+          <TabsContent value="description">
             <Card>
               <CardHeader>
-                <CardTitle>Problem Content</CardTitle>
+                <CardTitle>Problem Description</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Short Description *</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Brief description of the problem"
-                      className="min-h-[100px] resize-none"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    A brief summary that appears in problem listings
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="problemStatement"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Problem Statement *</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Describe the problem in detail..."
-                      className="min-h-[200px]"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    The main problem description with all details
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="examples"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Examples</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Example 1: Input: [1,2,3] Output: 6"
-                      className="min-h-[120px]"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Provide examples showing input and expected output
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="constraints"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Constraints</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="1 <= n <= 1000"
-                      className="min-h-[100px]"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Input constraints and limits
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Hints Tab */}
-          <TabsContent value="hints">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Hints (Optional)</CardTitle>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => appendHint({ text: "" })}
-                >
-              <Plus className="mr-2 h-4 w-4" />
-              Add Hint
-            </Button>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {hintFields.length === 0 && (
-              <p className="text-center text-sm text-muted-foreground py-8">
-                No hints added yet. Click "Add Hint" to provide hints to users.
-              </p>
-            )}
-            {hintFields.map((field, index) => (
-              <Card key={field.id} className="border-border">
-                <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h4 className="text-sm font-medium">Hint {index + 1}</h4>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeHint(index)}
-                    >
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
-                  </div>
-
-                  <FormField
-                    control={form.control}
-                    name={`hints.${index}.text`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Hint Text</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="Try thinking about using a hash map to solve this..."
-                            className="min-h-[80px]"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </CardContent>
-              </Card>
-            ))}
+              <CardContent>
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Description (Markdown Supported) *</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Enter the full problem description with examples and constraints..."
+                          className="min-h-[500px] font-mono text-sm"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Write the complete problem description using Markdown. Include title, description, examples, and constraints.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </CardContent>
             </Card>
           </TabsContent>
