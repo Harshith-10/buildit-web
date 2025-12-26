@@ -21,13 +21,18 @@ export const getProblem = cache(
     if (!problem) return null;
 
     // Transform to match strict Problem interface
+    const visibleTestCases = problem.testCases.filter((tc) => !tc.isHidden);
+    const testCasesToShow = visibleTestCases.length > 0 
+      ? visibleTestCases 
+      : problem.testCases.slice(0, 3); // Show first 3 if all are hidden
+    
     return {
       ...problem,
       // Ensure strict type compatibility for enums if needed, or cast if schema matches
       difficulty: problem.difficulty as "easy" | "medium" | "hard",
       content: problem.content as Problem["content"],
       driverCode: problem.driverCode as Record<string, string>,
-      testCases: problem.testCases.filter((tc) => !tc.isHidden),
+      testCases: testCasesToShow,
       collection: problem.collection
         ? {
             id: problem.collection.id,

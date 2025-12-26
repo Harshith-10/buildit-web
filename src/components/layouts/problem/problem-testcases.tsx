@@ -31,6 +31,9 @@ export default function TestCasesPane({
   customInput,
   onCustomInputChange,
 }: TestCasesPaneProps) {
+  console.log("Problem test cases:", problem.testCases);
+  console.log("Test cases length:", problem.testCases?.length);
+  
   return (
     <div className="h-full w-full p-2">
       <Tabs
@@ -50,34 +53,39 @@ export default function TestCasesPane({
           value="test-cases"
           className="flex-1 min-h-0 flex flex-col"
         >
-          <Tabs
-            defaultValue={problem.testCases[0].id.toString()}
-            className="flex flex-col h-full"
-          >
-            <div className="flex items-center gap-2">
-              <TabsList>
-                {problem.testCases.map((testCase, index) => (
-                  <TabsTrigger key={testCase.id} value={testCase.id.toString()}>
-                    Test Case {index + 1}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-              <Button
-                size="icon-sm"
-                variant="outline"
-                className="rounded-full"
-                onClick={() => {
-                  toast.info("This feature will be added soon!");
-                }}
-              >
-                <Plus />
-              </Button>
+          {problem.testCases.length === 0 ? (
+            <div className="flex items-center justify-center h-full text-muted-foreground">
+              <p>No test cases available for this problem.</p>
             </div>
-            {problem.testCases.map((testCase, _index) => (
-              <TabsContent
-                key={testCase.id}
-                value={testCase.id.toString()}
-                className="flex-1 overflow-y-auto min-h-0"
+          ) : (
+            <Tabs
+              defaultValue={problem.testCases[0].id.toString()}
+              className="flex flex-col h-full"
+            >
+              <div className="flex items-center gap-2">
+                <TabsList>
+                  {problem.testCases.map((testCase, index) => (
+                    <TabsTrigger key={testCase.id} value={testCase.id.toString()}>
+                      Test Case {index + 1}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+                <Button
+                  size="icon-sm"
+                  variant="outline"
+                  className="rounded-full"
+                  onClick={() => {
+                    toast.info("This feature will be added soon!");
+                  }}
+                >
+                  <Plus />
+                </Button>
+              </div>
+              {problem.testCases.map((testCase, _index) => (
+                <TabsContent
+                  key={testCase.id}
+                  value={testCase.id.toString()}
+                  className="flex-1 overflow-y-auto min-h-0"
               >
                 <div className="flex flex-col gap-2 p-2">
                   <Label>Input</Label>
@@ -91,7 +99,8 @@ export default function TestCasesPane({
                 </div>
               </TabsContent>
             ))}
-          </Tabs>
+            </Tabs>
+          )}
         </TabsContent>
 
         {/* Input Output */}
