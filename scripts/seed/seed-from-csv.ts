@@ -25,11 +25,6 @@ interface InstructorCSVRow {
   username: string;
   displayUsername?: string;
   image?: string;
-  rollNumber?: string;
-  dateOfBirth?: string;
-  semester?: string;
-  section?: string;
-  branch?: string;
 }
 
 const DEFAULT_PASSWORD = "password1234";
@@ -149,11 +144,6 @@ async function processInstructorsCSV(filePath: string) {
           .update(user)
           .set({ 
             role: "instructor",
-            rollNumber: record.rollNumber || existingUser.rollNumber,
-            dateOfBirth: record.dateOfBirth ? new Date(record.dateOfBirth) : existingUser.dateOfBirth,
-            semester: record.semester || existingUser.semester,
-            section: record.section || existingUser.section,
-            branch: record.branch || existingUser.branch,
           })
           .where(eq(user.id, existingUser.id));
         skipCount++;
@@ -179,11 +169,6 @@ async function processInstructorsCSV(filePath: string) {
         .update(user)
         .set({ 
           role: "instructor",
-          rollNumber: record.rollNumber,
-          dateOfBirth: record.dateOfBirth ? new Date(record.dateOfBirth) : null,
-          semester: record.semester,
-          section: record.section,
-          branch: record.branch,
         })
         .where(eq(user.email, record.email));
 
