@@ -82,7 +82,7 @@ export const examSessionsRelations = relations(
     }),
     submissions: many(submissions),
     sessionProblems: many(sessionProblems),
-  })
+  }),
 );
 
 export const examsRelations = relations(exams, ({ one, many }) => ({
@@ -130,7 +130,7 @@ export const sessionProblemsRelations = relations(
       fields: [sessionProblems.sessionId],
       references: [examSessions.id],
     }),
-  })
+  }),
 );
 
 export const dailyProblemsRelations = relations(
@@ -140,5 +140,5 @@ export const dailyProblemsRelations = relations(
       fields: [dailyProblemsSchema.problemId],
       references: [problems.id],
     }),
-  })
+  }),
 );

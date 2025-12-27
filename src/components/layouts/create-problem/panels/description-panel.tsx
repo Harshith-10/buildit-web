@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo } from "react";
 import Markdown from "react-markdown";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";

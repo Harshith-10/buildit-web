@@ -17,7 +17,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { SidebarProvider } from "@/components/ui/sidebar";
 import { useExamSession } from "@/hooks/use-exam-session";
 import type { Problem } from "@/types/problem";
 

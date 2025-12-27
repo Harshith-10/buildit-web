@@ -33,7 +33,7 @@ export default function TestCasesPane({
 }: TestCasesPaneProps) {
   console.log("Problem test cases:", problem.testCases);
   console.log("Test cases length:", problem.testCases?.length);
-  
+
   return (
     <div className="h-full w-full p-2">
       <Tabs
@@ -65,7 +65,10 @@ export default function TestCasesPane({
               <div className="flex items-center gap-2">
                 <TabsList>
                   {problem.testCases.map((testCase, index) => (
-                    <TabsTrigger key={testCase.id} value={testCase.id.toString()}>
+                    <TabsTrigger
+                      key={testCase.id}
+                      value={testCase.id.toString()}
+                    >
                       Test Case {index + 1}
                     </TabsTrigger>
                   ))}
@@ -86,19 +89,19 @@ export default function TestCasesPane({
                   key={testCase.id}
                   value={testCase.id.toString()}
                   className="flex-1 overflow-y-auto min-h-0"
-              >
-                <div className="flex flex-col gap-2 p-2">
-                  <Label>Input</Label>
-                  <p className="font-mono bg-input/30 rounded-md border p-2 text-sm">
-                    {testCase.input}
-                  </p>
-                  <Label>Output</Label>
-                  <p className="font-mono bg-input/30 rounded-md border p-2 text-sm">
-                    {testCase.expectedOutput}
-                  </p>
-                </div>
-              </TabsContent>
-            ))}
+                >
+                  <div className="flex flex-col gap-2 p-2">
+                    <Label>Input</Label>
+                    <p className="font-mono bg-input/30 rounded-md border p-2 text-sm">
+                      {testCase.input}
+                    </p>
+                    <Label>Output</Label>
+                    <p className="font-mono bg-input/30 rounded-md border p-2 text-sm">
+                      {testCase.expectedOutput}
+                    </p>
+                  </div>
+                </TabsContent>
+              ))}
             </Tabs>
           )}
         </TabsContent>

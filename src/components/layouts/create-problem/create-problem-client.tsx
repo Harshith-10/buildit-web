@@ -5,11 +5,6 @@ import { useState } from "react";
 import { toast } from "sonner";
 import type { Runtime } from "@/actions/code-execution";
 import { createProblem } from "@/actions/problem-data";
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
 import CreateProblemHeader from "./create-problem-header";
 import CreateProblemPanes from "./create-problem-panels";
 

@@ -8,8 +8,8 @@ import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { createProblem } from "@/actions/create-problem";
 import { getCollections } from "@/actions/collections-list";
+import { createProblem } from "@/actions/create-problem";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -40,7 +40,13 @@ const problemSchema = z.object({
     .min(1, "Slug is required")
     .regex(/^[a-z0-9-]+$/, "Slug must be lowercase with hyphens only"),
   collectionId: z.string().optional(),
-  type: z.enum(["coding", "mcq_single", "mcq_multi", "true_false", "descriptive"]),
+  type: z.enum([
+    "coding",
+    "mcq_single",
+    "mcq_multi",
+    "true_false",
+    "descriptive",
+  ]),
   difficulty: z.enum(["easy", "medium", "hard"]),
   description: z.string().min(1, "Description is required"),
   // Driver code fields (for coding problems)
@@ -49,13 +55,15 @@ const problemSchema = z.object({
   timeLimit: z.string().optional(),
   memoryLimit: z.string().optional(),
   public: z.boolean().default(false),
-  testCases: z.array(
-    z.object({
-      input: z.string().min(1, "Input is required"),
-      expectedOutput: z.string().min(1, "Expected output is required"),
-      isHidden: z.boolean().default(true),
-    }),
-  ).optional(),
+  testCases: z
+    .array(
+      z.object({
+        input: z.string().min(1, "Input is required"),
+        expectedOutput: z.string().min(1, "Expected output is required"),
+        isHidden: z.boolean().default(true),
+      }),
+    )
+    .optional(),
 });
 
 type ProblemFormValues = z.infer<typeof problemSchema>;
@@ -115,7 +123,11 @@ export function CreateProblemForm() {
     },
   });
 
-  const { fields: testCaseFields, append: appendTestCase, remove: removeTestCase } = useFieldArray({
+  const {
+    fields: testCaseFields,
+    append: appendTestCase,
+    remove: removeTestCase,
+  } = useFieldArray({
     control: form.control,
     name: "testCases",
   });
@@ -171,8 +183,10 @@ export function CreateProblemForm() {
       let gradingMetadata: Record<string, any> | undefined;
       if (values.timeLimit || values.memoryLimit) {
         gradingMetadata = {};
-        if (values.timeLimit) gradingMetadata.timeLimit = parseInt(values.timeLimit, 10);
-        if (values.memoryLimit) gradingMetadata.memoryLimit = parseInt(values.memoryLimit, 10);
+        if (values.timeLimit)
+          gradingMetadata.timeLimit = parseInt(values.timeLimit, 10);
+        if (values.memoryLimit)
+          gradingMetadata.memoryLimit = parseInt(values.memoryLimit, 10);
       }
 
       const result = await createProblem({
@@ -224,153 +238,162 @@ export function CreateProblemForm() {
                 <CardTitle>Basic Information</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Title *</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="e.g., Two Sum"
-                      {...field}
-                      onBlur={generateSlugFromTitle}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="slug"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Slug *</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="e.g., two-sum"
-                      {...field}
-                      onChange={(e) => {
-                        field.onChange(e);
-                        setSlugManuallyEdited(true);
-                      }}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    URL-friendly identifier (lowercase, hyphens only)
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="grid gap-4 sm:grid-cols-3">
-              <FormField
-                control={form.control}
-                name="type"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Type *</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Title *</FormLabel>
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select type" />
-                        </SelectTrigger>
+                        <Input
+                          placeholder="e.g., Two Sum"
+                          {...field}
+                          onBlur={generateSlugFromTitle}
+                        />
                       </FormControl>
-                      <SelectContent>
-                        <SelectItem value="coding">Coding</SelectItem>
-                        <SelectItem value="mcq_single">MCQ (Single)</SelectItem>
-                        <SelectItem value="mcq_multi">MCQ (Multiple)</SelectItem>
-                        <SelectItem value="true_false">True/False</SelectItem>
-                        <SelectItem value="descriptive">Descriptive</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="difficulty"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Difficulty *</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                <FormField
+                  control={form.control}
+                  name="slug"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Slug *</FormLabel>
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select difficulty" />
-                        </SelectTrigger>
+                        <Input
+                          placeholder="e.g., two-sum"
+                          {...field}
+                          onChange={(e) => {
+                            field.onChange(e);
+                            setSlugManuallyEdited(true);
+                          }}
+                        />
                       </FormControl>
-                      <SelectContent>
-                        <SelectItem value="easy">Easy</SelectItem>
-                        <SelectItem value="medium">Medium</SelectItem>
-                        <SelectItem value="hard">Hard</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-              control={form.control}
-              name="collectionId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Collection</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="None" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {collections.map((collection) => (
-                        <SelectItem key={collection.id} value={collection.id}>
-                          {collection.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            </div>
+                      <FormDescription>
+                        URL-friendly identifier (lowercase, hyphens only)
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <FormField
+                    control={form.control}
+                    name="type"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Type *</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select type" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="coding">Coding</SelectItem>
+                            <SelectItem value="mcq_single">
+                              MCQ (Single)
+                            </SelectItem>
+                            <SelectItem value="mcq_multi">
+                              MCQ (Multiple)
+                            </SelectItem>
+                            <SelectItem value="true_false">
+                              True/False
+                            </SelectItem>
+                            <SelectItem value="descriptive">
+                              Descriptive
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-            <FormField
-              control={form.control}
-              name="public"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border border-border p-4">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>Make this problem public</FormLabel>
-                    <FormDescription>
-                      Public problems are visible to all users
-                    </FormDescription>
-                  </div>
-                </FormItem>
-              )}
-            />
+                  <FormField
+                    control={form.control}
+                    name="difficulty"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Difficulty *</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select difficulty" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="easy">Easy</SelectItem>
+                            <SelectItem value="medium">Medium</SelectItem>
+                            <SelectItem value="hard">Hard</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="collectionId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Collection</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="None" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {collections.map((collection) => (
+                              <SelectItem
+                                key={collection.id}
+                                value={collection.id}
+                              >
+                                {collection.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <FormField
+                  control={form.control}
+                  name="public"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border border-border p-4">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>Make this problem public</FormLabel>
+                        <FormDescription>
+                          Public problems are visible to all users
+                        </FormDescription>
+                      </div>
+                    </FormItem>
+                  )}
+                />
               </CardContent>
             </Card>
           </TabsContent>
@@ -396,7 +419,8 @@ export function CreateProblemForm() {
                         />
                       </FormControl>
                       <FormDescription>
-                        Write the complete problem description using Markdown. Include title, description, examples, and constraints.
+                        Write the complete problem description using Markdown.
+                        Include title, description, examples, and constraints.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -443,11 +467,7 @@ export function CreateProblemForm() {
                       <FormItem>
                         <FormLabel>Time Limit (ms)</FormLabel>
                         <FormControl>
-                          <Input
-                            type="number"
-                            placeholder="1000"
-                            {...field}
-                          />
+                          <Input type="number" placeholder="1000" {...field} />
                         </FormControl>
                         <FormDescription>
                           Maximum execution time in milliseconds
@@ -464,11 +484,7 @@ export function CreateProblemForm() {
                       <FormItem>
                         <FormLabel>Memory Limit (MB)</FormLabel>
                         <FormControl>
-                          <Input
-                            type="number"
-                            placeholder="256"
-                            {...field}
-                          />
+                          <Input type="number" placeholder="256" {...field} />
                         </FormControl>
                         <FormDescription>
                           Maximum memory usage in megabytes
@@ -490,97 +506,104 @@ export function CreateProblemForm() {
                 <Button
                   type="button"
                   variant="outline"
-              size="sm"
-              onClick={() =>
-                appendTestCase({ input: "", expectedOutput: "", isHidden: false })
-              }
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add Test Case
-            </Button>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {testCaseFields.length === 0 && (
-              <p className="text-center text-sm text-muted-foreground py-8">
-                No test cases added yet. Click "Add Test Case" to get started.
-              </p>
-            )}
-            {testCaseFields.map((field, index) => (
-              <Card key={field.id} className="border-border">
-                <CardContent className="pt-6 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h4 className="text-sm font-medium">Test Case {index + 1}</h4>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeTestCase(index)}
-                    >
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
-                  </div>
+                  size="sm"
+                  onClick={() =>
+                    appendTestCase({
+                      input: "",
+                      expectedOutput: "",
+                      isHidden: false,
+                    })
+                  }
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add Test Case
+                </Button>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {testCaseFields.length === 0 && (
+                  <p className="text-center text-sm text-muted-foreground py-8">
+                    No test cases added yet. Click "Add Test Case" to get
+                    started.
+                  </p>
+                )}
+                {testCaseFields.map((field, index) => (
+                  <Card key={field.id} className="border-border">
+                    <CardContent className="pt-6 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-sm font-medium">
+                          Test Case {index + 1}
+                        </h4>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removeTestCase(index)}
+                        >
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </div>
 
-                  <FormField
-                    control={form.control}
-                    name={`testCases.${index}.input`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Input</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="Test case input"
-                            className="min-h-[30px] font-mono text-sm"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                      <FormField
+                        control={form.control}
+                        name={`testCases.${index}.input`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Input</FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="Test case input"
+                                className="min-h-[30px] font-mono text-sm"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                  <FormField
-                    control={form.control}
-                    name={`testCases.${index}.expectedOutput`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Expected Output</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="Expected output for this test case"
-                            className="min-h-[30px] font-mono text-sm"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                      <FormField
+                        control={form.control}
+                        name={`testCases.${index}.expectedOutput`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Expected Output</FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="Expected output for this test case"
+                                className="min-h-[30px] font-mono text-sm"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                  <FormField
-                    control={form.control}
-                    name={`testCases.${index}.isHidden`}
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-center space-x-3 space-y-0 pt-4">
-                        <FormControl>
-                          <Checkbox
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                          />
-                        </FormControl>
-                        <div className="space-y-1 leading-none">
-                          <FormLabel>Hidden test case</FormLabel>
-                          <FormDescription>
-                            Hidden test cases are not visible to users
-                          </FormDescription>
-                        </div>
-                      </FormItem>
-                    )}
-                  />
-                </CardContent>
-              </Card>
-            ))}
-          </CardContent>
-        </Card>
+                      <FormField
+                        control={form.control}
+                        name={`testCases.${index}.isHidden`}
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row items-center space-x-3 space-y-0 pt-4">
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                              />
+                            </FormControl>
+                            <div className="space-y-1 leading-none">
+                              <FormLabel>Hidden test case</FormLabel>
+                              <FormDescription>
+                                Hidden test cases are not visible to users
+                              </FormDescription>
+                            </div>
+                          </FormItem>
+                        )}
+                      />
+                    </CardContent>
+                  </Card>
+                ))}
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
 

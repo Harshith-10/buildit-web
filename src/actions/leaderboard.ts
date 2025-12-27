@@ -1,8 +1,8 @@
 "use server";
 
-import { desc, eq, isNull, sql } from "drizzle-orm";
+import { isNull } from "drizzle-orm";
 import db from "@/db";
-import { problems, submissions, user } from "@/db/schema";
+import { submissions } from "@/db/schema";
 
 export type LeaderboardEntry = {
   rank: number;

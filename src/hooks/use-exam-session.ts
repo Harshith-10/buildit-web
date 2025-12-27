@@ -58,7 +58,7 @@ export function useExamSession({
   // Timer Logic
   useEffect(() => {
     const updateTimer = () => {
-      const now = new Date().getTime();
+      const now = Date.now();
       const end = new Date(expiresAt).getTime();
       const diff = Math.max(0, Math.floor((end - now) / 1000));
 
@@ -74,7 +74,11 @@ export function useExamSession({
     const interval = setInterval(updateTimer, 1000);
 
     return () => clearInterval(interval);
-  }, [expiresAt, isEnded]);
+  }, [
+    expiresAt,
+    isEnded, // Time expired
+    handleEndExam,
+  ]);
 
   const handleCodeChange = useCallback(
     (code: string) => {
@@ -144,7 +148,7 @@ export function useExamSession({
 
       // Redirect or show summary
       window.location.href = `/exams?status=completed`;
-    } catch (e) {
+    } catch (_e) {
       toast.error("Failed to submit exam.");
     }
   };

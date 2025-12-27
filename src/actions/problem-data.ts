@@ -334,7 +334,7 @@ export const createProblem = async (
     .insert(problems)
     .values({
       title: validatedData.title,
-      slug: slug + "-" + Math.random().toString(36).substring(2, 7), // Ensure uniqueness
+      slug: `${slug}-${Math.random().toString(36).substring(2, 7)}`, // Ensure uniqueness
       description: validatedData.description,
       difficulty: validatedData.difficulty,
       type: validatedData.type,

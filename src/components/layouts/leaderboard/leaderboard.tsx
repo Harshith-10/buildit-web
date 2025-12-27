@@ -1,11 +1,15 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { Crown, Search } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  getLeaderboardData,
+  type LeaderboardEntry,
+} from "@/actions/leaderboard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -15,11 +19,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import { Search, Trophy, Medal, Crown } from "lucide-react";
-import {
-  getLeaderboardData,
-  type LeaderboardEntry,
-} from "@/actions/leaderboard";
 
 // Podium Component
 function Podium({ top3 }: { top3: LeaderboardEntry[] }) {
@@ -63,7 +62,7 @@ function Podium({ top3 }: { top3: LeaderboardEntry[] }) {
           <Avatar
             className={cn(
               "size-20 border-4 border-background ring-4",
-              ringColor
+              ringColor,
             )}
           >
             <AvatarImage
@@ -75,7 +74,7 @@ function Podium({ top3 }: { top3: LeaderboardEntry[] }) {
           <div
             className={cn(
               "absolute -bottom-3 left-1/2 -translate-x-1/2 rounded-full px-2 py-0.5 text-xs font-bold",
-              badgeColor
+              badgeColor,
             )}
           >
             #{position}
@@ -112,13 +111,13 @@ export default function Leaderboard() {
 
   // Compute Stats
   const top3 = data.slice(0, 3);
-  const rest = data.slice(3); // or all data if we want list to show everyone? Image implies list has filter showing 1-20
+  const _rest = data.slice(3); // or all data if we want list to show everyone? Image implies list has filter showing 1-20
   // Image actually shows Rank 4, 5, 6... in list. So List is Rest.
 
   const avgScore =
     data.length > 0
       ? Math.round(
-          data.reduce((acc, curr) => acc + curr.score, 0) / data.length
+          data.reduce((acc, curr) => acc + curr.score, 0) / data.length,
         )
       : 0;
   const highestScore =
@@ -130,7 +129,7 @@ export default function Leaderboard() {
   const passRate =
     data.length > 0
       ? Math.round(
-          (data.filter((d) => d.score >= 50).length / data.length) * 100
+          (data.filter((d) => d.score >= 50).length / data.length) * 100,
         )
       : 0;
 
@@ -305,8 +304,8 @@ export default function Leaderboard() {
                             row.passRate === 100
                               ? "bg-green-500"
                               : row.passRate > 50
-                              ? "bg-blue-500"
-                              : "bg-yellow-500"
+                                ? "bg-blue-500"
+                                : "bg-yellow-500",
                           )}
                           style={{ width: `${row.passRate}%` }}
                         />
@@ -316,7 +315,7 @@ export default function Leaderboard() {
                           "text-xs font-bold w-10",
                           row.passRate === 100
                             ? "text-green-500"
-                            : "text-blue-500"
+                            : "text-blue-500",
                         )}
                       >
                         {Math.round(row.passRate)}%

@@ -1,7 +1,7 @@
 "use client";
 
 import { format } from "date-fns";
-import { ArrowRight, Calendar, Clock, Info, Play } from "lucide-react";
+import { Calendar, Clock, Info, Play } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { GetExamsParams } from "@/actions/exams-list";
