@@ -1,225 +1,268 @@
-import { Plus } from "lucide-react";
-import { toast } from "sonner";
+"use client";
+
+import { Check, Terminal, X } from "lucide-react";
+import { useMemo, useState } from "react";
 import type { TestcaseResult } from "@/actions/code-execution";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import type { Problem } from "@/types/problem";
 
 interface TestCasesPaneProps {
-  problem: Problem;
-  activeTab: string;
-  onTabChange: (tab: string) => void;
-  testCaseResults: TestcaseResult[];
-  consoleOutput: {
-    stdout: string;
-    stderr: string;
-    output: string;
-  } | null;
+  testCases: Problem["testCases"];
+  results: TestcaseResult[];
+  consoleOutput: { stdout: string; stderr: string } | null;
   customInput: string;
   onCustomInputChange: (val: string) => void;
+  activeTab: string;
+  onTabChange: (tab: string) => void;
 }
 
 export default function TestCasesPane({
-  problem,
-  activeTab,
-  onTabChange,
-  testCaseResults,
+  testCases,
+  results,
   consoleOutput,
   customInput,
   onCustomInputChange,
+  activeTab,
+  onTabChange,
 }: TestCasesPaneProps) {
-  console.log("Problem test cases:", problem.testCases);
-  console.log("Test cases length:", problem.testCases?.length);
+  // Derive state for which sub-tab (testcase id) is selected
+  // We can just keep local state for that
+  const [selectedCaseId, setSelectedCaseId] = useState<string>(
+    testCases[0]?.id.toString() || "",
+  );
+
+  // Helper to get result for a testcase
+  const getResult = (id: string) => results.find((r) => r.id.toString() === id);
 
   return (
-    <div className="h-full w-full p-2">
-      <Tabs
-        value={activeTab}
-        onValueChange={onTabChange}
-        defaultValue="test-cases"
-        className="flex flex-col h-full"
-      >
-        <TabsList className="w-full">
-          <TabsTrigger value="test-cases">Test Cases</TabsTrigger>
-          <TabsTrigger value="results">Results</TabsTrigger>
-          <TabsTrigger value="input-output">Input Output</TabsTrigger>
-        </TabsList>
-
-        {/* Test Cases */}
-        <TabsContent
-          value="test-cases"
-          className="flex-1 min-h-0 flex flex-col"
-        >
-          {problem.testCases.length === 0 ? (
-            <div className="flex items-center justify-center h-full text-muted-foreground">
-              <p>No test cases available for this problem.</p>
-            </div>
-          ) : (
-            <Tabs
-              defaultValue={problem.testCases[0].id.toString()}
-              className="flex flex-col h-full"
-            >
-              <div className="flex items-center gap-2">
-                <TabsList>
-                  {problem.testCases.map((testCase, index) => (
-                    <TabsTrigger
-                      key={testCase.id}
-                      value={testCase.id.toString()}
-                    >
-                      Test Case {index + 1}
-                    </TabsTrigger>
-                  ))}
-                </TabsList>
-                <Button
-                  size="icon-sm"
+    <div className="h-full w-full bg-background flex flex-col">
+      <div className="border-b p-2">
+        <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
+          <TabsList className="w-full">
+            <TabsTrigger value="test-cases">Test Cases</TabsTrigger>
+            <TabsTrigger value="results">
+              Test Results
+              {results.length > 0 && (
+                <Badge
                   variant="outline"
-                  className="rounded-full"
-                  onClick={() => {
-                    toast.info("This feature will be added soon!");
-                  }}
+                  className="ml-2 h-5 px-1.5 text-[10px] gap-1"
                 >
-                  <Plus />
-                </Button>
-              </div>
-              {problem.testCases.map((testCase, _index) => (
-                <TabsContent
-                  key={testCase.id}
-                  value={testCase.id.toString()}
-                  className="flex-1 overflow-y-auto min-h-0"
-                >
-                  <div className="flex flex-col gap-2 p-2">
-                    <Label>Input</Label>
-                    <p className="font-mono bg-input/30 rounded-md border p-2 text-sm">
-                      {testCase.input}
-                    </p>
-                    <Label>Output</Label>
-                    <p className="font-mono bg-input/30 rounded-md border p-2 text-sm">
-                      {testCase.expectedOutput}
-                    </p>
-                  </div>
-                </TabsContent>
-              ))}
-            </Tabs>
-          )}
-        </TabsContent>
+                  <Check className="w-3 h-3 text-green-500" />
+                  {results.filter((r) => r.passed).length} / {results.length}
+                </Badge>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="custom">Input / Output</TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
 
-        {/* Input Output */}
-        <TabsContent
-          value="input-output"
-          className="flex-1 min-h-0 overflow-y-auto"
-        >
-          <div className="grid grid-cols-2 gap-2 p-2 h-full">
+      <div className="flex-1 overflow-hidden p-4">
+        {activeTab === "test-cases" && (
+          <div className="h-full flex flex-col">
+            {testCases.length === 0 ? (
+              <div className="text-muted-foreground text-sm">
+                No test cases visible.
+              </div>
+            ) : (
+              <div className="flex h-full gap-4">
+                {/* Left List */}
+                <div className="w-32 flex flex-col gap-1 border-r pr-2">
+                  {testCases.map((tc, idx) => (
+                    <button
+                      type="button"
+                      key={tc.id}
+                      onClick={() => setSelectedCaseId(tc.id.toString())}
+                      className={cn(
+                        "text-xs text-left px-3 py-2 rounded-md transition-colors",
+                        selectedCaseId === tc.id.toString()
+                          ? "bg-secondary font-medium text-foreground"
+                          : "text-muted-foreground hover:bg-muted",
+                      )}
+                    >
+                      Case {idx + 1}
+                    </button>
+                  ))}
+                </div>
+                {/* Right Details */}
+                <ScrollArea className="flex-1">
+                  {testCases.map(
+                    (tc) =>
+                      tc.id.toString() === selectedCaseId && (
+                        <div key={tc.id} className="space-y-4">
+                          <div>
+                            <Label className="text-xs text-muted-foreground uppercase">
+                              Input
+                            </Label>
+                            <div className="mt-1.5 p-3 rounded-md bg-muted/40 font-mono text-sm whitespace-pre-wrap">
+                              {tc.input}
+                            </div>
+                          </div>
+                          <div>
+                            <Label className="text-xs text-muted-foreground uppercase">
+                              Expected Output
+                            </Label>
+                            <div className="mt-1.5 p-3 rounded-md bg-muted/40 font-mono text-sm whitespace-pre-wrap">
+                              {tc.expectedOutput}
+                            </div>
+                          </div>
+                        </div>
+                      ),
+                  )}
+                </ScrollArea>
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === "results" && (
+          <div className="h-full flex flex-col">
+            {results.length === 0 ? (
+              <div className="flex h-full flex-col items-center justify-center text-muted-foreground">
+                <Terminal className="h-8 w-8 mb-2 opacity-50" />
+                <p className="text-sm">Run your code to see results</p>
+              </div>
+            ) : (
+              <div className="flex h-full gap-4">
+                {/* Left List (Results) */}
+                <div className="w-32 flex flex-col gap-1 border-r pr-2">
+                  {results.map((res, idx) => (
+                    <button
+                      type="button"
+                      key={res.id}
+                      onClick={() => setSelectedCaseId(res.id.toString())}
+                      className={cn(
+                        "text-xs text-left px-3 py-2 rounded-md transition-colors flex items-center justify-between",
+                        selectedCaseId === res.id.toString()
+                          ? "bg-secondary font-medium text-foreground"
+                          : "text-muted-foreground hover:bg-muted",
+                      )}
+                    >
+                      <span>Case {idx + 1}</span>
+                      {res.passed ? (
+                        <Check className="w-3.5 h-3.5 text-green-500" />
+                      ) : (
+                        <X className="w-3.5 h-3.5 text-red-500" />
+                      )}
+                    </button>
+                  ))}
+                </div>
+                {/* Right Details */}
+                <ScrollArea className="flex-1">
+                  {results.map(
+                    (res) =>
+                      res.id.toString() === selectedCaseId && (
+                        <div key={res.id} className="space-y-4">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span
+                              className={cn(
+                                "text-xs font-bold px-2 py-0.5 rounded uppercase tracking-wider",
+                                res.passed
+                                  ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300"
+                                  : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
+                              )}
+                            >
+                              {res.passed ? "Passed" : "Failed"}
+                            </span>
+                          </div>
+
+                          {res.run_details.stderr && (
+                            <div>
+                              <Label className="text-xs text-red-500 uppercase">
+                                Error Helper
+                              </Label>
+                              <div className="mt-1.5 p-3 rounded-md bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 font-mono text-xs whitespace-pre-wrap">
+                                {res.run_details.stderr}
+                              </div>
+                            </div>
+                          )}
+
+                          <div>
+                            <Label className="text-xs text-muted-foreground uppercase">
+                              Input
+                            </Label>
+                            <div className="mt-1.5 p-3 rounded-md bg-muted/40 font-mono text-sm whitespace-pre-wrap">
+                              {res.input}
+                            </div>
+                          </div>
+
+                          <div>
+                            <Label className="text-xs text-muted-foreground uppercase">
+                              Output
+                            </Label>
+                            <div
+                              className={cn(
+                                "mt-1.5 p-3 rounded-md font-mono text-sm whitespace-pre-wrap",
+                                res.passed
+                                  ? "bg-muted/40"
+                                  : "bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900",
+                              )}
+                            >
+                              {res.actualOutput || (
+                                <span className="text-muted-foreground italic">
+                                  No output
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
+                          <div>
+                            <Label className="text-xs text-muted-foreground uppercase">
+                              Expected
+                            </Label>
+                            <div className="mt-1.5 p-3 rounded-md bg-muted/40 font-mono text-sm whitespace-pre-wrap">
+                              {res.expectedOutput}
+                            </div>
+                          </div>
+                        </div>
+                      ),
+                  )}
+                </ScrollArea>
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === "custom" && (
+          <div className="grid grid-cols-2 gap-4 h-full">
             <div className="flex flex-col gap-2">
               <Label>Input</Label>
               <Textarea
-                className="min-h-20 bg-input/30 rounded-md border font-mono p-2 text-sm h-full"
                 value={customInput}
                 onChange={(e) => onCustomInputChange(e.target.value)}
+                className="flex-1 font-mono text-sm resize-none bg-muted/30"
+                placeholder="Enter custom input here..."
               />
             </div>
             <div className="flex flex-col gap-2">
               <Label>Output</Label>
-              <div className="min-h-20 bg-input/30 rounded-md border font-mono p-2 text-sm h-full whitespace-pre-wrap overflow-auto">
+              <div className="flex-1 rounded-md border bg-muted/50 p-3 font-mono text-sm whitespace-pre-wrap overflow-auto">
                 {consoleOutput ? (
                   <>
                     {consoleOutput.stdout && (
-                      <div className="text-foreground">
-                        {consoleOutput.stdout}
-                      </div>
+                      <span>{consoleOutput.stdout}</span>
                     )}
                     {consoleOutput.stderr && (
-                      <div className="text-red-500">{consoleOutput.stderr}</div>
-                    )}
-                    {!consoleOutput.stdout && !consoleOutput.stderr && (
-                      <span className="text-muted-foreground italic">
-                        No output
+                      <span className="text-red-500 block mt-2">
+                        {consoleOutput.stderr}
                       </span>
                     )}
                   </>
                 ) : (
-                  "Run your code to see the output."
+                  <span className="text-muted-foreground italic">
+                    Run your code to see output
+                  </span>
                 )}
               </div>
             </div>
           </div>
-        </TabsContent>
-
-        {/* Results */}
-        <TabsContent value="results" className="flex-1 min-h-0 flex flex-col">
-          {testCaseResults.length === 0 ? (
-            <div className="p-4 text-center text-muted-foreground">
-              Run your code to see executed test cases here.
-            </div>
-          ) : (
-            <Tabs
-              defaultValue={testCaseResults[0].id.toString()}
-              className="flex flex-col h-full"
-            >
-              <div className="flex items-center gap-2 overflow-x-auto">
-                <TabsList>
-                  {testCaseResults.map((result, index) => (
-                    <TabsTrigger
-                      key={result.id}
-                      value={result.id.toString()}
-                      className={cn(
-                        "gap-2",
-                        result.passed ? "text-green-500" : "text-red-500",
-                      )}
-                    >
-                      Case {index + 1}
-                    </TabsTrigger>
-                  ))}
-                </TabsList>
-              </div>
-              {testCaseResults.map((result) => (
-                <TabsContent
-                  key={result.id}
-                  value={result.id.toString()}
-                  className="flex-1 overflow-y-auto min-h-0"
-                >
-                  <div className="flex flex-col gap-2 p-2">
-                    <div className="flex items-center gap-2">
-                      <span
-                        className={cn(
-                          "font-bold text-sm px-2 py-1 rounded",
-                          result.passed
-                            ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
-                            : "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300",
-                        )}
-                      >
-                        {result.passed ? "Passed" : "Failed"}
-                      </span>
-                    </div>
-                    <Label>Input</Label>
-                    <p className="font-mono bg-input/30 rounded-md border p-2 text-sm whitespace-pre-wrap">
-                      {result.input}
-                    </p>
-                    <Label>Expected Output</Label>
-                    <p className="font-mono bg-input/30 rounded-md border p-2 text-sm whitespace-pre-wrap">
-                      {result.expectedOutput}
-                    </p>
-                    <Label>Actual Output</Label>
-                    <p className="font-mono bg-input/30 rounded-md border p-2 text-sm whitespace-pre-wrap">
-                      {result.actualOutput}
-                    </p>
-                    {result.run_details.stderr && (
-                      <>
-                        <Label className="text-red-500">Error</Label>
-                        <p className="font-mono bg-red-50 dark:bg-red-950/30 rounded-md border border-red-200 dark:border-red-900 p-2 text-sm whitespace-pre-wrap text-red-600 dark:text-red-400">
-                          {result.run_details.stderr}
-                        </p>
-                      </>
-                    )}
-                  </div>
-                </TabsContent>
-              ))}
-            </Tabs>
-          )}
-        </TabsContent>
-      </Tabs>
+        )}
+      </div>
     </div>
   );
 }

@@ -55,6 +55,22 @@ export function useExamSession({
     }
   }, [sessionId]);
 
+  const handleEndExam = useCallback(
+    async (auto = false) => {
+      try {
+        await endExamSession(sessionId);
+        setIsEnded(true);
+        toast.success(
+          auto ? "Time's up! Exam submitted." : "Exam submitted successfully.",
+        );
+        window.location.href = `/exams?status=completed`;
+      } catch (_e) {
+        toast.error("Failed to submit exam.");
+      }
+    },
+    [sessionId],
+  );
+
   // Timer Logic
   useEffect(() => {
     const updateTimer = () => {
@@ -120,7 +136,8 @@ export function useExamSession({
     async (type: string) => {
       try {
         const result = await recordViolation(sessionId, type);
-        if (onViolation) onViolation(result.violations);
+        if (onViolation && result.count !== undefined)
+          onViolation(result.count);
 
         if (result.terminated) {
           toast.error("Exam terminated due to multiple violations.");
@@ -134,24 +151,6 @@ export function useExamSession({
     },
     [sessionId, onViolation],
   );
-
-  const handleEndExam = async (auto = false) => {
-    try {
-      await endExamSession(sessionId);
-      setIsEnded(true);
-      toast.success(
-        auto ? "Time's up! Exam submitted." : "Exam submitted successfully.",
-      );
-
-      // Clear localStorage logic could go here if we want to prevent re-entering with stale data,
-      // but usually better to keep it until confirmed clean.
-
-      // Redirect or show summary
-      window.location.href = `/exams?status=completed`;
-    } catch (_e) {
-      toast.error("Failed to submit exam.");
-    }
-  };
 
   return {
     currentProblem: problems[currentProblemIndex],

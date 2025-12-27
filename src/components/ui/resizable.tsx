@@ -9,15 +9,19 @@ import { cn } from "@/lib/utils";
 function ResizablePanelGroup({
   className,
   ...props
-}: React.ComponentProps<typeof ResizablePrimitive.Group>) {
+}: React.ComponentProps<typeof ResizablePrimitive.Group> & {
+  orientation?: "horizontal" | "vertical";
+}) {
   return (
     <ResizablePrimitive.Group
       data-slot="resizable-panel-group"
+      {...props}
+      // @ts-expect-error - direction prop exists on PanelGroup but types might be mismatched
+      direction={props.orientation === "vertical" ? "vertical" : "horizontal"}
       className={cn(
         "flex h-full w-full data-[panel-group-direction=vertical]:flex-col",
         className,
       )}
-      {...props}
     />
   );
 }

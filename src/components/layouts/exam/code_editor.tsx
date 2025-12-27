@@ -69,7 +69,7 @@ function EditorHeader({
   }, [languages, language]);
 
   return (
-    <div className="flex h-12 w-full items-center justify-between border-b bg-muted/20 px-4">
+    <div className="flex h-12 w-full items-center justify-between border-b bg-muted/20 p-4">
       <div className="flex items-center gap-2">
         <Select value={language} onValueChange={onLanguageChange}>
           <SelectTrigger className="w-[140px] h-8 text-xs">

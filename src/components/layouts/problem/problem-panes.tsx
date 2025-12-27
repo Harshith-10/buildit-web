@@ -283,10 +283,10 @@ export default function ProblemPanes({
           <ResizablePanel defaultSize={40} minSize={20}>
             <div className="flex h-full items-center justify-center">
               <TestCasesPane
-                problem={problem}
+                testCases={problem.testCases}
                 activeTab={activeTab}
                 onTabChange={setActiveTab}
-                testCaseResults={testCaseResults}
+                results={testCaseResults}
                 consoleOutput={consoleOutput}
                 customInput={customInput}
                 onCustomInputChange={setCustomInput}

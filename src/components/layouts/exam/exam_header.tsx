@@ -1,8 +1,13 @@
 "use client";
 
-import { Clock } from "lucide-react";
+import { Clock, Loader2 } from "lucide-react";
+import User from "@/components/common/user-card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import UserInfo from "@/components/common/user-info";
 
 interface ExamHeaderProps {
   title: string;
@@ -27,31 +32,45 @@ export default function ExamHeader({
   const isLowTime = timeLeft < 300; // 5 mins
 
   return (
-    <header className="flex h-16 w-full items-center justify-between border-b bg-background px-6 shadow-sm">
-      <div className="flex items-center gap-4">
-        <h1 className="text-lg font-semibold tracking-tight">{title}</h1>
+    <header className="flex justify-between p-2 w-full border-b bg-background">
+      <div className="flex items-center">
+        <SidebarTrigger />
+        <Separator orientation="vertical" className="h-4 mx-2" />
+        <h1 className="text-lg font-semibold">{title}</h1>
       </div>
 
-      <div className="flex items-center gap-6">
-        <div
+      <div className="flex items-center gap-2 px-2">
+        <Badge
+          variant="outline"
           className={cn(
-            "flex items-center gap-2 rounded-md px-3 py-1.5 font-mono text-sm font-medium transition-colors",
+            "h-8 gap-2 font-mono text-sm",
             isLowTime
-              ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
-              : "bg-muted text-muted-foreground",
+              ? "border-red-500 text-red-500 bg-red-50 dark:bg-red-950/20"
+              : "",
           )}
         >
           <Clock className="h-4 w-4" />
-          <span>{formatTime(timeLeft)}</span>
-        </div>
+          {formatTime(timeLeft)}
+        </Badge>
+
+        <Separator orientation="vertical" className="h-4 mx-2" />
 
         <Button
+          size="sm"
           variant="destructive"
           onClick={onFinish}
           disabled={isSubmitting}
         >
-          {isSubmitting ? "Submitting..." : "Finish Exam"}
+          {isSubmitting ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            "Finish Exam"
+          )}
         </Button>
+
+        <Separator orientation="vertical" className="h-4 mx-2" />
+
+        <UserInfo />
       </div>
     </header>
   );

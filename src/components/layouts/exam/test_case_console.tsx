@@ -41,19 +41,11 @@ export default function TestCaseConsole({
 
   return (
     <div className="h-full w-full bg-background flex flex-col">
-      <div className="border-b px-2">
+      <div className="border-b p-2">
         <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
-          <TabsList className="h-10 bg-transparent p-0 w-full justify-start rounded-none">
-            <TabsTrigger
-              value="test-cases"
-              className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-4"
-            >
-              Test Cases
-            </TabsTrigger>
-            <TabsTrigger
-              value="results"
-              className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-4"
-            >
+          <TabsList className="w-full">
+            <TabsTrigger value="test-cases">Test Cases</TabsTrigger>
+            <TabsTrigger value="results">
               Test Results
               {results.length > 0 && (
                 <Badge
@@ -65,12 +57,7 @@ export default function TestCaseConsole({
                 </Badge>
               )}
             </TabsTrigger>
-            <TabsTrigger
-              value="custom"
-              className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-4"
-            >
-              Input / Output
-            </TabsTrigger>
+            <TabsTrigger value="custom">Input / Output</TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
@@ -88,6 +75,7 @@ export default function TestCaseConsole({
                 <div className="w-32 flex flex-col gap-1 border-r pr-2">
                   {testCases.map((tc, idx) => (
                     <button
+                      type="button"
                       key={tc.id}
                       onClick={() => setSelectedCaseId(tc.id.toString())}
                       className={cn(
@@ -145,6 +133,7 @@ export default function TestCaseConsole({
                 <div className="w-32 flex flex-col gap-1 border-r pr-2">
                   {results.map((res, idx) => (
                     <button
+                      type="button"
                       key={res.id}
                       onClick={() => setSelectedCaseId(res.id.toString())}
                       className={cn(
@@ -181,6 +170,17 @@ export default function TestCaseConsole({
                               {res.passed ? "Passed" : "Failed"}
                             </span>
                           </div>
+
+                          {res.run_details.stderr && (
+                            <div>
+                              <Label className="text-xs text-red-500 uppercase">
+                                Error Helper
+                              </Label>
+                              <div className="mt-1.5 p-3 rounded-md bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 font-mono text-xs whitespace-pre-wrap">
+                                {res.run_details.stderr}
+                              </div>
+                            </div>
+                          )}
 
                           <div>
                             <Label className="text-xs text-muted-foreground uppercase">
@@ -219,17 +219,6 @@ export default function TestCaseConsole({
                               {res.expectedOutput}
                             </div>
                           </div>
-
-                          {res.run_details.stderr && (
-                            <div>
-                              <Label className="text-xs text-red-500 uppercase">
-                                Error Helper
-                              </Label>
-                              <div className="mt-1.5 p-3 rounded-md bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 font-mono text-xs whitespace-pre-wrap">
-                                {res.run_details.stderr}
-                              </div>
-                            </div>
-                          )}
                         </div>
                       ),
                   )}

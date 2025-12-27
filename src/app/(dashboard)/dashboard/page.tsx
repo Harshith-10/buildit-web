@@ -27,7 +27,9 @@ export default async function DashboardPage() {
 
   return (
     <main className="flex h-full w-full flex-col">
-      {user.role === "student" && <StudentDataWrapper userId={user.id} />}
+      {user.role === "student" && (
+        <StudentDataWrapper userId={user.id} userName={user.name} />
+      )}
 
       {user.role === "instructor" && <FacultyDataWrapper userId={user.id} />}
 
@@ -38,8 +40,14 @@ export default async function DashboardPage() {
 
 // Data Wrappers to keep the main component clean and handle async data fetching
 
-async function StudentDataWrapper({ userId }: { userId: string }) {
-  const data = await getStudentDashboardData(userId);
+async function StudentDataWrapper({
+  userId,
+  userName,
+}: {
+  userId: string;
+  userName: string;
+}) {
+  const data = await getStudentDashboardData(userId, userName);
   return <StudentView {...data} />;
 }
 
