@@ -4,7 +4,7 @@ import { desc, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { cache } from "react";
 import db from "@/db";
-import { problems, submissions } from "@/db/schema";
+import { problems, submissions, testCases } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import type { Problem, Submission } from "@/types/problem";
 
@@ -22,10 +22,11 @@ export const getProblem = cache(
 
     // Transform to match strict Problem interface
     const visibleTestCases = problem.testCases.filter((tc) => !tc.isHidden);
-    const testCasesToShow = visibleTestCases.length > 0 
-      ? visibleTestCases 
-      : problem.testCases.slice(0, 3); // Show first 3 if all are hidden
-    
+    const testCasesToShow =
+      visibleTestCases.length > 0
+        ? visibleTestCases
+        : problem.testCases.slice(0, 3); // Show first 3 if all are hidden
+
     return {
       ...problem,
       // Ensure strict type compatibility for enums if needed, or cast if schema matches
@@ -278,4 +279,83 @@ export const submitSolution = async (
     message: results.message || (allPassed ? "Accepted" : "Wrong Answer"),
     testCases: clientTestCases,
   };
+};
+
+const createProblemSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  description: z.string().min(1, "Description is required"),
+  difficulty: z.enum(["easy", "medium", "hard"]),
+  type: z
+    .enum(["coding", "mcq_single", "mcq_multi", "true_false", "descriptive"])
+    .default("coding"),
+  driverCode: z.record(z.string()),
+  testCases: z.array(
+    z.object({
+      input: z.string(),
+      expectedOutput: z.string(),
+      isHidden: z.boolean(),
+    }),
+  ),
+  tags: z.array(z.string()).optional(),
+  isPublic: z.boolean().optional().default(false),
+  content: z.object({
+    examples: z.array(
+      z.object({
+        input: z.string(),
+        output: z.string(),
+        explanation: z.string().optional(),
+      }),
+    ),
+    constraints: z.array(z.string()).optional(),
+  }),
+});
+
+export const createProblem = async (
+  data: z.infer<typeof createProblemSchema>,
+) => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) {
+    throw new Error("Unauthorized");
+  }
+
+  const validatedData = createProblemSchema.parse(data);
+
+  // Generate a slug from title
+  const slug = validatedData.title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)+/g, "");
+
+  // Insert Problem
+  const [newProblem] = await db
+    .insert(problems)
+    .values({
+      title: validatedData.title,
+      slug: slug + "-" + Math.random().toString(36).substring(2, 7), // Ensure uniqueness
+      description: validatedData.description,
+      difficulty: validatedData.difficulty,
+      type: validatedData.type,
+      content: validatedData.content,
+      driverCode: validatedData.driverCode,
+      public: validatedData.isPublic,
+      createdBy: session.user.id,
+    })
+    .returning();
+
+  // Insert Test Cases
+  if (validatedData.testCases.length > 0) {
+    await db.insert(testCases).values(
+      validatedData.testCases.map((tc) => ({
+        problemId: newProblem.id,
+        input: tc.input,
+        expectedOutput: tc.expectedOutput,
+        isHidden: tc.isHidden,
+      })),
+    );
+  }
+
+  return newProblem;
 };
