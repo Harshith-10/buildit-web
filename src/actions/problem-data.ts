@@ -288,7 +288,7 @@ const createProblemSchema = z.object({
   type: z
     .enum(["coding", "mcq_single", "mcq_multi", "true_false", "descriptive"])
     .default("coding"),
-  driverCode: z.record(z.string()),
+  driverCode: z.record(z.string(), z.string()),
   testCases: z.array(
     z.object({
       input: z.string(),

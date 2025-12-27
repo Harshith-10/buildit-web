@@ -17,8 +17,8 @@ import { Switch } from "@/components/ui/switch";
 interface MetadataPanelProps {
   difficulty: "easy" | "medium" | "hard";
   setDifficulty: (d: "easy" | "medium" | "hard") => void;
-  type: "coding" | "mcq" | "true_false" | "descriptive";
-  setType: (t: "coding" | "mcq" | "true_false" | "descriptive") => void;
+  type: "coding" | "mcq_single" | "mcq_multi" | "true_false" | "descriptive";
+  setType: (t: "coding" | "mcq_single" | "mcq_multi" | "true_false" | "descriptive") => void;
   isPublic: boolean;
   setIsPublic: (p: boolean) => void;
   tags: string[];
@@ -52,7 +52,8 @@ export default function MetadataPanel({
 
   const typeLabels: Record<string, string> = {
     coding: "Coding",
-    mcq: "MCQ",
+    mcq_single: "MCQ (Single Answer)",
+    mcq_multi: "MCQ (Multiple Answers)",
     true_false: "True/False",
     descriptive: "Descriptive",
   };

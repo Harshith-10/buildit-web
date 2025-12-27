@@ -22,7 +22,7 @@ export type ProblemState = {
   title: string;
   description: string;
   difficulty: "easy" | "medium" | "hard";
-  type: "coding" | "mcq" | "true_false" | "descriptive";
+  type: "coding" | "mcq_single" | "mcq_multi" | "true_false" | "descriptive";
   // Coding-specific
   driverCode: Record<string, string>;
   testCases: {

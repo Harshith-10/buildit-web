@@ -60,7 +60,8 @@ export default function CreateProblemPanes({
           </>
         );
 
-      case "mcq":
+      case "mcq_single":
+      case "mcq_multi":
         return (
           <ResizablePanel defaultSize={100} minSize={50}>
             <McqOptionsPanel
