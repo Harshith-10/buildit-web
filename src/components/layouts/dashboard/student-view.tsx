@@ -332,7 +332,7 @@ export function StudentView({
                   <AreaChart
                     accessibilityLayer
                     data={ACTIVITY_DATA}
-                    margin={{ left: 12, right: 12, top: 8, bottom: 20 }}
+                    margin={{ left: 14, right: 14, top: 8, bottom: 20 }}
                   >
                     <defs>
                       <linearGradient
@@ -539,7 +539,11 @@ function ExamCarousel({ exams }: { exams: StudentViewProps["upcomingExams"] }) {
               key={`dot-${exam.id}`}
               type="button"
               onClick={() => setCurrentIndex(idx)}
-              className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentIndex ? "w-6 bg-primary" : "w-1.5 bg-muted-foreground/30 hover:bg-primary/50"}`}
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                idx === currentIndex
+                  ? "w-6 bg-primary"
+                  : "w-1.5 bg-muted-foreground/30 hover:bg-primary/50"
+              }`}
             />
           ))}
         </div>
