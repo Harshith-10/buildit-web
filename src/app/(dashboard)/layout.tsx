@@ -1,3 +1,6 @@
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
 import {
   BookOpen,
   Clock,
@@ -122,16 +125,48 @@ const adminSection: SidebarSection = {
   items: adminItems,
 };
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    redirect("/auth");
+  }
+
+  const role = session.user.role;
+
+  // Define logic for sidebar sections based on role while preserving order
+  const filteredMainItems = mainItems.filter((item) => {
+    if (item.label === "Dashboard") return true;
+    if (item.label === "Exams") return true;
+    if (item.label === "Collections") return role === "instructor";
+    return false; // 'Problems' is hidden for all roles
+  });
+
+  const filteredExploreItems = exploreItems.filter(() => {
+    return role !== "admin"; // Students and Faculty see Leaderboard and Resources
+  });
+
+  const filteredAdminItems = adminItems.filter(() => {
+    return role === "admin"; // Only Admins see User Management
+  });
+
+  const sections: SidebarSection[] = [
+    { label: mainSection.label, items: filteredMainItems },
+    { label: exploreSection.label, items: filteredExploreItems },
+    { label: adminSection.label, items: filteredAdminItems },
+  ].filter((section) => section.items.length > 0);
+
   return (
     <PinProtection>
       <SidebarProvider>
         <main className="flex w-screen h-screen">
-          <AppSidebar sections={[mainSection, exploreSection, adminSection]} />
+          <AppSidebar sections={sections} />
           <div className="w-full h-full py-2 pr-2 bg-sidebar">
             <div className="flex flex-col bg-background w-full h-full overflow-auto rounded-lg border-2">
               <AppHeader />
