@@ -7,10 +7,10 @@ async function seedUsers() {
   try {
     const users = [
       {
-        email: "harshu@buildit.com",
+        email: "23951A052X@iare.ac.in",
         name: "Harshith Doddipalli",
         password: "password1234",
-        username: "harshu",
+        username: "23951A052X",
         displayUsername: "Harshith",
         image: "https://api.dicebear.com/9.x/glass/svg?seed=harshu",
         role: "student",
