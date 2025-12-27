@@ -59,7 +59,7 @@ export function FacultyView({ activeStudents }: FacultyViewProps) {
           </p>
         </div>
         <Button asChild>
-          <Link href="/collections/new">
+          <Link href="/collections/create">
             <BookPlus className="mr-2 h-4 w-4" />
             New Collection
           </Link>
