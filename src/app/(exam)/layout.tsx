@@ -6,8 +6,10 @@ export default function ExamLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="h-screen w-screen">
-      <SidebarProvider>{children}</SidebarProvider>
+    <div className="h-screen w-full overflow-hidden">
+      <SidebarProvider className="h-full overflow-hidden">
+        {children}
+      </SidebarProvider>
     </div>
   );
 }

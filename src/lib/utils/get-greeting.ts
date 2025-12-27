@@ -34,7 +34,7 @@ export function getGreeting(): string {
 
   // Randomize a bit for variety?
   // or keep it standard: "Good evening, Happy Monday!"
-  return `${timeGreeting}, Happy ${currentDay}!`;
+  return `Happy ${currentDay}`;
 }
 
 export function getSeason(): string {

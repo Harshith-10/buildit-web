@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import type { Problem } from "@/types/problem";
 
-interface TestCasesPaneProps {
+interface TestCaseConsoleProps {
   testCases: Problem["testCases"];
   results: TestcaseResult[];
   consoleOutput: { stdout: string; stderr: string } | null;
@@ -21,7 +21,7 @@ interface TestCasesPaneProps {
   onTabChange: (tab: string) => void;
 }
 
-export default function TestCasesPane({
+export default function TestCaseConsole({
   testCases,
   results,
   consoleOutput,
@@ -29,7 +29,7 @@ export default function TestCasesPane({
   onCustomInputChange,
   activeTab,
   onTabChange,
-}: TestCasesPaneProps) {
+}: TestCaseConsoleProps) {
   // Derive state for which sub-tab (testcase id) is selected
   // We can just keep local state for that
   const [selectedCaseId, setSelectedCaseId] = useState<string>(

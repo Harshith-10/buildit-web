@@ -5,7 +5,7 @@ import ProblemSubmissions from "./problem-submissions";
 
 export default function ProblemInfo({ problem }: { problem: Problem }) {
   return (
-    <Tabs defaultValue="description" className="h-full">
+    <Tabs defaultValue="description" className="h-full flex flex-col">
       <div className="px-2 pt-2">
         <TabsList className="w-full">
           <TabsTrigger value="description">Description</TabsTrigger>

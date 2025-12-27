@@ -44,4 +44,6 @@ export interface DataItemsViewProps<T> {
     icon?: ReactNode;
     onClick: () => void;
   };
+  extraHeader?: ReactNode;
+  headerAction?: ReactNode;
 }

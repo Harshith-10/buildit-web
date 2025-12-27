@@ -17,7 +17,7 @@ export default function DescriptionPanel({
   return (
     <div className="flex flex-col h-full w-full">
       <Tabs defaultValue="edit" className="flex flex-col h-full">
-        <div className="border-b px-2 pt-2 bg-muted/20">
+        <div className="border-b px-2 py-1 bg-muted/20">
           <TabsList>
             <TabsTrigger value="edit">Edit</TabsTrigger>
             <TabsTrigger value="preview">Preview</TabsTrigger>

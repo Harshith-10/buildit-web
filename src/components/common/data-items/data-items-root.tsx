@@ -4,6 +4,7 @@ import { LayoutGrid, List, Plus, RotateCcw, Search } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import { type ReactNode, useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -53,6 +54,8 @@ export function DataItemsView<T extends { id: string }>({
   filters = [],
   sortOptions = [],
   createAction,
+  extraHeader,
+  headerAction,
 }: DataItemsViewProps<T>) {
   const router = useRouter();
   const pathname = usePathname();
@@ -164,134 +167,139 @@ export function DataItemsView<T extends { id: string }>({
             {createAction.label}
           </Button>
         )}
+        {headerAction}
       </div>
 
-      {/* Controls Bar */}
-      <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-card p-4 rounded-lg border shadow-sm flex-none">
-        <div className="flex items-center gap-4 w-full md:w-auto flex-1">
-          {/* Search */}
-          <div className="relative w-full md:max-w-sm">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder={searchPlaceholder}
-              className="pl-9 w-full"
-              value={localSearch}
-              onChange={(e) => setLocalSearch(e.target.value)}
-            />
-          </div>
-
-          {/* Filters */}
-          <div className="flex gap-2 overflow-x-auto pb-1 md:pb-0 hide-scrollbar">
-            {filters.map((filter) => (
-              <FilterControl key={filter.key} filter={filter} />
-            ))}
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2 w-full md:w-auto justify-end">
-          {/* Sort */}
-          {sortOptions.length > 0 && (
-            <Select
-              value={sort || ""}
-              onValueChange={(val: string) => setSort(val || null)}
-            >
-              <SelectTrigger className="w-[160px]">
-                <SelectValue placeholder="Sort by" />
-              </SelectTrigger>
-              <SelectContent>
-                {sortOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-
-          {/* View Toggle */}
-          {availableViews.length > 1 && (
-            <div className="flex items-center border rounded-md bg-background">
-              <Button
-                variant={currentView === "table" ? "secondary" : "ghost"}
-                size="icon"
-                className="h-9 w-9 rounded-none first:rounded-l-md"
-                onClick={() => setView("table")}
-              >
-                <List className="h-4 w-4" />
-              </Button>
-              <Button
-                variant={currentView === "card" ? "secondary" : "ghost"}
-                size="icon"
-                className="h-9 w-9 rounded-none last:rounded-l-none last:rounded-r-md"
-                onClick={() => setView("card")}
-              >
-                <LayoutGrid className="h-4 w-4" />
-              </Button>
+      {/* Header & Controls Card */}
+      {(extraHeader || filters.length > 0 || sortOptions.length > 0 || availableViews.length > 1 || localSearch !== undefined) && (
+        <div className="flex flex-col gap-4 bg-card p-4 rounded-lg border shadow-sm flex-none">
+          {extraHeader}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+            {/* Search - Column 1 */}
+            <div className="relative w-full">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder={searchPlaceholder}
+                className="pl-9 w-full h-10"
+                value={localSearch}
+                onChange={(e) => setLocalSearch(e.target.value)}
+              />
             </div>
-          )}
 
-          {/* Reset Button */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={resetAll}
-                className="h-9 w-9"
-              >
-                <RotateCcw className="h-4 w-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Reset filters</p>
-            </TooltipContent>
-          </Tooltip>
+            {/* Filters - Column 2 */}
+            <div className="flex items-center gap-2 w-full">
+              {filters.map((filter) => (
+                <div key={filter.key} className="flex-1">
+                  <FilterControl filter={filter} />
+                </div>
+              ))}
+            </div>
+
+            {/* Sort & Actions - Column 3 */}
+            <div className="flex items-center gap-2 justify-end">
+              {/* Sort */}
+              {sortOptions.length > 0 && (
+                <Select
+                  value={sort || ""}
+                  onValueChange={(val: string) => setSort(val || null)}
+                >
+                  <SelectTrigger className="w-[160px] h-10">
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {sortOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+
+              {/* View Toggle */}
+              {availableViews.length > 1 && (
+                <div className="flex items-center border rounded-md bg-background h-10">
+                  <Button
+                    variant={currentView === "table" ? "secondary" : "ghost"}
+                    size="icon"
+                    className="h-9 w-9 rounded-none first:rounded-l-md"
+                    onClick={() => setView("table")}
+                  >
+                    <List className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant={currentView === "card" ? "secondary" : "ghost"}
+                    size="icon"
+                    className="h-9 w-9 rounded-none last:rounded-l-none last:rounded-r-md"
+                    onClick={() => setView("card")}
+                  >
+                    <LayoutGrid className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
+
+              {/* Reset Button */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={resetAll}
+                    className="h-10 w-10"
+                  >
+                    <RotateCcw className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Reset filters</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Content */}
-      <div className="flex-1 overflow-auto min-h-0 border rounded-md bg-background">
+      <div className={cn("flex-1 min-h-0 border rounded-md bg-background flex flex-col", currentView === "card" && "overflow-auto")}>
         {data.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-12 text-center text-muted-foreground h-full">
             <p>No items found</p>
           </div>
         ) : currentView === "table" && columns ? (
-          <div className="h-full relative">
-            <Table>
-              <TableHeader className="sticky top-0 bg-background z-10 shadow-sm">
-                <TableRow>
-                  <TableHead className="w-[50px] text-center">#</TableHead>
+          <Table className="border-separate border-spacing-0" containerClassName="flex-1 overflow-auto">
+            <TableHeader className="sticky top-0 bg-background z-10 shadow-sm [&_th]:bg-background">
+              <TableRow>
+                <TableHead className="w-[50px] text-center">#</TableHead>
+                {columns.map((col) => (
+                  <TableHead
+                    key={col.accessorKey.toString()}
+                    className={col.className}
+                  >
+                    {col.header}
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data.map((item, idx) => (
+                <TableRow key={item.id}>
+                  <TableCell className="text-center font-mono text-xs text-muted-foreground">
+                    {(page - 1) * ITEMS_PER_PAGE + idx + 1}
+                  </TableCell>
                   {columns.map((col) => (
-                    <TableHead
+                    <TableCell
                       key={col.accessorKey.toString()}
                       className={col.className}
                     >
-                      {col.header}
-                    </TableHead>
+                      {typeof col.accessorKey === "function"
+                        ? col.accessorKey(item)
+                        : (item[col.accessorKey] as ReactNode)}
+                    </TableCell>
                   ))}
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {data.map((item, idx) => (
-                  <TableRow key={item.id}>
-                    <TableCell className="text-center font-mono text-xs text-muted-foreground">
-                      {(page - 1) * ITEMS_PER_PAGE + idx + 1}
-                    </TableCell>
-                    {columns.map((col) => (
-                      <TableCell
-                        key={col.accessorKey.toString()}
-                        className={col.className}
-                      >
-                        {typeof col.accessorKey === "function"
-                          ? col.accessorKey(item)
-                          : (item[col.accessorKey] as ReactNode)}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+              ))}
+            </TableBody>
+          </Table>
         ) : (
           <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {data.map((item) => (
@@ -310,16 +318,18 @@ export function DataItemsView<T extends { id: string }>({
       </div>
 
       {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex-none py-2 border-t bg-background">
-          <PaginationSection
-            page={page}
-            totalPages={totalPages}
-            onPageChange={setPage}
-          />
-        </div>
-      )}
-    </div>
+      {
+        totalPages > 1 && (
+          <div className="flex-none py-2 border-t bg-background">
+            <PaginationSection
+              page={page}
+              totalPages={totalPages}
+              onPageChange={setPage}
+            />
+          </div>
+        )
+      }
+    </div >
   );
 }
 
@@ -344,7 +354,7 @@ function FilterControl({
       value={value}
       onValueChange={(val: string) => setValue(val === "all" ? null : val)}
     >
-      <SelectTrigger className="w-[140px] h-10">
+      <SelectTrigger className="w-full h-10">
         <SelectValue placeholder={filter.label} />
       </SelectTrigger>
       <SelectContent>

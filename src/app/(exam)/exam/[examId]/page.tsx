@@ -1,15 +1,15 @@
 import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { getLanguages } from "@/actions/code-execution";
-import { getExam } from "@/actions/exam-details";
 import {
-  checkSessionValidity,
-  getActiveExamSession,
-  getExamSessionWithDetails,
+  getExamForEntry,
   getSessionProblems,
+  startExam,
+  validateSession,
 } from "@/actions/exam-session";
-import { ExamEntryView } from "@/components/layouts/exam/exam-entry-view";
-import ExamPageClient from "@/components/layouts/exam/exam-page-client";
+import { ExamEntry } from "@/components/layouts/exam/exam_entry";
+import ExamPage from "@/components/layouts/exam/exam_page";
+import SessionNotFound from "@/components/layouts/exam/session_not_found";
 import { auth } from "@/lib/auth";
 
 interface PageProps {
@@ -18,9 +18,8 @@ interface PageProps {
   }>;
 }
 
-export default async function ExamPage({ params }: PageProps) {
+export default async function Page({ params }: PageProps) {
   const { examId } = await params;
-  const sessionId = examId;
 
   // Get current user
   const session = await auth.api.getSession({
@@ -31,65 +30,66 @@ export default async function ExamPage({ params }: PageProps) {
     redirect("/auth");
   }
 
-  // 1. Attempt to resolve the URL parameter as an Exam Session ID
-  const sessionData = await getExamSessionWithDetails(sessionId);
+  // Strategy:
+  // 1. Check if 'examId' is actually a SESSION ID (from resume/redirect)
+  // 2. OR if it is an EXAM ID (new start)
 
-  // 2. If no session found, assume the parameter is an Exam ID (Onboarding View)
-  if (!sessionData) {
-    const examData = await getExam(sessionId);
+  // A. Try validating as session
+  const validation = await validateSession(examId, session.user.id);
 
-    if (!examData) {
-      notFound();
+  if (validation.success) {
+    // It is a valid session!
+    const { session: examSession, timeLeft } = validation;
+
+    const [problems, languages, exam] = await Promise.all([
+      getSessionProblems(examSession.id),
+      getLanguages(),
+      getExamForEntry(examSession.examId),
+    ]);
+
+    if (!problems || problems.length === 0) {
+      // Data issue
+      return <SessionNotFound />;
     }
 
-    // Check if the user already has an active session for this exam
-    const activeSession = await getActiveExamSession(
-      examData.id,
-      session.user.id,
-    );
-
-    if (activeSession) {
-      // User has an active session -> Redirect them to it
-      redirect(`/exam/${activeSession.id}`);
-    }
-
-    // User has no active session -> Show Onboarding
     return (
-      <ExamEntryView
-        examId={examData.id}
-        examTitle={examData.title}
-        durationMinutes={examData.durationMinutes}
+      <ExamPage
+        sessionId={examSession.id}
+        examTitle={exam ? exam.title : "Exam"}
+        initialTimeLeft={timeLeft}
+        problems={problems}
+        languages={languages}
       />
     );
+  } else {
+    // If validation failed...
+    if (validation.error === "not_found") {
+      // It might be an EXAM ID (Onboarding)
+      const exam = await getExamForEntry(examId);
+
+      if (exam) {
+        // It is an Exam ID. Show Entry/Onboarding page.
+        // Note: Check if active session exists already?
+        // startExam inside ExamEntry will handle resume logic,
+        // or we can pre-check here to auto-redirect.
+        // Let's rely on ExamEntry to be the landing page.
+        return (
+          <ExamEntry
+            examId={exam.id}
+            examTitle={exam.title}
+            durationMinutes={exam.durationMinutes}
+          />
+        );
+      }
+    } else if (validation.error === "expired") {
+      return redirect("/exams?status=expired");
+    } else if (validation.error === "submitted") {
+      return redirect("/exams?status=completed");
+    } else if (validation.error === "terminated") {
+      return redirect("/exams?status=terminated");
+    }
+
+    // Default error or truly not found
+    return <SessionNotFound />;
   }
-
-  // 3. We have a session, validate it
-  const validation = await checkSessionValidity(sessionId, session.user.id);
-  if (!validation.valid) {
-    redirect(`/exams?error=${validation.reason || "invalid_session"}`);
-  }
-
-  // 4. Fetch problems and languages
-  const [problems, languages] = await Promise.all([
-    getSessionProblems(sessionId),
-    getLanguages(),
-  ]);
-
-  if (problems.length === 0) {
-    // This implies a data integrity issue or empty exam
-    notFound();
-  }
-
-  return (
-    <ExamPageClient
-      sessionId={sessionId}
-      sessionData={{
-        examTitle: sessionData.exam.title,
-        expiresAt: sessionData.session.expiresAt,
-        status: sessionData.session.status,
-      }}
-      problems={problems}
-      languages={languages}
-    />
-  );
 }

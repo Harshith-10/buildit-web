@@ -50,7 +50,7 @@ export default function AppHeader() {
   });
 
   return (
-    <div className="flex items-center justify-between p-4 border-b sticky top-0 z-10 bg-background">
+    <div className="flex items-center justify-between p-4 border-b sticky top-0 z-50 bg-background">
       <div className="flex items-center gap-2">
         <Breadcrumb>
           <BreadcrumbList>{breadcrumbItems}</BreadcrumbList>

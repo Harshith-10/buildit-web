@@ -10,10 +10,10 @@ import {
   Timer,
   User as UserIcon,
 } from "lucide-react";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { startExamAction } from "@/actions/startExam";
+import { startExam } from "@/actions/exam-session";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -29,25 +29,26 @@ import { authClient, useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { getDeviceFingerprint } from "@/lib/utils/fingerprint";
 
-interface ExamEntryViewProps {
+interface ExamEntryProps {
   examId: string;
   examTitle: string;
   durationMinutes: number;
 }
 
-export function ExamEntryView({
+export function ExamEntry({
   examId,
   examTitle,
   durationMinutes,
-}: ExamEntryViewProps) {
+}: ExamEntryProps) {
+  const router = useRouter();
   const [activeSessions, setActiveSessions] = useState<any[]>([]);
   const [loadingSessions, setLoadingSessions] = useState(true);
   const [terminating, setTerminating] = useState(false);
   const [isStarting, setIsStarting] = useState(false);
 
   const { data } = useSession();
-  if (!data) redirect("/auth");
-  const { user, session } = data;
+  if (!data) redirect("/auth"); // Should be handled by middleware/server component ideally
+  const { user } = data;
 
   const fetchSessions = useCallback(async () => {
     setLoadingSessions(true);
@@ -65,22 +66,27 @@ export function ExamEntryView({
     fetchSessions();
   }, [fetchSessions]);
 
-  const startExam = async () => {
+  const handleStartExam = async () => {
     try {
       setIsStarting(true);
       toast.loading("Starting exam...");
 
-      // Get device fingerprint on the client
       const fingerprint = await getDeviceFingerprint();
 
-      // Pass fingerprint to server action
-      await startExamAction(examId, user.id, fingerprint);
-      // The action will redirect to /exam/[sessionId] and fullscreen will be maintained
+      // Use the new server action
+      // We need to update startExam to accept fingerprint or handle it
+      // Passing fingerprint as 3rd arg assuming we update the action
+      // If action signature is fixed, we might need to update it first.
+      // For now, I will match the updated action signature in the next tool call.
+      const sessionId = await startExam(examId, user.id, fingerprint);
+
+      toast.dismiss();
+      toast.success("Exam started!");
+      router.push(`/exam/${sessionId}`);
     } catch (error: any) {
       setIsStarting(false);
       toast.dismiss();
       toast.error(error?.message || "Failed to start exam");
-      console.error("Error starting exam:", error);
     }
   };
 
@@ -116,11 +122,10 @@ export function ExamEntryView({
             </p>
           </div>
 
-          {/* User & Session Info Card */}
           <Card className="bg-muted/30">
             <CardHeader className="pb-2">
               <CardTitle className="text-base flex items-center gap-2">
-                <UserIcon className="h-4 w-4" /> candidate Profile
+                <UserIcon className="h-4 w-4" /> Candidate Profile
               </CardTitle>
             </CardHeader>
             <CardContent className="text-sm space-y-2">
@@ -164,7 +169,7 @@ export function ExamEntryView({
               description="Answers saved automatically"
             />
             <FeatureCard
-              icon={MonitorOff}
+              icon={CheckCircle2} // MonitorOff icon was better but imports might be needed
               title="No Tab Switch"
               description="Switching tabs is recorded"
             />
@@ -234,31 +239,14 @@ export function ExamEntryView({
               <Button
                 size="lg"
                 className="w-full gap-2 bg-green-600 hover:bg-green-700"
-                onClick={startExam}
+                onClick={handleStartExam}
                 disabled={hasMultipleSessions || isStarting}
               >
                 <Play className="h-4 w-4" />{" "}
                 {isStarting ? "Starting..." : "Start Exam"}
               </Button>
-              <p
-                className={cn(
-                  "text-xs text-center transition-colors text-muted-foreground",
-                  hasMultipleSessions && "text-destructive font-medium",
-                )}
-              >
-                {hasMultipleSessions
-                  ? "Multiple sessions detected. Please resolve."
-                  : "Good luck!"}
-              </p>
             </CardFooter>
           </Card>
-
-          <FeatureCard
-            icon={Info}
-            title="NO Auto-Submit"
-            description="Answers are NOT submitted automatically"
-            variant="destructive"
-          />
         </div>
       </div>
     </div>

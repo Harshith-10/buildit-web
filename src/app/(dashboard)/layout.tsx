@@ -10,6 +10,7 @@ import {
   Play,
   Target,
   Trophy,
+  Users,
 } from "lucide-react";
 import PinProtection from "@/components/auth/pin-protection";
 import AppHeader from "@/components/common/app-header";
@@ -108,6 +109,19 @@ const exploreSection: SidebarSection = {
   items: exploreItems,
 };
 
+const adminItems: MenuItem[] = [
+  {
+    icon: <Users className="h-4 w-4" />,
+    label: "Users",
+    href: "/users",
+  },
+];
+
+const adminSection: SidebarSection = {
+  label: "Admin",
+  items: adminItems,
+};
+
 export default function DashboardLayout({
   children,
 }: {
@@ -117,7 +131,7 @@ export default function DashboardLayout({
     <PinProtection>
       <SidebarProvider>
         <main className="flex w-screen h-screen">
-          <AppSidebar sections={[mainSection, exploreSection]} />
+          <AppSidebar sections={[mainSection, exploreSection, adminSection]} />
           <div className="w-full h-full py-2 pr-2 bg-sidebar">
             <div className="flex flex-col bg-background w-full h-full overflow-auto rounded-lg border-2">
               <AppHeader />

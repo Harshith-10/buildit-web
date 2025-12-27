@@ -12,16 +12,16 @@ export default function UserInfo() {
 
   return (
     <div className="flex items-center gap-2">
-      <div className="flex flex-col">
-        <p>{user.name}</p>
-        <p>{user.email}</p>
-      </div>
       <Avatar>
         <AvatarImage src={user.image || undefined} />
         <AvatarFallback className="capitalize">
           {user.name.slice(0, 2)}
         </AvatarFallback>
       </Avatar>
+      <div className="flex flex-col">
+        <p className="text-sm font-semibold">{user.name}</p>
+        <p className="text-xs text-muted-foreground">{user.email}</p>
+      </div>
     </div>
   );
 }
