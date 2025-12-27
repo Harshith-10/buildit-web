@@ -63,6 +63,12 @@ export function ExamsView({
     }
   }, [error]);
 
+  // Helper to check if exam is ongoing
+  const isOngoing = (start: Date, end: Date) => {
+    const now = new Date();
+    return now >= start && now <= end;
+  };
+
   // Helper for Status Badge
   const getStatus = (start: Date, end: Date) => {
     const now = new Date();
@@ -124,23 +130,25 @@ export function ExamsView({
               <p>View Details</p>
             </TooltipContent>
           </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                asChild
-                size="icon"
-                variant="ghost"
-                className="h-8 w-8 text-primary"
-              >
-                <Link href={`/exam/${item.id}`}>
-                  <Play className="h-4 w-4" />
-                </Link>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Start Exam</p>
-            </TooltipContent>
-          </Tooltip>
+          {isOngoing(item.startTime, item.endTime) && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  asChild
+                  size="icon"
+                  variant="ghost"
+                  className="h-8 w-8 text-primary"
+                >
+                  <Link href={`/exam/${item.id}`}>
+                    <Play className="h-4 w-4" />
+                  </Link>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Start Exam</p>
+              </TooltipContent>
+            </Tooltip>
+          )}
         </div>
       ),
       className: "w-[100px]",
@@ -169,13 +177,15 @@ export function ExamsView({
         </div>
       </div>
 
-      <div className="mt-auto pt-4 border-t w-full grid grid-cols-2 gap-2">
-        <Button asChild variant="outline" className="w-full">
+      <div className="mt-auto pt-4 border-t w-full flex gap-2">
+        <Button asChild variant="outline" className="flex-1">
           <Link href={`/exams/${item.id}`}>View Details</Link>
         </Button>
-        <Button asChild className="w-full">
-          <Link href={`/exam/${item.id}`}>Start Exam</Link>
-        </Button>
+        {isOngoing(item.startTime, item.endTime) && (
+          <Button asChild className="flex-1">
+            <Link href={`/exam/${item.id}`}>Start Exam</Link>
+          </Button>
+        )}
       </div>
     </div>
   );

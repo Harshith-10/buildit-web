@@ -11,7 +11,6 @@ import {
   Hash,
   Play,
   Trophy,
-  User,
   Users,
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
@@ -121,7 +120,7 @@ export function StudentView({
       {/* Hero Section */}
       <div className="grid gap-6 md:grid-cols-7 lg:grid-cols-7">
         {/* Welcome & Daily Goal - Spans 5 cols */}
-        <div className="col-span-1 md:col-span-5 rounded-3xl bg-linear-to-br from-indigo-600 via-violet-600 to-fuchsia-600 dark:from-sky-950 dark:via-teal-900 dark:to-emerald-900 p-8 text-white relative overflow-hidden group ring-1 ring-white/10">
+        <div className="col-span-1 md:col-span-5 rounded-3xl bg-linear-to-br from-sky-700 dark:from-sky-950 via-teal-600 dark:via-teal-900 to-emerald-500 dark:to-emerald-900 p-8 text-white relative overflow-hidden group ring-1 ring-white/10">
           {/* Background Texture & Effects */}
           <div className="absolute inset-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay pointer-events-none"></div>
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-500/30 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
@@ -146,7 +145,7 @@ export function StudentView({
               </div>
 
               {/* Streak Counter */}
-              <div className="bg-white/10 backdrop-blur-md rounded-full pl-4 pr-5 py-2 flex items-center gap-3 border border-white/20 hover:bg-white/15 transition-all">
+              <div className="bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-full pl-4 pr-5 py-2 flex items-center gap-3 border border-white/40 dark:border-white/20 hover:bg-white/15 transition-all">
                 <div className="p-1.5 bg-orange-500/20 rounded-full">
                   <Flame className="h-5 w-5 text-orange-400 fill-orange-400 animate-pulse" />
                 </div>
@@ -168,7 +167,7 @@ export function StudentView({
                 <div className="flex items-center gap-3">
                   {weeklyProgress.map((active, i) => (
                     <div
-                      key={i}
+                      key={i.toString()}
                       className={`w-9 h-9 rounded-full flex items-center justify-center border transition-all duration-300 ${active ? "bg-gradient-to-br from-emerald-400 to-emerald-600 border-emerald-300 scale-105" : "bg-white/5 border-white/10"}`}
                       title={active ? "Problem Solved" : "No Activity"}
                     >
@@ -194,7 +193,7 @@ export function StudentView({
             </div>
 
             {/* Daily Problem Card */}
-            <div className="mt-2 group/card relative overflow-hidden rounded-2xl border border-white/20 bg-white/10 backdrop-blur-xl transition-all duration-300 hover:bg-white/15 hover:border-white/30">
+            <div className="mt-2 group/card relative overflow-hidden rounded-2xl border border-white/50 dark:border-white/20 bg-white/20 dark:bg-white/10 backdrop-blur-xl transition-all duration-300 hover:bg-white/15 hover:border-white/30">
               {dailyProblem ? (
                 <div className="flex flex-col md:flex-row items-stretch">
                   <div className="flex-1 p-6 space-y-4">
