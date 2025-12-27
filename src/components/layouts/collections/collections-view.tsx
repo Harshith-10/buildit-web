@@ -3,6 +3,7 @@
 import { format } from "date-fns";
 import { Calendar, Eye, Folder, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { DataItemsView } from "@/components/common/data-items/data-items-root";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -31,6 +32,7 @@ interface CollectionsViewProps {
 
 export function CollectionsView({ data, total }: CollectionsViewProps) {
   usePageName("Collections");
+  const router = useRouter();
 
   const columns = [
     {
@@ -140,7 +142,7 @@ export function CollectionsView({ data, total }: CollectionsViewProps) {
       createAction={{
         label: "New Collection",
         onClick: () => {
-          window.location.href = "/collections/create"; // Placeholder
+          router.push("/collections/create");
         },
       }}
     />

@@ -160,7 +160,7 @@ export function FacultyView({ activeStudents }: FacultyViewProps) {
                 className="h-auto py-4 flex flex-col items-center justify-center gap-2 hover:border-primary hover:bg-primary/5 transition-colors"
                 asChild
               >
-                <Link href="/problems/new" className="w-full">
+                <Link href="/problems/create" className="w-full">
                   <FilePlus className="h-6 w-6 text-primary" />
                   <span className="font-medium">Create Problem</span>
                   <span className="text-xs text-muted-foreground font-normal">
@@ -173,7 +173,7 @@ export function FacultyView({ activeStudents }: FacultyViewProps) {
                 className="h-auto py-4 flex flex-col items-center justify-center gap-2 hover:border-primary hover:bg-primary/5 transition-colors"
                 asChild
               >
-                <Link href="/collections/new" className="w-full">
+                <Link href="/collections/create" className="w-full">
                   <BookPlus className="h-6 w-6 text-primary" />
                   <span className="font-medium">Create Collection</span>
                   <span className="text-xs text-muted-foreground font-normal">

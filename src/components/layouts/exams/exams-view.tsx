@@ -3,6 +3,7 @@
 import { format } from "date-fns";
 import { Calendar, Clock, Info, Play } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { GetExamsParams } from "@/actions/exams-list";
 import { DataItemsView } from "@/components/common/data-items/data-items-root";
@@ -53,6 +54,7 @@ export function ExamsView({
 }: ExamsViewProps) {
   usePageName("Exams");
   const session = useSession();
+  const router = useRouter();
   const [showError, setShowError] = useState(false);
 
   useEffect(() => {
@@ -212,9 +214,7 @@ export function ExamsView({
             ? {
                 label: "Create Exam",
                 onClick: () => {
-                  // This should probably navigate to a create page or open a modal.
-                  // For now, let's assume navigation.
-                  window.location.href = "/exams/create";
+                  router.push("/exams/create");
                 },
               }
             : undefined

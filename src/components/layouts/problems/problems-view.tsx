@@ -3,6 +3,7 @@
 import { format } from "date-fns";
 import { ArrowRight, Calendar } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { DataItemsView } from "@/components/common/data-items/data-items-root";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,7 @@ interface ProblemsViewProps {
 export function ProblemsView({ data, total }: ProblemsViewProps) {
   usePageName("Problems");
   const session = useSession();
+  const router = useRouter();
 
   const getDifficultyColor = (diff: string) => {
     switch (diff) {
@@ -134,7 +136,7 @@ export function ProblemsView({ data, total }: ProblemsViewProps) {
           ? {
               label: "New Problem",
               onClick: () => {
-                window.location.href = "/problems/create";
+                router.push("/problems/create");
               },
             }
           : undefined

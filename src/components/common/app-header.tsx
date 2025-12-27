@@ -1,6 +1,7 @@
 "use client";
 
 import { Bell, Search } from "lucide-react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Fragment } from "react";
 import {
@@ -37,10 +38,10 @@ export default function AppHeader() {
       <Fragment key={fullPath}>
         <BreadcrumbItem>
           <BreadcrumbLink
-            href={fullPath}
+            asChild
             className={pathname === fullPath ? "text-foreground text-base" : ""}
           >
-            {displayName}
+            <Link href={fullPath}>{displayName}</Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
         {index < pathSegments.length - 1 && <BreadcrumbSeparator />}
