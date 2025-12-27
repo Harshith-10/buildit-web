@@ -1,10 +1,37 @@
-"use client";
+import { notFound } from "next/navigation";
+import { getCollection } from "@/actions/collections-list";
+import { CollectionDetailsView } from "@/components/layouts/collections";
+import { searchParamsCache } from "@/lib/search-params/problems";
 
-import UnderConstruction from "@/components/common/under-construction";
-import { usePageName } from "@/hooks/use-page-name";
+export default async function CollectionPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ collectionId: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const { collectionId } = await params;
+  const sParams = await searchParams;
 
-export default function CollectionPage() {
-  usePageName("Microsoft SDE List");
+  const {
+    page,
+    q: search,
+    sort,
+    type,
+    difficulty,
+  } = await searchParamsCache.parse(sParams);
 
-  return <UnderConstruction />;
+  const collection = await getCollection(collectionId, {
+    page,
+    search: search || undefined,
+    type: type || undefined,
+    difficulty: difficulty || undefined,
+    sort: sort || undefined,
+  });
+
+  if (!collection) {
+    notFound();
+  }
+
+  return <CollectionDetailsView collection={collection as any} />;
 }
