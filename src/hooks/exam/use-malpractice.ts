@@ -21,7 +21,7 @@ export function useMalpractice({
   const isLocked = useRef(false);
   const lastViolationTime = useRef<number>(0);
   const isReenteringFullscreen = useRef(false);
-  
+
   // State for violation dialog
   const [violationDialog, setViolationDialog] = useState<{
     open: boolean;
@@ -47,7 +47,7 @@ export function useMalpractice({
         console.log("[Violation] Debounced - too rapid:", type);
         return;
       }
-      
+
       // Lock the system
       isLocked.current = true;
       lastViolationTime.current = now;
@@ -66,7 +66,7 @@ export function useMalpractice({
             duration: 10000,
           });
           setTimeout(() => {
-            window.location.href = "/exams?status=terminated";
+            window.location.href = `/exam-submitted?sessionId=${sessionId}`;
           }, 2000);
         } else if (typeof result.count === "number") {
           // Show violation dialog
@@ -76,7 +76,7 @@ export function useMalpractice({
             type,
             count: result.count,
           });
-          
+
           if (onViolation) {
             onViolation(result.count);
           }
@@ -137,7 +137,7 @@ export function useMalpractice({
         isLocked: isLocked.current,
         isReentering: isReenteringFullscreen.current,
       });
-      
+
       if (isFullscreen && isReenteringFullscreen.current) {
         // Successfully re-entered fullscreen after a violation
         console.log("[Detection] Fullscreen re-entry successful, unlocking after delay");

@@ -12,6 +12,7 @@ import { useWindowBlurDetection } from "@/hooks/exam/use-window-blur-detection";
 import { useViolationStore } from "@/stores/violation-store";
 
 interface ExamViolationEnforcementProps {
+  sessionId: string;
   enabled: boolean;
   onTerminate: () => void;
 }
@@ -28,7 +29,8 @@ interface ExamViolationEnforcementProps {
  * - Blocking violation dialog
  * - Auto-termination at 3 violations
  */
-export function ExamViolationEnforcement({ 
+export function ExamViolationEnforcement({
+  sessionId,
   enabled,
   onTerminate,
 }: ExamViolationEnforcementProps) {
@@ -36,6 +38,7 @@ export function ExamViolationEnforcement({
   const {
     state,
     activeViolation,
+    setSessionId,
     setExamActive,
     setOnTerminate,
     resolveViolation,
@@ -43,6 +46,14 @@ export function ExamViolationEnforcement({
     getTotalViolations,
     isTerminated,
   } = useViolationStore();
+
+  // Set session ID for database sync
+  useEffect(() => {
+    if (sessionId) {
+      setSessionId(sessionId);
+      console.log(`[ViolationEnforcement] Session ID set: ${sessionId}`);
+    }
+  }, [sessionId, setSessionId]);
 
   // Set exam active state
   useEffect(() => {
@@ -60,7 +71,7 @@ export function ExamViolationEnforcement({
     if (isTerminated()) {
       const totalViolations = getTotalViolations();
       console.log(`[ViolationEnforcement] Exam terminated due to ${totalViolations} violations`);
-      
+
       toast.error(`Exam terminated: ${totalViolations} violations detected`, {
         duration: 5000,
       });
@@ -121,8 +132,8 @@ export function ExamViolationEnforcement({
   // PRIORITY LOGIC: If not in fullscreen, always show fullscreen dialog
   // even if other violations are active
   const isInFullscreen = checkFullscreen();
-  const displayViolationType = (!isInFullscreen && enabled) 
-    ? "fullscreen" 
+  const displayViolationType = (!isInFullscreen && enabled)
+    ? "fullscreen"
     : activeViolation?.violationType || "fullscreen";
 
   // Show termination dialog if terminated

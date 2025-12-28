@@ -20,19 +20,19 @@ import type { ExamConfig } from "@/types/exam-config";
 
 export type SessionValidationResult =
   | {
-      success: true;
-      session: typeof examSessions.$inferSelect;
-      timeLeft: number;
-    }
+    success: true;
+    session: typeof examSessions.$inferSelect;
+    timeLeft: number;
+  }
   | {
-      success: false;
-      error:
-        | "not_found"
-        | "expired"
-        | "submitted"
-        | "terminated"
-        | "unauthorized";
-    };
+    success: false;
+    error:
+    | "not_found"
+    | "expired"
+    | "submitted"
+    | "terminated"
+    | "unauthorized";
+  };
 
 // --- Actions ---
 

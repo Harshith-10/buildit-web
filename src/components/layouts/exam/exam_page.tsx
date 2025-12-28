@@ -15,6 +15,7 @@ import { useExamData } from "@/hooks/exam/use-exam-data";
 import { useExamSession } from "@/hooks/exam/use-exam-session";
 import { useFullscreen } from "@/hooks/exam/use-fullscreen";
 import { useExamStore } from "@/stores/exam-store";
+import { useViolationStore } from "@/stores/violation-store";
 import type { Problem } from "@/types/problem";
 
 interface ExamPageProps {
@@ -279,41 +280,52 @@ export default function ExamPage({
   };
 
   const handleFinishExam = async () => {
-    // 1. Get all submissions from store
     const allSubmissions = useExamStore.getState().submissions;
 
-    // 2. Submit to DB
     toast.loading("Submitting exam...");
-    const res = await bulkSubmitExam({
-      sessionId,
-      submissions: allSubmissions,
-    });
 
-    toast.dismiss();
+    let hasError = false;
 
-    if (res.success) {
-      // Exit fullscreen before navigation
-      await exitFullscreen();
-      
-      toast.success("Exam submitted successfully!");
-      reset(); // Clear store
-      endExam(); // Call local end exam logic (clean up tokens etc if any)
-      router.push("/exams?status=completed");
-    } else {
-      toast.error(res.message || "Failed to submit exam. Please try again.");
+    try {
+      const res = await bulkSubmitExam({
+        sessionId,
+        submissions: allSubmissions,
+      });
+
+      toast.dismiss();
+
+      if (res.error) {
+        toast.error(res.error);
+        hasError = true;
+      } else {
+        toast.success("Exam submitted successfully!");//reset()
+      }
+    } catch (error) {
+      toast.dismiss();
+      toast.error("Failed to submit exam");
+      hasError = true;
     }
+
+    // Only block redirect for specific errors (like unauthorized)
+    // Otherwise always redirect to show submission status
+
+    // Exit fullscreen and clear stores
+    await exitFullscreen();
+    reset();
+    useViolationStore.getState().clearViolations();
+
+    // Redirect to submission page
+    router.replace(`/exam-submitted?sessionId=${sessionId}`);
   };
 
   // Handle exam termination due to violations
   const handleExamTermination = async () => {
-    console.log("[ExamPage] Handling exam termination");
-    
     // Exit fullscreen
     await exitFullscreen();
-    
+
     // Auto-submit with current state
     const allSubmissions = useExamStore.getState().submissions;
-    
+
     try {
       await bulkSubmitExam({
         sessionId,
@@ -321,27 +333,26 @@ export default function ExamPage({
         terminated: true,
       });
     } catch (error) {
-      console.error("[ExamPage] Failed to submit terminated exam:", error);
+      // Continue with redirect even if submission fails
     }
-    
-    // Clear store and redirect
+
+    // Clear all stores to stop violation detection
     reset();
-    endExam();
-    
-    // Delay redirect to show termination message
-    setTimeout(() => {
-      router.push("/exams?status=terminated");
-    }, 3000);
+    useViolationStore.getState().clearViolations();
+
+    // Redirect immediately
+    router.replace(`/exam-submitted?sessionId=${sessionId}`);
   };
 
   return (
     <>
       {/* Violation Enforcement System */}
-      <ExamViolationEnforcement 
-        enabled={!isEnded} 
+      <ExamViolationEnforcement
+        sessionId={sessionId}
+        enabled={!isEnded}
         onTerminate={handleExamTermination}
       />
-      
+
       <ExamSidebar
         problems={examProblems}
         currentIndex={currentProblemIndex}
