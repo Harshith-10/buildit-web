@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { recordViolation } from "@/actions/exam-session";
 
 export type ViolationType = "fullscreen" | "tab" | "blur" | "devtools";
 
@@ -14,27 +15,33 @@ export interface ViolationRecord {
 const MAX_VIOLATIONS = 3;
 
 interface ViolationStoreState {
+  // Session ID for server sync
+  sessionId: string | null;
+
   // Current violation state
   state: ViolationState;
-  
+
   // Active violation (if any)
   activeViolation: ViolationRecord | null;
-  
+
   // Violation history
   violations: ViolationRecord[];
-  
+
   // Exam active flag (violations only apply during exam)
   examActive: boolean;
-  
+
   // Termination callback
   onTerminate: (() => void) | null;
-  
+
+  // Processing lock to prevent race conditions
+  isProcessing: boolean;
+
   // Actions
+  setSessionId: (sessionId: string) => void;
   setExamActive: (active: boolean) => void;
   setOnTerminate: (callback: () => void) => void;
   triggerViolation: (type: ViolationType) => void;
   resolveViolation: () => void;
-  incrementViolationCount: (type: ViolationType) => void;
   clearViolations: () => void;
   getViolationCount: (type: ViolationType) => number;
   getTotalViolations: () => number;
@@ -42,16 +49,21 @@ interface ViolationStoreState {
 }
 
 export const useViolationStore = create<ViolationStoreState>((set, get) => ({
+  sessionId: null,
   state: "IDLE",
   activeViolation: null,
   violations: [],
   examActive: false,
   onTerminate: null,
+  isProcessing: false,
+
+  setSessionId: (sessionId) => {
+    set({ sessionId });
+  },
 
   setExamActive: (active) => {
     set({ examActive: active });
     if (!active) {
-      // Clear active violation when exam ends
       set({ state: "IDLE", activeViolation: null });
     }
   },
@@ -61,12 +73,15 @@ export const useViolationStore = create<ViolationStoreState>((set, get) => ({
   },
 
   triggerViolation: (type) => {
-    const { examActive, state, onTerminate } = get();
-    
+    const { examActive, state, onTerminate, sessionId, isProcessing } = get();
+
     if (!examActive) return;
     if (state === "TERMINATED") return;
+    if (state === "VIOLATION_ACTIVE") return;
+    if (isProcessing) return;
 
-    // Get current count for this violation type
+    set({ isProcessing: true });
+
     const existingViolations = get().violations.filter(v => v.violationType === type);
     const count = existingViolations.length + 1;
 
@@ -80,44 +95,83 @@ export const useViolationStore = create<ViolationStoreState>((set, get) => ({
     const updatedViolations = [...get().violations, newViolation];
     const totalViolations = updatedViolations.length;
 
-    console.log(`[ViolationStore] Triggered ${type} violation (count: ${count}, total: ${totalViolations})`);
-
-    // Check if we've reached max violations
-    if (totalViolations >= MAX_VIOLATIONS) {
-      console.log(`[ViolationStore] ⚠️ MAX VIOLATIONS REACHED (${totalViolations}/${MAX_VIOLATIONS}) - TERMINATING EXAM`);
-      set({
-        state: "TERMINATED",
-        activeViolation: newViolation,
-        violations: updatedViolations,
-      });
-      
-      // Trigger termination callback
-      if (onTerminate) {
-        setTimeout(() => onTerminate(), 100);
-      }
-      return;
-    }
-
     set({
       state: "VIOLATION_ACTIVE",
       activeViolation: newViolation,
       violations: updatedViolations,
     });
+
+    if (sessionId) {
+      recordViolation(sessionId, type)
+        .then((result) => {
+          if (result.terminated) {
+            set({
+              state: "TERMINATED",
+              isProcessing: false,
+            });
+
+            if (onTerminate) {
+              setTimeout(() => onTerminate(), 100);
+            }
+            return;
+          }
+
+          if (result.ignored) {
+            const currentViolations = get().violations;
+            set({
+              state: "IDLE",
+              activeViolation: null,
+              violations: currentViolations.slice(0, -1),
+              isProcessing: false,
+            });
+            return;
+          }
+
+          if (result.count && result.count >= MAX_VIOLATIONS) {
+            set({
+              state: "TERMINATED",
+              isProcessing: false,
+            });
+
+            if (onTerminate) {
+              setTimeout(() => onTerminate(), 100);
+            }
+            return;
+          }
+
+          set({ isProcessing: false });
+        })
+        .catch(() => {
+          set({ isProcessing: false });
+        });
+    } else {
+      if (totalViolations >= MAX_VIOLATIONS) {
+        set({
+          state: "TERMINATED",
+          isProcessing: false,
+        });
+
+        if (onTerminate) {
+          setTimeout(() => onTerminate(), 100);
+        }
+        return;
+      }
+
+      set({ isProcessing: false });
+    }
   },
 
   resolveViolation: () => {
-    const { activeViolation } = get();
-    
-    if (!activeViolation) return;
+    const { activeViolation, state } = get();
 
-    console.log(`[ViolationStore] Resolved ${activeViolation.violationType} violation`);
-    
+    if (!activeViolation) return;
+    if (state === "TERMINATED") return;
+
     set({
       state: "RESOLVED",
       activeViolation: null,
     });
 
-    // Reset to IDLE after brief delay
     setTimeout(() => {
       if (get().state === "RESOLVED") {
         set({ state: "IDLE" });
@@ -125,24 +179,14 @@ export const useViolationStore = create<ViolationStoreState>((set, get) => ({
     }, 100);
   },
 
-  incrementViolationCount: (type) => {
-    const { violations, activeViolation } = get();
-    
-    if (activeViolation && activeViolation.violationType === type) {
-      set({
-        activeViolation: {
-          ...activeViolation,
-          count: activeViolation.count + 1,
-        },
-      });
-    }
-  },
-
   clearViolations: () => {
     set({
       state: "IDLE",
       activeViolation: null,
       violations: [],
+      sessionId: null,
+      isProcessing: false,
+      examActive: false,
     });
   },
 

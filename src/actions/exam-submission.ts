@@ -3,7 +3,7 @@
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import db from "@/db";
-import { examSessions } from "@/db/schema/exams";
+import { examSessions, exams, sessionProblems } from "@/db/schema/exams";
 import { submissions } from "@/db/schema/submissions";
 import { auth } from "@/lib/auth";
 import type { ExamSubmission } from "@/stores/exam-store";
@@ -12,6 +12,74 @@ interface BulkSubmissionPayload {
   sessionId: string;
   submissions: Record<string, ExamSubmission>;
   terminated?: boolean;
+}
+
+export interface ExamSubmissionData {
+  status: "submitted" | "terminated";
+  examTitle: string;
+  submittedAt: Date;
+  problemsAttempted: number;
+  totalProblems: number;
+  violationCount: number;
+}
+
+/**
+ * Fetches exam submission data for the result page.
+ * Uses sessionId to get all relevant information from the database.
+ */
+export async function getExamSubmissionData(
+  sessionId: string
+): Promise<ExamSubmissionData | null> {
+  // Get the session with exam details
+  const session = await db.query.examSessions.findFirst({
+    where: eq(examSessions.id, sessionId),
+  });
+
+  if (!session) {
+    return null;
+  }
+
+  // Get exam details
+  const exam = await db.query.exams.findFirst({
+    where: eq(exams.id, session.examId),
+  });
+
+  if (!exam) {
+    return null;
+  }
+
+  // Count total problems in the session
+  const sessionProblemsList = await db
+    .select()
+    .from(sessionProblems)
+    .where(eq(sessionProblems.sessionId, sessionId));
+
+  const totalProblems = sessionProblemsList.length;
+
+  // Count problems attempted (have at least one submission)
+  const submissionsList = await db
+    .select({ problemId: submissions.problemId })
+    .from(submissions)
+    .where(eq(submissions.sessionId, sessionId));
+
+  const attemptedProblemIds = new Set(submissionsList.map((s) => s.problemId));
+  const problemsAttempted = attemptedProblemIds.size;
+
+  // Get violation count from termination details
+  const terminationDetails = session.terminationDetails as {
+    violationCount?: number;
+    events?: any[];
+  } | null;
+  const violationCount = terminationDetails?.violationCount || 0;
+
+  return {
+    status: session.status as "submitted" | "terminated",
+    examTitle: exam.title,
+    submittedAt: session.startedAt || new Date(),
+    problemsAttempted,
+    totalProblems,
+    violationCount,
+  };
 }
 
 export const bulkSubmitExam = async ({
@@ -36,13 +104,15 @@ export const bulkSubmitExam = async ({
     return { error: "Invalid session" };
   }
 
-  if (
-    currentSession.status === "submitted" ||
-    currentSession.status === "terminated"
-  ) {
-    // Already submitted? Maybe just return success to clear local store.
+  // Check if session is already complete
+  const isAlreadyComplete = currentSession.status === "submitted" || currentSession.status === "terminated";
+
+  if (isAlreadyComplete && !terminated) {
     return { success: true, message: "Exam already submitted" };
   }
+
+  // For terminated sessions, we still want to save any pending submissions
+  // but we won't change the status again
 
   // Iterate and save submissions
   const entries = Object.entries(examSubmissions);
@@ -92,18 +162,20 @@ export const bulkSubmitExam = async ({
           } as any);
         }
 
-        // Mark exam as completed or terminated
-        await tx
-          .update(examSessions)
-          .set({ status: terminated ? "terminated" : "submitted" })
-          .where(eq(examSessions.id, sessionId));
+        // Mark exam as completed or terminated (only if not already terminated)
+        if (!isAlreadyComplete) {
+          await tx
+            .update(examSessions)
+            .set({ status: terminated ? "terminated" : "submitted" })
+            .where(eq(examSessions.id, sessionId));
+        }
       });
     } catch (error) {
       console.error("Bulk submission failed:", error);
       return { error: "Failed to save submissions" };
     }
-  } else {
-    // No submissions, still close the exam
+  } else if (!isAlreadyComplete) {
+    // No submissions, still close the exam (only if not already complete)
     await db
       .update(examSessions)
       .set({ status: terminated ? "terminated" : "submitted" })
