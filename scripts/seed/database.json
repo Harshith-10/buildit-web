@@ -1,0 +1,3656 @@
+[
+  {
+    "problem_id": "1.1",
+    "title": "1.1 Sum of last digits of two given numbers",
+    "description": "# 1.1 Sum of last digits of two given numbers\n\nRohit wants to add the last digits of two given numbers. For example, If the given numbers are 267 and 154,\nthe output should be 11.\nBelow is the explanation -\nLast digit of the 267 is 7\nLast digit of the 154 is 4\nSum of 7 and 4 = 11\nWrite a program to help Rohit achieve this for any given two numbers.\nThe prototype of the method should be -\nint addLastDigits(int input1, int input2);\nwhere input1 and input2 denote the two numbers whose last digits are to be added.\nNote: The sign of the input numbers should be ignored.\nif the input numbers are 267 and 154, the sum of last two digits should be 11\nif the input numbers are 267 and -154, the sum of last two digits should be 11\nif the input numbers are -267 and 154, the sum of last two digits should be 11\nif the input numbers are -267 and -154, the sum of last two digits should be 11\n\n**Example:**\n```\nInput: 267 154\nOutput: 11\n```\n\n\n**Example:**\n```\nInput: 267 -154\nOutput: 11\n```\n\n\n**Example:**\n```\nInput: -267 154\nOutput: 11\n```\n\n\n**Example:**\n```\nInput: -267 -154\nOutput: 11\n```\n",
+    "boilerplate_code": "import java.util.Scanner;\nclass AddLastDigitsFunction\n{\nint addLastDigits(int n1, int n2)\n{\n# Write code here\n}\npublic static void main(String args[])\n{\nAddLastDigitsFunction obj = new AddLastDigitsFunction();\n# Write code here\nSystem.out.println(obj.addLastDigits(n1,n2));\n\n\n\n}\n}",
+    "test_cases": [
+      {
+        "input": "267 154",
+        "output": "11",
+        "is_hidden": false
+      },
+      {
+        "input": "267 -154",
+        "output": "11",
+        "is_hidden": false
+      },
+      {
+        "input": "-267 154",
+        "output": "11",
+        "is_hidden": false
+      },
+      {
+        "input": "-267 -154",
+        "output": "11",
+        "is_hidden": false
+      },
+      {
+        "input": "-267 -154",
+        "output": "11",
+        "is_hidden": false
+      },
+      {
+        "input": "-267 -154",
+        "output": "11",
+        "is_hidden": true
+      },
+      {
+        "input": "-267 -154",
+        "output": "11",
+        "is_hidden": true
+      },
+      {
+        "input": "-267 -154",
+        "output": "11",
+        "is_hidden": true
+      },
+      {
+        "input": "-267 -154",
+        "output": "11",
+        "is_hidden": true
+      },
+      {
+        "input": "-267 -154",
+        "output": "11",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "1.2",
+    "title": "1.2 Is N an exact multiple of M?",
+    "description": "# 1.2 Is N an exact multiple of M?\n\nWrite a function that accepts two parameters and finds whether the first parameter is an exact multiple of\nthe second parameter. If the first parameter is an exact multiple of the second parameter, the function\nshould return 2 else it should return 1.\nIf either of the parameters are zero, the function should return 3.\nAssumption: Within the scope of this question, assume that - the first parameter can be positive, negative\nor zero the second parameter will always be >=0\n\n**Example:**\n```\nInput: num1 = 10, num2 = 5\nOutput: 2\n```\n\n\n**Example:**\n```\nInput: num1 = -10, num2 = 5\nOutput: 2\n```\n\n\n**Example:**\n```\nInput: num1 = 0, num2 = 5\nOutput: 3\n```\n\n\n**Example:**\n```\nInput: num1 = 10, num2 = 3\nOutput: 1\n```\n",
+    "boilerplate_code": "public class MultipleChecker\n{\npublic static int checkMultiple(int num1, int num2)\n{\n# Write code here\n}\npublic static void main(String[] args)\n{\n# Write code here\n}\n}",
+    "test_cases": [
+      {
+        "input": "num1 = 10, num2 = 5",
+        "output": "2",
+        "is_hidden": false
+      },
+      {
+        "input": "num1 = -10, num2 = 5",
+        "output": "2",
+        "is_hidden": false
+      },
+      {
+        "input": "num1 = 0, num2 = 5",
+        "output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "num1 = 10, num2 = 3",
+        "output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "num1 = 10, num2 = 3",
+        "output": "1",
+        "is_hidden": false
+      },
+      {
+        "input": "num1 = 10, num2 = 3",
+        "output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "num1 = 10, num2 = 3",
+        "output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "num1 = 10, num2 = 3",
+        "output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "num1 = 10, num2 = 3",
+        "output": "1",
+        "is_hidden": true
+      },
+      {
+        "input": "num1 = 10, num2 = 3",
+        "output": "1",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "1.3",
+    "title": "1.3 Combine Strings",
+    "description": "# 1.3 Combine Strings\n\nGiven 2 strings, a and b, return a new string of the form short+long+short, with the shorter string on the\noutside and the longer string in the inside. The strings will not be the same length, but they may be empty\n(length 0).\nIf input is \"hi\" and \"hello\", then output will be \"hihellohi\"\n\n**Example:**\n```\nInput: Enter the first string: \u201chi\u201d\nEnter the second string: \u201chello\u201d\nOutput: \u201chihellohi\u201d\n```\n\n\n**Example:**\n```\nInput: Enter the first string: \u201ciare\u201d\nEnter the second string: \u201ccollege\u201d\nOutput: \u201ciarecollegeiare\u201d\n```\n",
+    "boilerplate_code": "public class StringCombiner\n{\npublic static void main(String[] args)\n{\n\n\n\n# Write code here\n}\npublic static String combineStrings(String a, String b)\n{\n# Write code here\n}\n}",
+    "test_cases": [
+      {
+        "input": "Enter the first string: \u201chi\u201d",
+        "output": "\u201chihellohi\u201d",
+        "is_hidden": false
+      },
+      {
+        "input": "Enter the first string: \u201ciare\u201d",
+        "output": "\u201ciarecollegeiare\u201d",
+        "is_hidden": false
+      },
+      {
+        "input": "Enter the first string: \u201ciare\u201d",
+        "output": "\u201ciarecollegeiare\u201d",
+        "is_hidden": false
+      },
+      {
+        "input": "Enter the first string: \u201ciare\u201d",
+        "output": "\u201ciarecollegeiare\u201d",
+        "is_hidden": false
+      },
+      {
+        "input": "Enter the first string: \u201ciare\u201d",
+        "output": "\u201ciarecollegeiare\u201d",
+        "is_hidden": false
+      },
+      {
+        "input": "Enter the first string: \u201ciare\u201d",
+        "output": "\u201ciarecollegeiare\u201d",
+        "is_hidden": true
+      },
+      {
+        "input": "Enter the first string: \u201ciare\u201d",
+        "output": "\u201ciarecollegeiare\u201d",
+        "is_hidden": true
+      },
+      {
+        "input": "Enter the first string: \u201ciare\u201d",
+        "output": "\u201ciarecollegeiare\u201d",
+        "is_hidden": true
+      },
+      {
+        "input": "Enter the first string: \u201ciare\u201d",
+        "output": "\u201ciarecollegeiare\u201d",
+        "is_hidden": true
+      },
+      {
+        "input": "Enter the first string: \u201ciare\u201d",
+        "output": "\u201ciarecollegeiare\u201d",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "1.4",
+    "title": "1.4 Even or Odd",
+    "description": "# 1.4 Even or Odd\n\nWrite a function that accepts 6 input parameters. The first 5 input parameters are of type int. The sixth input\nparameter is of type string. If the sixth parameter contains the value \"even\", the function is supposed to\nreturn the count of how many of the first five input parameters are even. If the sixth parameter contains the\nvalue \"odd\", the function is supposed to return the count of how many of the first five input parameters are\nodd.\nExample:\nIf the five input parameters are 12, 17, 19, 14, and 115, and the sixth parameter is \"odd\", the function must\nreturn 3, because there are three odd numbers 17, 19 and 115.\nIf the five input parameters are 12, 17, 19, 14, and 115, and the sixth parameter is \"even\", the function must\nreturn 2, because there are two even numbers 12 and 14.\nNote that zero is considered an even number.\n\n**Example:**\n```\nInput: num1 = 12;\nnum2 = 17;\nnum3 = 19;\nnum4 = 14;\nnum5 = 115;\ntype = \"odd\"\nOutput: 3\n```\n\n\n**Example:**\n```\nInput: num1 = 12;\nnum2 = 17;\nnum3 = 19;\nnum4 = 14;\nnum5 = 115;\ntype = \"even\"\nOutput: 2\n```\n",
+    "boilerplate_code": "public class NumberCounter\n{\npublic static int countNumbers(int num1, int num2, int num3, int num4, int num5,\nString type)\n{\n# Write code here\n}\npublic static void main(String[] args)\n{\n# Write code here\n}\n}",
+    "test_cases": [
+      {
+        "input": "num1 = 12;",
+        "output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "num1 = 12;",
+        "output": "2",
+        "is_hidden": false
+      },
+      {
+        "input": "num1 = 12;",
+        "output": "2",
+        "is_hidden": false
+      },
+      {
+        "input": "num1 = 12;",
+        "output": "2",
+        "is_hidden": false
+      },
+      {
+        "input": "num1 = 12;",
+        "output": "2",
+        "is_hidden": false
+      },
+      {
+        "input": "num1 = 12;",
+        "output": "2",
+        "is_hidden": true
+      },
+      {
+        "input": "num1 = 12;",
+        "output": "2",
+        "is_hidden": true
+      },
+      {
+        "input": "num1 = 12;",
+        "output": "2",
+        "is_hidden": true
+      },
+      {
+        "input": "num1 = 12;",
+        "output": "2",
+        "is_hidden": true
+      },
+      {
+        "input": "num1 = 12;",
+        "output": "2",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "1.5",
+    "title": "1.5 Second last digit of a given number",
+    "description": "# 1.5 Second last digit of a given number\n\nWrite a function that returns the second last digit of the given number. Second last digit is being referred\nto the digit in the tens place in the given number.\nExample: if the given number is 197, the second last digit is 9.\nNote 1: The second last digit should be returned as a positive number. i.e. if the given number is -197, the\nsecond last digit is 9.\nNote 2: If the given number is a single digit number, then the second last digit does not exist. In such cases,\nthe function should return -1. i.e. if the given number is 5, the second last digit should be returned as -1.\n\n**Example:**\n```\nInput: 197\nOutput: 9\n```\n\n\n**Example:**\n```\nInput: 5\nOutput: -1\n```\n\n\n**Example:**\n```\nInput: -197\nOutput: 9\n```\n",
+    "boilerplate_code": "public class SecondLastDigit\n{\npublic static int getSecondLastDigit(int number)\n{\n# write code here\n}\npublic static void main(String[] args)\n{\n# write code here\n}\n}",
+    "test_cases": [
+      {
+        "input": "197",
+        "output": "9",
+        "is_hidden": false
+      },
+      {
+        "input": "5",
+        "output": "-1",
+        "is_hidden": false
+      },
+      {
+        "input": "-197",
+        "output": "9",
+        "is_hidden": false
+      },
+      {
+        "input": "-197",
+        "output": "9",
+        "is_hidden": false
+      },
+      {
+        "input": "-197",
+        "output": "9",
+        "is_hidden": false
+      },
+      {
+        "input": "-197",
+        "output": "9",
+        "is_hidden": true
+      },
+      {
+        "input": "-197",
+        "output": "9",
+        "is_hidden": true
+      },
+      {
+        "input": "-197",
+        "output": "9",
+        "is_hidden": true
+      },
+      {
+        "input": "-197",
+        "output": "9",
+        "is_hidden": true
+      },
+      {
+        "input": "-197",
+        "output": "9",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "1.6",
+    "title": "1.6 Alternate String Combiner",
+    "description": "# 1.6 Alternate String Combiner\n\nGiven two strings, a and b, print a new string which is made of the following combination-first character of\na, the first character of b, second character of a, second character of b and so on.\nAny characters left, will go to the end of the result.\nHello,World\nHWeolrllod\n\n**Example:**\n```\nInput: \u201cHello,World\u201d\nOutput: \u201cHWeolrllod\u201d\n```\n\n\n**Example:**\n```\nInput: \u201cIare,College\u201d\nOutput: \u201cICaorlelege\u201d\n```\n",
+    "boilerplate_code": "public class AlternateStringCombiner\n{\npublic static void main(String[] args)\n{\n# write code here\n}\npublic static String combineStrings(String a, String b)\n{\n\n\n\n# write code here\n}\n}",
+    "test_cases": [
+      {
+        "input": "\u201cHello,World\u201d",
+        "output": "\u201cHWeolrllod\u201d",
+        "is_hidden": false
+      },
+      {
+        "input": "\u201cIare,College\u201d",
+        "output": "\u201cICaorlelege\u201d",
+        "is_hidden": false
+      },
+      {
+        "input": "\u201cIare,College\u201d",
+        "output": "\u201cICaorlelege\u201d",
+        "is_hidden": false
+      },
+      {
+        "input": "\u201cIare,College\u201d",
+        "output": "\u201cICaorlelege\u201d",
+        "is_hidden": false
+      },
+      {
+        "input": "\u201cIare,College\u201d",
+        "output": "\u201cICaorlelege\u201d",
+        "is_hidden": false
+      },
+      {
+        "input": "\u201cIare,College\u201d",
+        "output": "\u201cICaorlelege\u201d",
+        "is_hidden": true
+      },
+      {
+        "input": "\u201cIare,College\u201d",
+        "output": "\u201cICaorlelege\u201d",
+        "is_hidden": true
+      },
+      {
+        "input": "\u201cIare,College\u201d",
+        "output": "\u201cICaorlelege\u201d",
+        "is_hidden": true
+      },
+      {
+        "input": "\u201cIare,College\u201d",
+        "output": "\u201cICaorlelege\u201d",
+        "is_hidden": true
+      },
+      {
+        "input": "\u201cIare,College\u201d",
+        "output": "\u201cICaorlelege\u201d",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "1.7",
+    "title": "1.7 Padovan Sequence",
+    "description": "# 1.7 Padovan Sequence\n\nThe Padovan sequence is a sequence of numbers named after Richard Padovan, who attributed its discovery\nto Dutch architect Hans van der Laan. The sequence was described by Ian Stewart in his Scientific American\ncolumn Mathematical Recreations in June 1996. The Padovan sequence is defined by the following\nrecurrence relation:\nP(n) = P(n-2) + P(n-3)\nwith the initial conditions P(0) = P(1) = P(2) = 1.\nIn this sequence, each term is the sum of the two preceding terms, similar to the Fibonacci sequence.\nHowever, the Padovan sequence has different initial conditions and exhibits different growth patterns.\nThe first few terms of the Padovan sequence are: 1, 1, 1, 2, 2, 3, 4, 5, 7, 9, 12, ...\n\n**Example:**\n```\nInput: num = 10\nOutput: Padovan Sequence up to 10:\n```\n\n1 1 1 2 2 3 4 5 7 9 12\n\n**Example:**\n```\nInput: num = 20\nOutput: Padovan Sequence up to 20:\n```\n\n1 1 1 2 2 3 4 5 7 9 12 16 21 28 37 49 65 86 114 151 200",
+    "boilerplate_code": "public class PadovanSequence\n{\npublic static int padovan(int n)\n{\n# write code here\n}\npublic static void main(String[] args)\n{\n# write code here\n}\n}",
+    "test_cases": [
+      {
+        "input": "num = 10",
+        "output": "Padovan Sequence up to 10:",
+        "is_hidden": false
+      },
+      {
+        "input": "num = 20",
+        "output": "Padovan Sequence up to 20:",
+        "is_hidden": false
+      },
+      {
+        "input": "num = 20",
+        "output": "Padovan Sequence up to 20:",
+        "is_hidden": false
+      },
+      {
+        "input": "num = 20",
+        "output": "Padovan Sequence up to 20:",
+        "is_hidden": false
+      },
+      {
+        "input": "num = 20",
+        "output": "Padovan Sequence up to 20:",
+        "is_hidden": false
+      },
+      {
+        "input": "num = 20",
+        "output": "Padovan Sequence up to 20:",
+        "is_hidden": true
+      },
+      {
+        "input": "num = 20",
+        "output": "Padovan Sequence up to 20:",
+        "is_hidden": true
+      },
+      {
+        "input": "num = 20",
+        "output": "Padovan Sequence up to 20:",
+        "is_hidden": true
+      },
+      {
+        "input": "num = 20",
+        "output": "Padovan Sequence up to 20:",
+        "is_hidden": true
+      },
+      {
+        "input": "num = 20",
+        "output": "Padovan Sequence up to 20:",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "1.8",
+    "title": "1.8 Leaders in an array",
+    "description": "# 1.8 Leaders in an array\n\nGiven an array arr of n positive integers, your task is to find all the leaders in the array. An element of the\narray is considered a leader if it is greater than all the elements on its right side or if it is equal to the\nmaximum element on its right side. The rightmost element is always a leader.\n\n**Example:**\n```\nInput: n = 6, arr[] = (16, 17, 4, 3, 5, 2}\nOutput: 17 5 2\n```\n\n\n**Example:**\n```\nInput: n = 5, arr[] = {10, 4, 2, 4, 1}\nOutput: 10 4 4 1\n```\n\n\n**Example:**\n```\nInput: n = 4, arr[] = {5, 10, 20, 40}\nOutput: 40\n```\n\n\n**Example:**\n```\nInput: n = 4, arr[] = {30, 10, 10, 5}\nOutput: 30 10 10 5\n```\n",
+    "boilerplate_code": "import java.util.ArrayList;\nimport java.util.List;\n\n\n\npublic class ArrayLeaders\n{\npublic static List<Integer> findArrayLeaders(int[] arr)\n{\n# write code here\n}\npublic static void main(String[] args)\n{\n# write code here\n}\n}",
+    "test_cases": [
+      {
+        "input": "n = 6, arr[] = (16, 17, 4, 3, 5, 2}",
+        "output": "17 5 2",
+        "is_hidden": false
+      },
+      {
+        "input": "n = 5, arr[] = {10, 4, 2, 4, 1}",
+        "output": "10 4 4 1",
+        "is_hidden": false
+      },
+      {
+        "input": "n = 4, arr[] = {5, 10, 20, 40}",
+        "output": "40",
+        "is_hidden": false
+      },
+      {
+        "input": "n = 4, arr[] = {30, 10, 10, 5}",
+        "output": "30 10 10 5",
+        "is_hidden": false
+      },
+      {
+        "input": "n = 4, arr[] = {30, 10, 10, 5}",
+        "output": "30 10 10 5",
+        "is_hidden": false
+      },
+      {
+        "input": "n = 4, arr[] = {30, 10, 10, 5}",
+        "output": "30 10 10 5",
+        "is_hidden": true
+      },
+      {
+        "input": "n = 4, arr[] = {30, 10, 10, 5}",
+        "output": "30 10 10 5",
+        "is_hidden": true
+      },
+      {
+        "input": "n = 4, arr[] = {30, 10, 10, 5}",
+        "output": "30 10 10 5",
+        "is_hidden": true
+      },
+      {
+        "input": "n = 4, arr[] = {30, 10, 10, 5}",
+        "output": "30 10 10 5",
+        "is_hidden": true
+      },
+      {
+        "input": "n = 4, arr[] = {30, 10, 10, 5}",
+        "output": "30 10 10 5",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "1.9",
+    "title": "1.9 Find the Value of a Number Raised to its Reverse",
+    "description": "# 1.9 Find the Value of a Number Raised to its Reverse\n\nGiven a number N and its reverse R. The task is to find the number obtained when the number is raised to\nthe power of its own reverse\n\n**Example:**\n```\nInput : N = 2, R = 2\nOutput: 4\n```\n\nExplanation: Number 2 raised to the power of its reverse 2 gives 4 which gives 4 as a result after\nperforming modulo 109+7\n\n**Example:**\n```\nInput: N = 57, R = 75\nOutput: 262042770\n```\n\nExplanation: 5775 modulo 109+7 gives us the result as 262042770",
+    "boilerplate_code": "public class NumberPower\n{\npublic static long powerOfReverse(int N, int R)\n{\n# write code here\n}\npublic static void main(String[] args)\n{\n# write code here\n}\n}",
+    "test_cases": [
+      {
+        "input": "N = 2, R = 2",
+        "output": "4",
+        "is_hidden": false
+      },
+      {
+        "input": "N = 57, R = 75",
+        "output": "262042770",
+        "is_hidden": false
+      },
+      {
+        "input": "N = 57, R = 75",
+        "output": "262042770",
+        "is_hidden": false
+      },
+      {
+        "input": "N = 57, R = 75",
+        "output": "262042770",
+        "is_hidden": false
+      },
+      {
+        "input": "N = 57, R = 75",
+        "output": "262042770",
+        "is_hidden": false
+      },
+      {
+        "input": "N = 57, R = 75",
+        "output": "262042770",
+        "is_hidden": true
+      },
+      {
+        "input": "N = 57, R = 75",
+        "output": "262042770",
+        "is_hidden": true
+      },
+      {
+        "input": "N = 57, R = 75",
+        "output": "262042770",
+        "is_hidden": true
+      },
+      {
+        "input": "N = 57, R = 75",
+        "output": "262042770",
+        "is_hidden": true
+      },
+      {
+        "input": "N = 57, R = 75",
+        "output": "262042770",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "1.10",
+    "title": "1.10 Mean of Array using Recursion",
+    "description": "# 1.10 Mean of Array using Recursion\n\nFind the mean of the elements of the array.\nMean = (Sum of elements of the Array) / (Total no of elements in Array)\n\n**Example:**\n```\nInput: 1 2 3 4 5\nOutput: 3.0\n```\n\n\n**Example:**\n```\nInput: 1 2 3\nOutput: 2.0\n```\n\nTo find the mean using recursion assume that the problem is already solved for N-1 i.e. you have to find\nfor n\nSum of first N-1 elements = (Mean of N-1 elements) * (N-1)\nMean of N elements = (Sum of first N-1 elements + N-th elements) / (N)\nTry:\n1. Kth Smallest Element: Given an array arr[] and an integer k where k is smaller than the size of the array,\nthe task is to find the kth smallest element in the given array. It is given that all array elements are distinct.\nNote: l and r denotes the starting and ending index of the array.\n\n**Example:**\n```\nInput: n = 6, arr[] = {7, 10, 4, 3, 20, 15}, k = 3, l = 0, r = 5\nOutput: 7\n```\n\nExplanation: 3rd smallest element in the given array is 7.\n\n**Example:**\n```\nInput: n = 5, arr[] = {7, 10, 4, 20, 15}, k = 4, l=0 r=4\nOutput: 15\n```\n\nExplanation: 4th smallest element in the given array is 15.\nYour task is to complete the function kthSmallest() which takes the array arr[], integers l and r\ndenoting the starting and ending index of the array and an integer k as input and returns the kth\nsmallest element.\n2. Count pairs with given sum: Given an array of N integers, and an integer K, find the number\nof pairs of elements in the array whose sum is equal to K. Your task is to complete the function\ngetPairsCount() which takes arr[], n and k as input parameters and returns the number of pairs\nthat have sum K.\n\n**Example:**\n```\nInput: N = 4, K = 6, arr[] = {1, 5, 7, 1}\nOutput: 2\n```\n\nExplanation: arr[0] + arr[1] = 1 + 5 = 6 and arr[1] + arr[3] = 5 + 1 = 6.\n\n**Example:**\n```\nInput: N = 4, K = 2, arr[] = {1, 1, 1, 1}\nOutput: 6\n```\n\nExplanation: Each 1 will produce sum 2 with any 1.\n\n\n\n2. Searching",
+    "boilerplate_code": "public class ArrayMean\n{\n\n\n\npublic static double findArrayMean(int[] arr)\n{\n# write code here\n}\npublic static void main(String[] args)\n{\n# write code here\n}\n}",
+    "test_cases": [
+      {
+        "input": "1 2 3 4 5",
+        "output": "3.0",
+        "is_hidden": false
+      },
+      {
+        "input": "1 2 3",
+        "output": "2.0",
+        "is_hidden": false
+      },
+      {
+        "input": "n = 6, arr[] = {7, 10, 4, 3, 20, 15}, k = 3, l = 0, r = 5",
+        "output": "7",
+        "is_hidden": false
+      },
+      {
+        "input": "n = 5, arr[] = {7, 10, 4, 20, 15}, k = 4, l=0 r=4",
+        "output": "15",
+        "is_hidden": false
+      },
+      {
+        "input": "N = 4, K = 6, arr[] = {1, 5, 7, 1}",
+        "output": "2",
+        "is_hidden": false
+      },
+      {
+        "input": "N = 4, K = 2, arr[] = {1, 1, 1, 1}",
+        "output": "6",
+        "is_hidden": true
+      },
+      {
+        "input": "N = 4, K = 2, arr[] = {1, 1, 1, 1}",
+        "output": "6",
+        "is_hidden": true
+      },
+      {
+        "input": "N = 4, K = 2, arr[] = {1, 1, 1, 1}",
+        "output": "6",
+        "is_hidden": true
+      },
+      {
+        "input": "N = 4, K = 2, arr[] = {1, 1, 1, 1}",
+        "output": "6",
+        "is_hidden": true
+      },
+      {
+        "input": "N = 4, K = 2, arr[] = {1, 1, 1, 1}",
+        "output": "6",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "2.1",
+    "title": "2.1 Linear / Sequential Search",
+    "description": "# 2.1 Linear / Sequential Search\n\nLinear search is defined as the searching algorithm where the list or data set is traversed from one end to\nfind the desired value. Given an array arr[] of n elements, write a recursive function to search a given element\nx in arr[].\nLinear search procedure:\n1. Start from the leftmost element of arr[] and one by one compare x with each element of arr[]\n2. If x matches with an element, return the index.\n3. If x doesn\u2019t match with any of the elements, return -1.\n\n**Example:**\n```\nInput: arr[] = {10, 20, 80, 30, 60, 50, 110, 100, 130, 170}\nx = 110;\nOutput: 6\n```\n\nElement x is present at index 6\n\n**Example:**\n```\nInput: arr[] = {10, 20, 80, 30, 60, 50, 110, 100, 130, 170}\nx = 175;\nOutput: -1\n```\n\nElement x is not present in arr[].",
+    "boilerplate_code": "public class RecursiveLinearSearch\n{\npublic static int recursiveLinearSearch(int[] arr, int key, int index)\n{\n# write code here\n}\npublic static void main(String[] args)\n{\n# write code here\n}\n}",
+    "test_cases": [
+      {
+        "input": "arr[] = {10, 20, 80, 30, 60, 50, 110, 100, 130, 170}",
+        "output": "6",
+        "is_hidden": false
+      },
+      {
+        "input": "arr[] = {10, 20, 80, 30, 60, 50, 110, 100, 130, 170}",
+        "output": "-1",
+        "is_hidden": false
+      },
+      {
+        "input": "arr[] = {10, 20, 80, 30, 60, 50, 110, 100, 130, 170}",
+        "output": "-1",
+        "is_hidden": false
+      },
+      {
+        "input": "arr[] = {10, 20, 80, 30, 60, 50, 110, 100, 130, 170}",
+        "output": "-1",
+        "is_hidden": false
+      },
+      {
+        "input": "arr[] = {10, 20, 80, 30, 60, 50, 110, 100, 130, 170}",
+        "output": "-1",
+        "is_hidden": false
+      },
+      {
+        "input": "arr[] = {10, 20, 80, 30, 60, 50, 110, 100, 130, 170}",
+        "output": "-1",
+        "is_hidden": true
+      },
+      {
+        "input": "arr[] = {10, 20, 80, 30, 60, 50, 110, 100, 130, 170}",
+        "output": "-1",
+        "is_hidden": true
+      },
+      {
+        "input": "arr[] = {10, 20, 80, 30, 60, 50, 110, 100, 130, 170}",
+        "output": "-1",
+        "is_hidden": true
+      },
+      {
+        "input": "arr[] = {10, 20, 80, 30, 60, 50, 110, 100, 130, 170}",
+        "output": "-1",
+        "is_hidden": true
+      },
+      {
+        "input": "arr[] = {10, 20, 80, 30, 60, 50, 110, 100, 130, 170}",
+        "output": "-1",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "2.2",
+    "title": "2.2 Binary Search",
+    "description": "# 2.2 Binary Search\n\nBinary Search is defined as a searching algorithm used in a sorted array by repeatedly dividing the search\ninterval in half. The idea of binary search is to use the information that the array is sorted and reduce the\ntime complexity to O(log N).\nConditions for Binary Search algorithm:\n1. The data structure must be sorted.\n2. Access to any element of the data structure takes constant time.\nBinary Search Procedure:\n1. Divide the search space into two halves by finding the middle index \u201cmid\u201d.\n2. Compare the middle element of the search space with the key.\n3. If the key is found at middle element, the process is terminated.\n4. If the key is not found at middle element, choose which half will be used as the next search space.\na. If the key is smaller than the middle element, then the left side is used for next search.\nb. If the key is larger than the middle element, then the right side is used for next search.\n5. This process is continued until the key is found or the total search space is exhausted.\n\n**Example:**\n```\nInput: arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]\nOutput: target = 23\n```\n\nElement 23 is present at index 5",
+    "boilerplate_code": "public class RecursiveBinarySearch\n{\npublic static int recursiveBinarySearch(int[] arr, int key, int left, int right)\n{\n# write code here\n}\n\n\n\npublic static void main(String[] args)\n{\n# write code here\n}\n}",
+    "test_cases": [
+      {
+        "input": "arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]",
+        "output": "target = 23",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]",
+        "output": "target = 23",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]",
+        "output": "target = 23",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]",
+        "output": "target = 23",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]",
+        "output": "target = 23",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]",
+        "output": "target = 23",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]",
+        "output": "target = 23",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]",
+        "output": "target = 23",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]",
+        "output": "target = 23",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]",
+        "output": "target = 23",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "2.3",
+    "title": "2.3 Uniform Binary Search",
+    "description": "# 2.3 Uniform Binary Search\n\nUniform Binary Search is an optimization of Binary Search algorithm when many searches are made on\nsame array or many arrays of same size. In normal binary search, we do arithmetic operations to find the\nmid points. Here we precompute mid points and fills them in lookup table. The array look-up generally\nworks faster than arithmetic done (addition and shift) to find the mid-point.\n\n**Example:**\n```\nInput: array = {1, 3, 5, 6, 7, 8, 9}, v=3\nOutput: Position of 3 in array = 2\n```\n\n\n**Example:**\n```\nInput: array = {1, 3, 5, 6, 7, 8, 9}, v=7\nOutput: Position of 7 in array = 5\n```\n\nThe algorithm is very similar to Binary Search algorithm, the only difference is a lookup table is created for\nan array and the lookup table is used to modify the index of the pointer in the array which makes the search\nfaster. Instead of maintaining lower and upper bound the algorithm maintains an index and the index is\nmodified using the lookup table.",
+    "boilerplate_code": "public class RecursiveUniformBinarySearch\n{\npublic static int recursiveUniformBinarySearch(int[] arr, int key, int[]\nlookupTable, int left, int right)\n{\n# write code here\n}\npublic static void main(String[] args)\n{\n# write code here\n}\n}",
+    "test_cases": [
+      {
+        "input": "array = {1, 3, 5, 6, 7, 8, 9}, v=3",
+        "output": "Position of 3 in array = 2",
+        "is_hidden": false
+      },
+      {
+        "input": "array = {1, 3, 5, 6, 7, 8, 9}, v=7",
+        "output": "Position of 7 in array = 5",
+        "is_hidden": false
+      },
+      {
+        "input": "array = {1, 3, 5, 6, 7, 8, 9}, v=7",
+        "output": "Position of 7 in array = 5",
+        "is_hidden": false
+      },
+      {
+        "input": "array = {1, 3, 5, 6, 7, 8, 9}, v=7",
+        "output": "Position of 7 in array = 5",
+        "is_hidden": false
+      },
+      {
+        "input": "array = {1, 3, 5, 6, 7, 8, 9}, v=7",
+        "output": "Position of 7 in array = 5",
+        "is_hidden": false
+      },
+      {
+        "input": "array = {1, 3, 5, 6, 7, 8, 9}, v=7",
+        "output": "Position of 7 in array = 5",
+        "is_hidden": true
+      },
+      {
+        "input": "array = {1, 3, 5, 6, 7, 8, 9}, v=7",
+        "output": "Position of 7 in array = 5",
+        "is_hidden": true
+      },
+      {
+        "input": "array = {1, 3, 5, 6, 7, 8, 9}, v=7",
+        "output": "Position of 7 in array = 5",
+        "is_hidden": true
+      },
+      {
+        "input": "array = {1, 3, 5, 6, 7, 8, 9}, v=7",
+        "output": "Position of 7 in array = 5",
+        "is_hidden": true
+      },
+      {
+        "input": "array = {1, 3, 5, 6, 7, 8, 9}, v=7",
+        "output": "Position of 7 in array = 5",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "2.4",
+    "title": "2.4 Interpolation Search",
+    "description": "# 2.4 Interpolation Search\n\nInterpolation search works better than Binary Search for a Sorted and Uniformly Distributed array. Binary\nsearch goes to the middle element to check irrespective of search-key. On the other hand, Interpolation\nsearch may go to different locations according to search-key. If the value of the search-key is close to the\nlast element, Interpolation Search is likely to start search toward the end side. Interpolation search is more\nefficient than binary search when the elements in the list are uniformly distributed, while binary search is\nmore efficient when the elements in the list are not uniformly distributed.\nInterpolation search can take longer to implement than binary search, as it requires the use of additional\ncalculations to estimate the position of the target element.\n\n\n\n\n**Example:**\n```\nInput: arr = [1, 2, 3, 4, 5, 6, 7, 8, 9]\nOutput: target = 5\n```\n",
+    "boilerplate_code": "public class InterpolationSearch\n{\npublic static int interpolationSearch(int[] arr, int key)\n{\n# write code here\n}\npublic static void main(String[] args)\n{\n# write code here\n}\n}",
+    "test_cases": [
+      {
+        "input": "arr = [1, 2, 3, 4, 5, 6, 7, 8, 9]",
+        "output": "target = 5",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [1, 2, 3, 4, 5, 6, 7, 8, 9]",
+        "output": "target = 5",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [1, 2, 3, 4, 5, 6, 7, 8, 9]",
+        "output": "target = 5",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [1, 2, 3, 4, 5, 6, 7, 8, 9]",
+        "output": "target = 5",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [1, 2, 3, 4, 5, 6, 7, 8, 9]",
+        "output": "target = 5",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [1, 2, 3, 4, 5, 6, 7, 8, 9]",
+        "output": "target = 5",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [1, 2, 3, 4, 5, 6, 7, 8, 9]",
+        "output": "target = 5",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [1, 2, 3, 4, 5, 6, 7, 8, 9]",
+        "output": "target = 5",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [1, 2, 3, 4, 5, 6, 7, 8, 9]",
+        "output": "target = 5",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [1, 2, 3, 4, 5, 6, 7, 8, 9]",
+        "output": "target = 5",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "2.5",
+    "title": "2.5 Fibonacci Search",
+    "description": "# 2.5 Fibonacci Search\n\nGiven a sorted array arr[] of size n and an element x to be searched in it. Return index of x if it is present in\narray else return -1.\n\n**Example:**\n```\nInput: arr[] = {2, 3, 4, 10, 40}, x = 10\nOutput: 3\n```\n\nElement x is present at index 3.\n\n**Example:**\n```\nInput: arr[] = {2, 3, 4, 10, 40}, x = 11\nOutput: -1\n```\n\nElement x is not present.\nFibonacci Search is a comparison-based technique that uses Fibonacci numbers to search an element in a\nsorted array.\nFibonacci Numbers are recursively defined as F(n) = F(n-1) + F(n-2), F(0) = 0, F(1) = 1. First few Fibonacci\nNumbers are 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, \u2026\nFibonacci Search Procedure:\nLet the searched element be x. The idea is to first find the smallest Fibonacci number that is greater than\nor equal to the length of the given array. Let the found Fibonacci number be fib (m\u2019th Fibonacci number).\nWe use (m-2)\u2019th Fibonacci number as the index (If it is a valid index). Let (m-2)\u2019th Fibonacci Number be i,\nwe compare arr[i] with x, if x is same, we return i. Else if x is greater, we recur for subarray after i, else we\nrecur for subarray before i.\nLet arr[0..n-1] be the input array and the element to be searched be x.\n1. Find the smallest Fibonacci number greater than or equal to n. Let this number be fibM [m\u2019th\nFibonacci number]. Let the two Fibonacci numbers preceding it be fibMm1 [(m-1)\u2019th Fibonacci\nNumber] and fibMm2 [(m-2)\u2019th Fibonacci Number].\n2. While the array has elements to be inspected:\ni. Compare x with the last element of the range covered by fibMm2\nii. If x matches, return index\niii. Else If x is less than the element, move the three Fibonacci variables two Fibonacci down,\nindicating elimination of approximately rear two-third of the remaining array.\n\n\n\niv. Else x is greater than the element, move the three Fibonacci variables one Fibonacci down.\nReset offset to index. Together these indicate the elimination of approximately front one-third\nof the remaining array.\n3. Since there might be a single element remaining for comparison, check if fibMm1 is 1. If Yes, compare\nx with that remaining element. If match, return index.\n\n\n\n3. Sorting",
+    "boilerplate_code": "public class FibonacciSearch\n{\npublic static int fibonacciSearch(int[] arr, int key)\n{\n# write code here\n}\npublic static void main(String[] args)\n{\n# write code here\n}\n}",
+    "test_cases": [
+      {
+        "input": "arr[] = {2, 3, 4, 10, 40}, x = 10",
+        "output": "3",
+        "is_hidden": false
+      },
+      {
+        "input": "arr[] = {2, 3, 4, 10, 40}, x = 11",
+        "output": "-1",
+        "is_hidden": false
+      },
+      {
+        "input": "arr[] = {2, 3, 4, 10, 40}, x = 11",
+        "output": "-1",
+        "is_hidden": false
+      },
+      {
+        "input": "arr[] = {2, 3, 4, 10, 40}, x = 11",
+        "output": "-1",
+        "is_hidden": false
+      },
+      {
+        "input": "arr[] = {2, 3, 4, 10, 40}, x = 11",
+        "output": "-1",
+        "is_hidden": false
+      },
+      {
+        "input": "arr[] = {2, 3, 4, 10, 40}, x = 11",
+        "output": "-1",
+        "is_hidden": true
+      },
+      {
+        "input": "arr[] = {2, 3, 4, 10, 40}, x = 11",
+        "output": "-1",
+        "is_hidden": true
+      },
+      {
+        "input": "arr[] = {2, 3, 4, 10, 40}, x = 11",
+        "output": "-1",
+        "is_hidden": true
+      },
+      {
+        "input": "arr[] = {2, 3, 4, 10, 40}, x = 11",
+        "output": "-1",
+        "is_hidden": true
+      },
+      {
+        "input": "arr[] = {2, 3, 4, 10, 40}, x = 11",
+        "output": "-1",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "3.1",
+    "title": "3.1 Bubble Sort",
+    "description": "# 3.1 Bubble Sort\n\nBubble Sort is the simplest sorting algorithm that works by repeatedly swapping the adjacent elements if\nthey are in the wrong order. This algorithm is not suitable for large data sets as its average and worst-case\ntime complexity is quite high.\nBubble Sort Procedure:\n1. Traverse from left and compare adjacent elements and the higher one is placed at right side.\n2. In this way, the largest element is moved to the rightmost end at first.\n3. This process is then continued to find the second largest and place it and so on until the data is sorted.\n\n**Example:**\n```\nInput: arr = [6, 3, 0, 5]\nOutput:\n```\n\nFirst Pass:\nSecond Pass:\nThird Pass:",
+    "boilerplate_code": "import java.util.Scanner;\nclass BubbleSortExample\n{\npublic static void main(String[] args)\n\n\n\n{\n# write code here\n}\npublic static void bubbleSort(int[] arr)\n{\n# write code here\n}\n}",
+    "test_cases": [
+      {
+        "input": "arr = [6, 3, 0, 5]",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [6, 3, 0, 5]",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [6, 3, 0, 5]",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [6, 3, 0, 5]",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [6, 3, 0, 5]",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [6, 3, 0, 5]",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [6, 3, 0, 5]",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [6, 3, 0, 5]",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [6, 3, 0, 5]",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [6, 3, 0, 5]",
+        "output": "",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "3.2",
+    "title": "3.2 Selection Sort",
+    "description": "# 3.2 Selection Sort\n\nSelection sort is a simple and efficient sorting algorithm that works by repeatedly selecting the smallest (or\nlargest) element from the unsorted portion of the list and moving it to the sorted portion of the list. The\nalgorithm repeatedly selects the smallest (or largest) element from the unsorted portion of the list and\nswaps it with the first element of the unsorted part. This process is repeated for the remaining unsorted\nportion until the entire list is sorted.\n\n**Example:**\n```\nInput: arr = [64, 25, 12, 22, 11]\nOutput: arr = [11, 12, 22, 25, 64]\n```\n\nFirst Pass: For the first position in the sorted array, the whole array is traversed from index 0 to 4\nsequentially. The first position where 64 is stored presently, after traversing whole array it is clear that 11 is\nthe lowest value. Thus, replace 64 with 11. After one iteration 11, which happens to be the least value in the\narray, tends to appear in the first position of the sorted list.\nSecond Pass: For the second position, where 25 is present, again traverse the rest of the array in a sequential\nmanner. After traversing, we found that 12 is the second lowest value in the array and it should appear at\nthe second place in the array, thus swap these values.\nThird Pass: Now, for third place, where 25 is present again traverse the rest of the array and find the third\nleast value present in the array. While traversing, 22 came out to be the third least value and it should\nappear at the third place in the array, thus swap 22 with element present at third position.\n\n\n\nFourth Pass: Similarly, for fourth position traverse the rest of the array and find the fourth least element in\nthe array. As 25 is the 4th lowest value hence, it will place at the fourth position.\nFifth Pass: At last the largest value present in the array automatically get placed at the last position in the\narray. The resulted array is the sorted array.",
+    "boilerplate_code": "import java.util.Scanner;\nclass SelectionSortExample\n{\npublic static void main(String[] args)\n{\n# write code here\n}\npublic static void selectionSort(int[] arr)\n{\n# write code here\n}\n}",
+    "test_cases": [
+      {
+        "input": "arr = [64, 25, 12, 22, 11]",
+        "output": "arr = [11, 12, 22, 25, 64]",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [64, 25, 12, 22, 11]",
+        "output": "arr = [11, 12, 22, 25, 64]",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [64, 25, 12, 22, 11]",
+        "output": "arr = [11, 12, 22, 25, 64]",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [64, 25, 12, 22, 11]",
+        "output": "arr = [11, 12, 22, 25, 64]",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [64, 25, 12, 22, 11]",
+        "output": "arr = [11, 12, 22, 25, 64]",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [64, 25, 12, 22, 11]",
+        "output": "arr = [11, 12, 22, 25, 64]",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [64, 25, 12, 22, 11]",
+        "output": "arr = [11, 12, 22, 25, 64]",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [64, 25, 12, 22, 11]",
+        "output": "arr = [11, 12, 22, 25, 64]",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [64, 25, 12, 22, 11]",
+        "output": "arr = [11, 12, 22, 25, 64]",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [64, 25, 12, 22, 11]",
+        "output": "arr = [11, 12, 22, 25, 64]",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "3.3",
+    "title": "3.3 Insertion Sort",
+    "description": "# 3.3 Insertion Sort\n\nInsertion sort is a simple sorting algorithm that works similar to the way you sort playing cards in your\nhands. The array is virtually split into a sorted and an unsorted part. Values from the unsorted part are\npicked and placed at the correct position in the sorted part.\nInsertion Sort Procedure:\n1. To sort an array of size N in ascending order iterate over the array and compare the current element\n(key) to its predecessor, if the key element is smaller than its predecessor, compare it to the elements\nbefore.\n2. Move the greater elements one position up to make space for the swapped element.\n\n\n\n\n**Example:**\n```\nInput: arr = [4, 3, 2, 10, 12, 1, 5, 6]\nOutput: arr = [1, 2, 3, 4, 5, 6, 10, 12]\n```\n\n\n\n\n4. Divide and Conquer",
+    "boilerplate_code": "import java.util.Scanner;\nclass InsertionSortExample\n{\npublic static void main(String[] args)\n{\n# write code here\n}\npublic static void insertionSort(int[] arr)\n{\n# write code here\n}\n}",
+    "test_cases": [
+      {
+        "input": "arr = [4, 3, 2, 10, 12, 1, 5, 6]",
+        "output": "arr = [1, 2, 3, 4, 5, 6, 10, 12]",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [4, 3, 2, 10, 12, 1, 5, 6]",
+        "output": "arr = [1, 2, 3, 4, 5, 6, 10, 12]",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [4, 3, 2, 10, 12, 1, 5, 6]",
+        "output": "arr = [1, 2, 3, 4, 5, 6, 10, 12]",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [4, 3, 2, 10, 12, 1, 5, 6]",
+        "output": "arr = [1, 2, 3, 4, 5, 6, 10, 12]",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [4, 3, 2, 10, 12, 1, 5, 6]",
+        "output": "arr = [1, 2, 3, 4, 5, 6, 10, 12]",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [4, 3, 2, 10, 12, 1, 5, 6]",
+        "output": "arr = [1, 2, 3, 4, 5, 6, 10, 12]",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [4, 3, 2, 10, 12, 1, 5, 6]",
+        "output": "arr = [1, 2, 3, 4, 5, 6, 10, 12]",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [4, 3, 2, 10, 12, 1, 5, 6]",
+        "output": "arr = [1, 2, 3, 4, 5, 6, 10, 12]",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [4, 3, 2, 10, 12, 1, 5, 6]",
+        "output": "arr = [1, 2, 3, 4, 5, 6, 10, 12]",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [4, 3, 2, 10, 12, 1, 5, 6]",
+        "output": "arr = [1, 2, 3, 4, 5, 6, 10, 12]",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "4.1",
+    "title": "4.1 Quick Sort",
+    "description": "# 4.1 Quick Sort\n\nQuickSort is a sorting algorithm based on the Divide and Conquer algorithm that picks an element as a\npivot and partitions the given array around the picked pivot by placing the pivot in its correct position in\nthe sorted array. The key process in quickSort is a partition(). The target of partitions is to place the pivot\n(any element can be chosen to be a pivot) at its correct position in the sorted array and put all smaller\nelements to the left of the pivot, and all greater elements to the right of the pivot. Partition is done\nrecursively on each side of the pivot after the pivot is placed in its correct position and this finally sorts the\narray.\nThe quick sort method can be summarized in three steps:\n1. Pick: Select a pivot element.\n2. Divide: Split the problem set, move smaller parts to the left of the pivot and larger items to the right.\n3. Repeat and combine: Repeat the steps and combine the arrays that have previously been sorted.\nAlgorithm for Quick Sort Function:\n//start \u2013> Starting index, end --> Ending index\nQuicksort(array, start, end)\n{\nif (start < end)\n{\npIndex = Partition(A, start, end)\nQuicksort(A,start,pIndex-1)\nQuicksort(A,pIndex+1, end)\n}\n}\nAlgorithm for Partition Function:\npartition (array, start, end)\n{\n// Setting rightmost Index as pivot\npivot = arr[end];\n\n\n\ni = (start - 1) // Index of smaller element and indicates the\n// right position of pivot found so far\nfor (j = start; j <= end- 1; j++)\n{\n// If current element is smaller than the pivot\nif (arr[j] < pivot)\n{\ni++; // increment index of smaller element\nswap arr[i] and arr[j]\n}\n}\nswap arr[i + 1] and arr[end])\nreturn (i + 1)\n}\n\n**Example:**\n```\nInput: arr = [10, 80, 30, 90, 40, 50, 70]\nOutput: arr = [10, 30, 40, 50, 70, 80, 90]\n```\n",
+    "boilerplate_code": "import java.util.Scanner;\nclass QuickSortExample\n{\npublic static void main(String[] args)\n{\n# write code here\n}\npublic static void quickSort(int[] arr, int low, int high)\n{\n# write code here\n}\npublic static int partition(int[] arr, int low, int high)\n{\n# write code here\n}\n}",
+    "test_cases": [
+      {
+        "input": "arr = [10, 80, 30, 90, 40, 50, 70]",
+        "output": "arr = [10, 30, 40, 50, 70, 80, 90]",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [10, 80, 30, 90, 40, 50, 70]",
+        "output": "arr = [10, 30, 40, 50, 70, 80, 90]",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [10, 80, 30, 90, 40, 50, 70]",
+        "output": "arr = [10, 30, 40, 50, 70, 80, 90]",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [10, 80, 30, 90, 40, 50, 70]",
+        "output": "arr = [10, 30, 40, 50, 70, 80, 90]",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [10, 80, 30, 90, 40, 50, 70]",
+        "output": "arr = [10, 30, 40, 50, 70, 80, 90]",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [10, 80, 30, 90, 40, 50, 70]",
+        "output": "arr = [10, 30, 40, 50, 70, 80, 90]",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [10, 80, 30, 90, 40, 50, 70]",
+        "output": "arr = [10, 30, 40, 50, 70, 80, 90]",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [10, 80, 30, 90, 40, 50, 70]",
+        "output": "arr = [10, 30, 40, 50, 70, 80, 90]",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [10, 80, 30, 90, 40, 50, 70]",
+        "output": "arr = [10, 30, 40, 50, 70, 80, 90]",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [10, 80, 30, 90, 40, 50, 70]",
+        "output": "arr = [10, 30, 40, 50, 70, 80, 90]",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "4.2",
+    "title": "4.2 Merge Sort",
+    "description": "# 4.2 Merge Sort\n\nMerge sort is defined as a sorting algorithm that works by dividing an array into smaller subarrays, sorting\neach subarray, and then merging the sorted subarrays back together to form the final sorted array. In simple\nterms, we can say that the process of merge sort is to divide the array into two halves, sort each half, and\nthen merge the sorted halves back together. This process is repeated until the entire array is sorted.\n\n\n\n\n**Example:**\n```\nInput: arr = [12, 11, 13, 5, 6, 7]\nOutput: arr = [5, 6, 7, 11, 12, 13]\n```\n",
+    "boilerplate_code": "import java.util.Scanner;\nclass MergeSortExample\n{\npublic static void main(String[] args)\n{\n# write code here\n}\npublic static void mergeSort(int[] arr, int low, int high)\n{\n# write code here\n}\npublic static void merge(int[] arr, int low, int mid, int high)\n{\n# write code here\n}\n}",
+    "test_cases": [
+      {
+        "input": "arr = [12, 11, 13, 5, 6, 7]",
+        "output": "arr = [5, 6, 7, 11, 12, 13]",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [12, 11, 13, 5, 6, 7]",
+        "output": "arr = [5, 6, 7, 11, 12, 13]",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [12, 11, 13, 5, 6, 7]",
+        "output": "arr = [5, 6, 7, 11, 12, 13]",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [12, 11, 13, 5, 6, 7]",
+        "output": "arr = [5, 6, 7, 11, 12, 13]",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [12, 11, 13, 5, 6, 7]",
+        "output": "arr = [5, 6, 7, 11, 12, 13]",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [12, 11, 13, 5, 6, 7]",
+        "output": "arr = [5, 6, 7, 11, 12, 13]",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [12, 11, 13, 5, 6, 7]",
+        "output": "arr = [5, 6, 7, 11, 12, 13]",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [12, 11, 13, 5, 6, 7]",
+        "output": "arr = [5, 6, 7, 11, 12, 13]",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [12, 11, 13, 5, 6, 7]",
+        "output": "arr = [5, 6, 7, 11, 12, 13]",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [12, 11, 13, 5, 6, 7]",
+        "output": "arr = [5, 6, 7, 11, 12, 13]",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "4.3",
+    "title": "4.3 Heap Sort",
+    "description": "# 4.3 Heap Sort\n\nHeap sort is a comparison-based sorting technique based on Binary Heap data structure. It is similar to the\nselection sort where we first find the minimum element and place the minimum element at the beginning.\nRepeat the same process for the remaining elements.\nHeap Sort Procedure:\nFirst convert the array into heap data structure using heapify, then one by one delete the root node of the\nMax-heap and replace it with the last node in the heap and then heapify the root of the heap. Repeat this\nprocess until size of heap is greater than 1.\n\u2022 Build a heap from the given input array.\n\u2022 Repeat the following steps until the heap contains only one element:\n\n\n\n\u2022 Swap the root element of the heap (which is the largest element) with the last element of the\nheap.\n\u2022 Remove the last element of the heap (which is now in the correct position).\n\u2022 Heapify the remaining elements of the heap.\n\u2022 The sorted array is obtained by reversing the order of the elements in the input array.\n\n**Example:**\n```\nInput: arr = [12, 11, 13, 5, 6, 7]\nOutput: Sorted array is 5 6 7 11 12 13\n```\n",
+    "boilerplate_code": "import java.util.Scanner;\nclass HeapSortExample\n{\npublic static void main(String[] args)\n{\n# write code here\n}\npublic static void heapSort(int[] arr)\n{\n# write code here\n}\npublic static void heapify(int[] arr, int n, int i)\n{\n# write code here\n}\n}",
+    "test_cases": [
+      {
+        "input": "arr = [12, 11, 13, 5, 6, 7]",
+        "output": "Sorted array is 5 6 7 11 12 13",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [12, 11, 13, 5, 6, 7]",
+        "output": "Sorted array is 5 6 7 11 12 13",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [12, 11, 13, 5, 6, 7]",
+        "output": "Sorted array is 5 6 7 11 12 13",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [12, 11, 13, 5, 6, 7]",
+        "output": "Sorted array is 5 6 7 11 12 13",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [12, 11, 13, 5, 6, 7]",
+        "output": "Sorted array is 5 6 7 11 12 13",
+        "is_hidden": false
+      },
+      {
+        "input": "arr = [12, 11, 13, 5, 6, 7]",
+        "output": "Sorted array is 5 6 7 11 12 13",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [12, 11, 13, 5, 6, 7]",
+        "output": "Sorted array is 5 6 7 11 12 13",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [12, 11, 13, 5, 6, 7]",
+        "output": "Sorted array is 5 6 7 11 12 13",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [12, 11, 13, 5, 6, 7]",
+        "output": "Sorted array is 5 6 7 11 12 13",
+        "is_hidden": true
+      },
+      {
+        "input": "arr = [12, 11, 13, 5, 6, 7]",
+        "output": "Sorted array is 5 6 7 11 12 13",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "4.4",
+    "title": "4.4 Radix Sort",
+    "description": "# 4.4 Radix Sort\n\nRadix Sort is a linear sorting algorithm that sorts elements by processing them digit by digit. It is an efficient\nsorting algorithm for integers or strings with fixed-size keys. Rather than comparing elements directly, Radix\nSort distributes the elements into buckets based on each digit\u2019s value. By repeatedly sorting the elements\nby their significant digits, from the least significant to the most significant, Radix Sort achieves the final\nsorted order.\nRadix Sort Procedure:\nThe key idea behind Radix Sort is to exploit the concept of place value.\n1. It assumes that sorting numbers digit by digit will eventually result in a fully sorted list.\n2. Radix Sort can be performed using different variations, such as Least Significant Digit (LSD) Radix Sort\nor Most Significant Digit (MSD) Radix Sort.\nTo perform radix sort on the array [170, 45, 75, 90, 802, 24, 2, 66], we follow these steps:\n\n\n\nStep 1: Find the largest element in the array, which is 802. It has three digits, so we will iterate three times,\nonce for each significant place.\nStep 2: Sort the elements based on the unit place digits (X=0). We use a stable sorting technique, such as\ncounting sort, to sort the digits at each significant place.\nSorting based on the unit place:\nPerform counting sort on the array based on the unit place digits.\nThe sorted array based on the unit place is [170, 90, 802, 2, 24, 45, 75, 66]\nStep 3: Sort the elements based on the tens place digits.\nSorting based on the tens place:\nPerform counting sort on the array based on the tens place digits.\nThe sorted array based on the tens place is [802, 2, 24, 45, 66, 170, 75, 90]\nStep 4: Sort the elements based on the hundreds place digits.\nSorting based on the hundreds place:\nPerform counting sort on the array based on the hundreds place digits.\nThe sorted array based on the hundreds place is [2, 24, 45, 66, 75, 90, 170, 802]\n\n\n\nStep 5: The array is now sorted in ascending order.\nThe final sorted array using radix sort is [2, 24, 45, 66, 75, 90, 170, 802]",
+    "boilerplate_code": "import java.util.Arrays;\nclass RadixSortExample\n{\npublic static void main(String[] args)\n{\n# write code here\n}\npublic static void radixSort(int[] arr)\n{\n# write code here\n}\npublic static int getMax(int[] arr)\n{\n# write code here\n}\npublic static void countSort(int[] arr, int exp)\n{\n# write code here\n}\n}",
+    "test_cases": [
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "4.5",
+    "title": "4.5 Shell Sort",
+    "description": "# 4.5 Shell Sort\n\nShell sort is mainly a variation of Insertion Sort. In insertion sort, we move elements only one position ahead.\nWhen an element has to be moved far ahead, many movements are involved. The idea of ShellSort is to\nallow the exchange of far items. In Shell sort, we make the array h-sorted for a large value of h. We keep\nreducing the value of h until it becomes 1. An array is said to be h-sorted if all sublists of every h\u2019th element\nare sorted.\n\n\n\nShell Sort Procedure:\n1. Initialize the value of gap size h\n2. Divide the list into smaller sub-part. Each must have equal intervals to h\n3. Sort these sub-lists using insertion sort\n4. Repeat this step 1 until the list is sorted.\n5. Print a sorted list.\nProcedure Shell_Sort(Array, N)\nWhile Gap < Length(Array) /3 :\nGap = ( Interval * 3 ) + 1\nEnd While Loop\nWhile Gap > 0 :\nFor (Outer = Gap; Outer < Length(Array); Outer++):\nInsertion_Value = Array[Outer]\nInner = Outer;\nWhile Inner > Gap-1 And Array[Inner \u2013 Gap] >= Insertion_Value:\nArray[Inner] = Array[Inner \u2013 Gap]\nInner = Inner \u2013 Gap\nEnd While Loop\nArray[Inner] = Insertion_Value\nEnd For Loop\nGap = (Gap -1) /3;\nEnd While Loop\nEnd Shell_Sort\n\n\n\n5. Stack",
+    "boilerplate_code": "import java.util.Scanner;\nclass ShellSortExample\n{\npublic static void main(String[] args)\n{\n# write code here\n}\npublic static void shellSort(int[] arr)\n{\n# write code here\n}\n}",
+    "test_cases": [
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "5.1",
+    "title": "5.1 Implementation of Stack",
+    "description": "# 5.1 Implementation of Stack\n\nA stack is a linear data structure that stores items in a Last-In/First-Out (LIFO) or First-In/Last-Out (FILO)\nmanner. In stack, a new element is added at one end and an element is removed from that end only. The\ninsert and delete operations are often called push and pop.\nThe functions associated with stack are:\n\u2022 empty() \u2013 Returns whether the stack is empty\n\u2022 size() \u2013 Returns the size of the stack\n\u2022 top() / peek() \u2013 Returns a reference to the topmost element of the stack\n\u2022 push(a) \u2013 Inserts the element \u2018a\u2019 at the top of the stack\n\u2022 pop() \u2013 Deletes the topmost element of the stack",
+    "boilerplate_code": "class StackExample\n{\npublic static void main(String[] args)\n{\nStack stack = new Stack(5);\nstack.push(10);\nstack.push(20);\nstack.push(30);\nstack.pop();\nstack.peek();\nstack.push(40);\nstack.push(50);\nstack.push(60);\n}\n}",
+    "test_cases": [
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "5.2",
+    "title": "5.2 Balanced Parenthesis Checking",
+    "description": "# 5.2 Balanced Parenthesis Checking\n\nGiven an expression string, write a java program to find whether a given string has balanced parentheses\nor not.\n\n**Example:**\n```\nInput: \"{(a+b)*(c-d)}\"\nOutput: true\n```\n\n\n**Example:**\n```\nInput: \"{(a+b)*[c-d)}\"\nOutput: false\n```\n\nOne approach to check balanced parentheses is to use stack. Each time, when an open parentheses is\nencountered push it in the stack, and when closed parenthesis is encountered, match it with the top of stack\nand pop it. If stack is empty at the end, return true otherwise, false",
+    "boilerplate_code": "import java.util.Stack;\nclass BalancedParenthesisChecker\n{\npublic static boolean isBalanced(String expression)\n{\n# write code here\n}\npublic static void main(String[] args)\n{\nString expression1 = \"{(a+b)*(c-d)}\";\nString expression2 = \"{(a+b)*[c-d)}\";\n# write code here\n}\n}",
+    "test_cases": [
+      {
+        "input": "\"{(a+b)*(c-d)}\"",
+        "output": "true",
+        "is_hidden": false
+      },
+      {
+        "input": "\"{(a+b)*[c-d)}\"",
+        "output": "false",
+        "is_hidden": false
+      },
+      {
+        "input": "\"{(a+b)*[c-d)}\"",
+        "output": "false",
+        "is_hidden": false
+      },
+      {
+        "input": "\"{(a+b)*[c-d)}\"",
+        "output": "false",
+        "is_hidden": false
+      },
+      {
+        "input": "\"{(a+b)*[c-d)}\"",
+        "output": "false",
+        "is_hidden": false
+      },
+      {
+        "input": "\"{(a+b)*[c-d)}\"",
+        "output": "false",
+        "is_hidden": true
+      },
+      {
+        "input": "\"{(a+b)*[c-d)}\"",
+        "output": "false",
+        "is_hidden": true
+      },
+      {
+        "input": "\"{(a+b)*[c-d)}\"",
+        "output": "false",
+        "is_hidden": true
+      },
+      {
+        "input": "\"{(a+b)*[c-d)}\"",
+        "output": "false",
+        "is_hidden": true
+      },
+      {
+        "input": "\"{(a+b)*[c-d)}\"",
+        "output": "false",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "5.3",
+    "title": "5.3 Evaluation of Postfix Expression",
+    "description": "# 5.3 Evaluation of Postfix Expression\n\nGiven a postfix expression, the task is to evaluate the postfix expression. Postfix expression: The expression\nof the form \u201ca b operator\u201d (ab+) i.e., when a pair of operands is followed by an operator.\n\n**Example:**\n```\nInput: str = \u201c2 3 1 * + 9 -\u201c\nOutput: -4\n```\n\nExplanation: If the expression is converted into an infix expression, it will be 2 + (3 * 1) \u2013 9 = 5 \u2013 9 = -4.\n\n**Example:**\n```\nInput: str = \u201c100 200 + 2 / 5 * 7 +\u201d\nOutput: 757\n```\n\nProcedure for evaluation postfix expression using stack:\n\u2022 Create a stack to store operands (or values).\n\u2022 Scan the given expression from left to right and do the following for every scanned element.\no If the element is a number, push it into the stack.\no If the element is an operator, pop operands for the operator from the stack. Evaluate the\noperator and push the result back to the stack.\n\u2022 When the expression is ended, the number in the stack is the final answer.",
+    "boilerplate_code": "import java.util.Stack;\nclass PostfixEvaluator\n{\npublic static int evaluatePostfix(String expression)\n{\n# write code here\n}\npublic static int performOperation(char operator, int operand1, int operand2)\n{\n# write code here\n}\npublic static void main(String[] args)\n{\n# write code here\n}\n}",
+    "test_cases": [
+      {
+        "input": "str = \u201c2 3 1 * + 9 -\u201c",
+        "output": "-4",
+        "is_hidden": false
+      },
+      {
+        "input": "str = \u201c100 200 + 2 / 5 * 7 +\u201d",
+        "output": "757",
+        "is_hidden": false
+      },
+      {
+        "input": "str = \u201c100 200 + 2 / 5 * 7 +\u201d",
+        "output": "757",
+        "is_hidden": false
+      },
+      {
+        "input": "str = \u201c100 200 + 2 / 5 * 7 +\u201d",
+        "output": "757",
+        "is_hidden": false
+      },
+      {
+        "input": "str = \u201c100 200 + 2 / 5 * 7 +\u201d",
+        "output": "757",
+        "is_hidden": false
+      },
+      {
+        "input": "str = \u201c100 200 + 2 / 5 * 7 +\u201d",
+        "output": "757",
+        "is_hidden": true
+      },
+      {
+        "input": "str = \u201c100 200 + 2 / 5 * 7 +\u201d",
+        "output": "757",
+        "is_hidden": true
+      },
+      {
+        "input": "str = \u201c100 200 + 2 / 5 * 7 +\u201d",
+        "output": "757",
+        "is_hidden": true
+      },
+      {
+        "input": "str = \u201c100 200 + 2 / 5 * 7 +\u201d",
+        "output": "757",
+        "is_hidden": true
+      },
+      {
+        "input": "str = \u201c100 200 + 2 / 5 * 7 +\u201d",
+        "output": "757",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "5.4",
+    "title": "5.4 Infix to Postfix Expression Conversion",
+    "description": "# 5.4 Infix to Postfix Expression Conversion\n\nFor a given Infix expression, convert it into Postfix form.\nInfix expression: The expression of the form \u201ca operator b\u201d (a + b) i.e., when an operator is in-between\nevery pair of operands.\nPostfix expression: The expression of the form \u201ca b operator\u201d (ab+) i.e., When every pair of operands is\nfollowed by an operator.\nInfix to postfix expression conversion procedure:\n1. Scan the infix expression from left to right.\n2. If the scanned character is an operand, put it in the postfix expression.\n3. Otherwise, do the following\n\n\n\n\u2022 If the precedence and associativity of the scanned operator are greater than the precedence and\nassociativity of the operator in the stack [or the stack is empty or the stack contains a \u2018(\u2018 ], then\npush it in the stack. [\u2018^\u2018 operator is right associative and other operators like \u2018+\u2018,\u2019\u2013\u2018,\u2019*\u2018 and \u2018/\u2018 are\nleft-associative].\n\u2022 Check especially for a condition when the operator at the top of the stack and the scanned\noperator both are \u2018^\u2018. In this condition, the precedence of the scanned operator is higher due\nto its right associativity. So it will be pushed into the operator stack.\n\u2022 In all the other cases when the top of the operator stack is the same as the scanned operator,\nthen pop the operator from the stack because of left associativity due to which the scanned\noperator has less precedence.\n\u2022 Else, Pop all the operators from the stack which are greater than or equal to in precedence than\nthat of the scanned operator.\n\u2022 After doing that Push the scanned operator to the stack. (If you encounter parenthesis while\npopping then stop there and push the scanned operator in the stack.)\n4. If the scanned character is a \u2018(\u2018, push it to the stack.\n5. If the scanned character is a \u2018)\u2019, pop the stack and output it until a \u2018(\u2018 is encountered, and discard both\nthe parenthesis.\n6. Repeat steps 2-5 until the infix expression is scanned.\n7. Once the scanning is over, Pop the stack and add the operators in the postfix expression until it is not\nempty.\n8. Finally, print the postfix expression.\n\n**Example:**\n```\nInput: A + B * C + D\nOutput: A B C * + D +\n```\n\n\n**Example:**\n```\nInput: ((A + B) \u2013 C * (D / E)) + F\nOutput: A B + C D E / * - F +\n```\n",
+    "boilerplate_code": "import java.util.Stack;\nclass Conversion\n{\n# Write Code Here\n}",
+    "test_cases": [
+      {
+        "input": "A + B * C + D",
+        "output": "A B C * + D +",
+        "is_hidden": false
+      },
+      {
+        "input": "((A + B) \u2013 C * (D / E)) + F",
+        "output": "A B + C D E / * - F +",
+        "is_hidden": false
+      },
+      {
+        "input": "((A + B) \u2013 C * (D / E)) + F",
+        "output": "A B + C D E / * - F +",
+        "is_hidden": false
+      },
+      {
+        "input": "((A + B) \u2013 C * (D / E)) + F",
+        "output": "A B + C D E / * - F +",
+        "is_hidden": false
+      },
+      {
+        "input": "((A + B) \u2013 C * (D / E)) + F",
+        "output": "A B + C D E / * - F +",
+        "is_hidden": false
+      },
+      {
+        "input": "((A + B) \u2013 C * (D / E)) + F",
+        "output": "A B + C D E / * - F +",
+        "is_hidden": true
+      },
+      {
+        "input": "((A + B) \u2013 C * (D / E)) + F",
+        "output": "A B + C D E / * - F +",
+        "is_hidden": true
+      },
+      {
+        "input": "((A + B) \u2013 C * (D / E)) + F",
+        "output": "A B + C D E / * - F +",
+        "is_hidden": true
+      },
+      {
+        "input": "((A + B) \u2013 C * (D / E)) + F",
+        "output": "A B + C D E / * - F +",
+        "is_hidden": true
+      },
+      {
+        "input": "((A + B) \u2013 C * (D / E)) + F",
+        "output": "A B + C D E / * - F +",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "5.5",
+    "title": "5.5 Reverse a Stack",
+    "description": "# 5.5 Reverse a Stack\n\nThe stack is a linear data structure which works on the LIFO concept. LIFO stands for last in first out. In the\nstack, the insertion and deletion are possible at one end the end is called the top of the stack. Define two\nrecursive functions BottomInsertion() and Reverse() to reverse a stack using Python. Define some basic\nfunction of the stack like push(), pop(), show(), empty(), for basic operation like respectively append an item\nin stack, remove an item in stack, display the stack, check the given stack is empty or not.\nBottomInsertion(): this method append element at the bottom of the stack and BottomInsertion accept\ntwo values as an argument first is stack and the second is elements, this is a recursive method.\nReverse(): the method is reverse elements of the stack, this method accept stack as an argument\nReverse() is also a Recursive() function. Reverse() is invoked BottomInsertion() method for completing the\nreverse operation on the stack.\n\n\n\n\n**Example:**\n```\nInput: Elements = [1, 2, 3, 4, 5]\nOutput: Original Stack\n```\n\n5\n4\n3\n2\n1\nStack after Reversing\n1\n2\n3\n4\n5\n\n\n\n6. Queue",
+    "boilerplate_code": "import java.util.Stack;\nclass StackClass {\n# Write Code Here\n}",
+    "test_cases": [
+      {
+        "input": "Elements = [1, 2, 3, 4, 5]",
+        "output": "Original Stack",
+        "is_hidden": false
+      },
+      {
+        "input": "Elements = [1, 2, 3, 4, 5]",
+        "output": "Original Stack",
+        "is_hidden": false
+      },
+      {
+        "input": "Elements = [1, 2, 3, 4, 5]",
+        "output": "Original Stack",
+        "is_hidden": false
+      },
+      {
+        "input": "Elements = [1, 2, 3, 4, 5]",
+        "output": "Original Stack",
+        "is_hidden": false
+      },
+      {
+        "input": "Elements = [1, 2, 3, 4, 5]",
+        "output": "Original Stack",
+        "is_hidden": false
+      },
+      {
+        "input": "Elements = [1, 2, 3, 4, 5]",
+        "output": "Original Stack",
+        "is_hidden": true
+      },
+      {
+        "input": "Elements = [1, 2, 3, 4, 5]",
+        "output": "Original Stack",
+        "is_hidden": true
+      },
+      {
+        "input": "Elements = [1, 2, 3, 4, 5]",
+        "output": "Original Stack",
+        "is_hidden": true
+      },
+      {
+        "input": "Elements = [1, 2, 3, 4, 5]",
+        "output": "Original Stack",
+        "is_hidden": true
+      },
+      {
+        "input": "Elements = [1, 2, 3, 4, 5]",
+        "output": "Original Stack",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "6.1",
+    "title": "6.1 Linear Queue",
+    "description": "# 6.1 Linear Queue\n\nLinear queue is a linear data structure that stores items in First in First out (FIFO) manner. With a queue the\nleast recently added item is removed first. A good example of queue is any queue of consumers for a\nresource where the consumer that came first is served first.\npublic static boolean isEmpty() {\nreturn front == rear;\n}\npublic static boolean isFull() {\nreturn rear == MAX;\n}\npublic static void enqueue(int item)\n{\n# Write Code Here\n}\npublic static void dequeue()\n{\n# Write Code Here\n}\npublic static void display()\n{\n# Write Code Here\n}\npublic static void main(String[] args)\n{\n# Write Code Here\n}\n}",
+    "boilerplate_code": "import java.util.Scanner;\npublic class LinearQueue\n{\n# Write Code Here\n}",
+    "test_cases": [
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "6.2",
+    "title": "6.2 Stack using Queues",
+    "description": "# 6.2 Stack using Queues\n\nImplement a last-in-first-out (LIFO) stack using only two queues. The implemented stack should support all\nthe functions of a normal stack (push, top, pop, and empty).\n\u2022 void push(int x) Pushes element x to the top of the stack.\n\u2022 int pop() Removes the element on the top of the stack and returns it.\n\u2022 int top() Returns the element on the top of the stack.\n\u2022 boolean empty() Returns true if the stack is empty, false otherwise.\n\n**Example:**\n```\nInput:\n[\"MyStack\", \"push\", \"push\", \"top\", \"pop\", \"empty\"]\n[[], [1], [2], [], [], []]\nOutput:\n```\n\n[null, null, null, 2, 2, false]\npublic void push(int x)\n{\n# Write Code Here\n}\n}\npublic int pop()\n{\nreturn queue.remove();\n}\npublic int top() {\nreturn queue.peek();\n}\npublic boolean empty() {\nreturn queue.isEmpty();\n}\npublic static void main(String[] args)\n{\n# Write Code Here\n}\n}",
+    "boilerplate_code": "import java.util.LinkedList;\nimport java.util.Queue;\nclass MyStack\n{\n# Write Code Here\n}",
+    "test_cases": [
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "6.3",
+    "title": "6.3 Queue using Stacks",
+    "description": "# 6.3 Queue using Stacks\n\nImplement a first in first out (FIFO) queue using only two stacks. The implemented queue should support\nall the functions of a normal queue (push, peek, pop, and empty).\n\u2022 void push(int x) Pushes element x to the back of the queue.\n\u2022 int pop() Removes the element from the front of the queue and returns it.\n\u2022 int peek() Returns the element at the front of the queue.\n\u2022 boolean empty() Returns true if the queue is empty, false otherwise.\n\n**Example:**\n```\nInput:\n\n\n\n[\"MyQueue\", \"push\", \"push\", \"peek\", \"pop\", \"empty\"]\n[[], [1], [2], [], [], []]\nOutput:\n```\n\n[null, null, null, 1, 1, false]",
+    "boilerplate_code": "import java.util.Stack;\nclass MyQueue {\nprivate Stack<Integer> stack1;\nprivate Stack<Integer> stack2;\npublic MyQueue() {\nstack1 = new Stack<>();\nstack2 = new Stack<>();\n}\npublic void push(int x) {\nstack1.push(x);\n}\npublic int pop()\n{\n# Write Code Here\n}\npublic int peek()\n{\n# Write Code Here\n}\npublic boolean empty() {\nreturn stack1.isEmpty() && stack2.isEmpty();\n}\npublic static void main(String[] args)\n{\n# Write Code Here\n}\n}",
+    "test_cases": [
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "6.4",
+    "title": "6.4 Circular Queue",
+    "description": "# 6.4 Circular Queue\n\nA Circular Queue is an extended version of a normal queue where the last element of the queue is connected\nto the first element of the queue forming a circle. The operations are performed based on FIFO (First In First\nOut) principle. It is also called \u2018Ring Buffer\u2019.\nOperations on Circular Queue:\n\u2022 Front: Get the front item from the queue.\n\u2022 Rear: Get the last item from the queue.\n\u2022 enQueue(value) This function is used to insert an element into the circular queue. In a circular queue,\nthe new element is always inserted at the rear position.\n\u2022 Check whether the queue is full \u2013 [i.e., the rear end is in just before the front end in a\ncircular manner].\n\u2022 If it is full then display Queue is full.\n\n\n\n\u2022 If the queue is not full then, insert an element at the end of the queue.\n\u2022 deQueue() This function is used to delete an element from the circular queue. In a circular queue, the\nelement is always deleted from the front position.\n\u2022 Check whether the queue is Empty.\n\u2022 If it is empty then display Queue is empty.\n\u2022 If the queue is not empty, then get the last element and remove it from the\nqueue.\nImplement Circular Queue using Array:\n1. Initialize an array queue of size n, where n is the maximum number of elements that the queue can\nhold.\n2. Initialize two variables front and rear to -1.\n3. Enqueue: To enqueue an element x into the queue, do the following:\n\u2022 Increment rear by 1.\n\u2022 If rear is equal to n, set rear to 0.\n\u2022 If front is -1, set front to 0.\n\u2022 Set queue[rear] to x.\n4. Dequeue: To dequeue an element from the queue, do the following:\n\u2022 Check if the queue is empty by checking if front is -1.\n\u2022 If it is, return an error message indicating that the queue is empty.\n\u2022 Set x to queue [front].\n\u2022 If front is equal to rear, set front and rear to -1.\n\u2022 Otherwise, increment front by 1 and if front is equal to n, set front to 0.\n\u2022 Return x.",
+    "boilerplate_code": "class CircularQueue {\nprivate int size;\nprivate int front, rear;\nprivate int[] queue;\npublic CircularQueue(int size) {\nthis.size = size;\n\n\n\nthis.queue = new int[size];\nthis.front = this.rear = -1;\n}\npublic void enqueue(int data)\n{\n# Write Code Here\n}\npublic int dequeue()\n{\n# Write Code Here\n}\npublic void display()\n{\n# Write Code Here\n}\npublic static void main(String[] args)\n{\n# Write Code Here\n}\n}",
+    "test_cases": [
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "6.5",
+    "title": "6.5 Deque (Doubly Ended Queue)",
+    "description": "# 6.5 Deque (Doubly Ended Queue)\n\nIn a Deque (Doubly Ended Queue), one can perform insert (append) and delete (pop) operations from both\nthe ends of the container. There are two types of Deque:\n1. Input Restricted Deque: Input is limited at one end while deletion is permitted at both ends.\n2. Output Restricted Deque: Output is limited at one end but insertion is permitted at both ends.\nOperations on Deque:\n1. append(): This function is used to insert the value in its argument to the right end of the deque.\n2. appendleft(): This function is used to insert the value in its argument to the left end of the deque.\n3. pop(): This function is used to delete an argument from the right end of the deque.\n4. popleft(): This function is used to delete an argument from the left end of the deque.\n5. index(ele, beg, end): This function returns the first index of the value mentioned in arguments, starting\nsearching from beg till end index.\n6. insert(i, a): This function inserts the value mentioned in arguments(a) at index(i) specified in arguments.\n7. remove(): This function removes the first occurrence of the value mentioned in arguments.\n8. count(): This function counts the number of occurrences of value mentioned in arguments.\n9. len(dequeue): Return the current size of the dequeue.\n10. Deque[0]: We can access the front element of the deque using indexing with de[0].\n11. Deque[-1]: We can access the back element of the deque using indexing with de[-1].\n12. extend(iterable): This function is used to add multiple values at the right end of the deque. The argument\npassed is iterable.\n13. extendleft(iterable): This function is used to add multiple values at the left end of the deque. The argument\npassed is iterable. Order is reversed as a result of left appends.\n14. reverse(): This function is used to reverse the order of deque elements.\n\n\n\n15. rotate(): This function rotates the deque by the number specified in arguments. If the number specified is\nnegative, rotation occurs to the left. Else rotation is to right.\n\n\n\n7. Linked List",
+    "boilerplate_code": "import java.util.ArrayDeque;\nimport java.util.Deque;\npublic class DequeOperations\n{\n# Write Code Here\n}",
+    "test_cases": [
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "7.1",
+    "title": "7.1 Singly Linked List",
+    "description": "# 7.1 Singly Linked List\n\nA singly linked list is a linear data structure in which the elements are not stored in contiguous memory\nlocations and each element is connected only to its next element using a pointer.\nCreating a linked list involves the following operations:\n1. Creating a Node class:\n2. Insertion at beginning:\n3. Insertion at end\n4. Insertion at middle\n5. Update the node\n6. Deletion at beginning\n7. Deletion at end\n8. Deletion at middle\n9. Remove last node\n10. Linked list traversal\n11. Get length\npublic void insertAtEnd(String data)\n{\n# Write Code Here\n}\npublic void updateNode(String val, int index)\n{\n# Write Code Here\n}\npublic void remove_first_node() {\n# Write Code Here\n}\n\n\n\npublic void remove_last_node()\n{\n# Write Code Here\n}\npublic void remove_at_index(int index)\n{\n# Write Code Here\n}\npublic void remove_node(String data)\n{\n# Write Code Here\n}\npublic int sizeOfLL()\n{\n# Write Code Here\n}\npublic void printLL()\n{\n# Write Code Here\n}\npublic static void main(String[] args)\n{\n# Write Code Here\n}\n}",
+    "boilerplate_code": "class LinkedList\n{\n# Write Code Here\n}",
+    "test_cases": [
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "7.2",
+    "title": "7.2 Linked List Cycle",
+    "description": "# 7.2 Linked List Cycle\n\nGiven head, the head of a linked list, determine if the linked list has a cycle in it. There is a cycle in a linked\nlist if there is some node in the list that can be reached again by continuously following the next pointer.\nInternally, pos is used to denote the index of the node that tail's next pointer is connected to.\nNote that pos is not passed as a parameter.\nReturn true if there is a cycle in the linked list. Otherwise, return false.\n\n**Example:**\n```\nInput: head = [3, 2, 0, -4], pos = 1\nOutput: true\n```\n\nExplanation: There is a cycle in the linked list, where the tail connects to the 1st node (0-indexed).\n\n\n\n\n**Example:**\n```\nInput: head = [1, 2], pos = 0\nOutput: true\n```\n\nExplanation: There is a cycle in the linked list, where the tail connects to the 0th node.\n\n**Example:**\n```\nInput: head = [1], pos = -1\nOutput: false\n```\n\nExplanation: There is no cycle in the linked list.\n}",
+    "boilerplate_code": "public class Solution\n{\n# Write Code Here\n}",
+    "test_cases": [
+      {
+        "input": "head = [3, 2, 0, -4], pos = 1",
+        "output": "true",
+        "is_hidden": false
+      },
+      {
+        "input": "head = [1, 2], pos = 0",
+        "output": "true",
+        "is_hidden": false
+      },
+      {
+        "input": "head = [1], pos = -1",
+        "output": "false",
+        "is_hidden": false
+      },
+      {
+        "input": "head = [1], pos = -1",
+        "output": "false",
+        "is_hidden": false
+      },
+      {
+        "input": "head = [1], pos = -1",
+        "output": "false",
+        "is_hidden": false
+      },
+      {
+        "input": "head = [1], pos = -1",
+        "output": "false",
+        "is_hidden": true
+      },
+      {
+        "input": "head = [1], pos = -1",
+        "output": "false",
+        "is_hidden": true
+      },
+      {
+        "input": "head = [1], pos = -1",
+        "output": "false",
+        "is_hidden": true
+      },
+      {
+        "input": "head = [1], pos = -1",
+        "output": "false",
+        "is_hidden": true
+      },
+      {
+        "input": "head = [1], pos = -1",
+        "output": "false",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "7.3",
+    "title": "7.3 Remove Linked List Elements",
+    "description": "# 7.3 Remove Linked List Elements\n\nGiven the head of a linked list and an integer val, remove all the nodes of the linked list that has Node.val\n== val, and return the new head.\n\n**Example:**\n```\nInput: head = [1, 2, 6, 3, 4, 5, 6], val = 6\nOutput: [1, 2, 3, 4, 5]\n```\n\n\n**Example:**\n```\nInput: head = [ ], val = 1\nOutput: [ ]\n```\n\n\n**Example:**\n```\nInput: head = [7, 7, 7, 7], val = 7\nOutput: [ ]\n```\n\n\n\n\n}",
+    "boilerplate_code": "public class Solution {\npublic boolean hasCycle(ListNode head)\n{\n# Write Code Here\n}\npublic static void main(String[] args)\n{\n# Write Code Here\n}\n}",
+    "test_cases": [
+      {
+        "input": "head = [1, 2, 6, 3, 4, 5, 6], val = 6",
+        "output": "[1, 2, 3, 4, 5]",
+        "is_hidden": false
+      },
+      {
+        "input": "head = [ ], val = 1",
+        "output": "[ ]",
+        "is_hidden": false
+      },
+      {
+        "input": "head = [7, 7, 7, 7], val = 7",
+        "output": "[ ]",
+        "is_hidden": false
+      },
+      {
+        "input": "head = [7, 7, 7, 7], val = 7",
+        "output": "[ ]",
+        "is_hidden": false
+      },
+      {
+        "input": "head = [7, 7, 7, 7], val = 7",
+        "output": "[ ]",
+        "is_hidden": false
+      },
+      {
+        "input": "head = [7, 7, 7, 7], val = 7",
+        "output": "[ ]",
+        "is_hidden": true
+      },
+      {
+        "input": "head = [7, 7, 7, 7], val = 7",
+        "output": "[ ]",
+        "is_hidden": true
+      },
+      {
+        "input": "head = [7, 7, 7, 7], val = 7",
+        "output": "[ ]",
+        "is_hidden": true
+      },
+      {
+        "input": "head = [7, 7, 7, 7], val = 7",
+        "output": "[ ]",
+        "is_hidden": true
+      },
+      {
+        "input": "head = [7, 7, 7, 7], val = 7",
+        "output": "[ ]",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "7.4",
+    "title": "7.4 Reverse Linked List",
+    "description": "# 7.4 Reverse Linked List\n\nGiven the head of a singly linked list, reverse the list, and return the reversed list.\n\n**Example:**\n```\nInput: head = [1, 2, 3, 4, 5]\nOutput: [5, 4, 3, 2, 1]\n```\n\n\n**Example:**\n```\nInput: head = [1, 2]\nOutput: [2, 1]\n```\n\npublic static void main(String[] args) {\n# Write Code Here\n}\n}",
+    "boilerplate_code": "public class Solution\n{\n# Write Code Here\n}",
+    "test_cases": [
+      {
+        "input": "head = [1, 2, 3, 4, 5]",
+        "output": "[5, 4, 3, 2, 1]",
+        "is_hidden": false
+      },
+      {
+        "input": "head = [1, 2]",
+        "output": "[2, 1]",
+        "is_hidden": false
+      },
+      {
+        "input": "head = [1, 2]",
+        "output": "[2, 1]",
+        "is_hidden": false
+      },
+      {
+        "input": "head = [1, 2]",
+        "output": "[2, 1]",
+        "is_hidden": false
+      },
+      {
+        "input": "head = [1, 2]",
+        "output": "[2, 1]",
+        "is_hidden": false
+      },
+      {
+        "input": "head = [1, 2]",
+        "output": "[2, 1]",
+        "is_hidden": true
+      },
+      {
+        "input": "head = [1, 2]",
+        "output": "[2, 1]",
+        "is_hidden": true
+      },
+      {
+        "input": "head = [1, 2]",
+        "output": "[2, 1]",
+        "is_hidden": true
+      },
+      {
+        "input": "head = [1, 2]",
+        "output": "[2, 1]",
+        "is_hidden": true
+      },
+      {
+        "input": "head = [1, 2]",
+        "output": "[2, 1]",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "7.7",
+    "title": "7.7 Convert Binary Number in a Linked List to Integer",
+    "description": "# 7.7 Convert Binary Number in a Linked List to Integer\n\nGiven head which is a reference node to a singly-linked list. The value of each node in the linked list is either\n0 or 1. The linked list holds the binary representation of a number.\nReturn the decimal value of the number in the linked list. The most significant bit is at the head of the linked\nlist.\n\n**Example:**\n```\nInput: head = [1, 0, 1]\nOutput: 5\n```\n\nExplanation: (101) in base 2 = (5) in base 10\n\n**Example:**\n```\nInput: head = [0]\nOutput: 0\n```\n\npublic static void main(String[] args)\n{\n# Write Code Here\n}\n}\n\n\n\n8. Circular Single Linked List and Doubly Linked List",
+    "boilerplate_code": "public class Solution\n{\n\n\n\n# Write Code Here\n}",
+    "test_cases": [
+      {
+        "input": "head = [1, 0, 1]",
+        "output": "5",
+        "is_hidden": false
+      },
+      {
+        "input": "head = [0]",
+        "output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "head = [0]",
+        "output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "head = [0]",
+        "output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "head = [0]",
+        "output": "0",
+        "is_hidden": false
+      },
+      {
+        "input": "head = [0]",
+        "output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "head = [0]",
+        "output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "head = [0]",
+        "output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "head = [0]",
+        "output": "0",
+        "is_hidden": true
+      },
+      {
+        "input": "head = [0]",
+        "output": "0",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "8.1",
+    "title": "8.1 Circular Linked List",
+    "description": "# 8.1 Circular Linked List\n\nThe circular linked list is a linked list where all nodes are connected to form a circle. In a circular linked list,\nthe first node and the last node are connected to each other which forms a circle. There is no NULL at the\nend.\nOperations on the circular linked list:\n1. Insertion at the beginning\n2. Insertion at the end\n3. Insertion in between the nodes\n4. Deletion at the beginning\n5. Deletion at the end\n6. Deletion in between the nodes\n7. Traversal",
+    "boilerplate_code": "import java.util.ArrayList;\npublic class Main{\nstatic class Node{\nint data;\nNode next;\nNode(int data){\nthis.data = data;\nthis.next = null;\n}\n}\nstatic class CircularLinkedList\n{\n# Write Code Here\n}\nNode addAfter(int data, int item)\n{\n# Write Code Here\n}\nvoid deleteNode(Node last, int key)\n{\n# Write Code Here\n}\nSystem.\n8.2 Doubly Linked List\nThe A doubly linked list is a type of linked list in which each node consists of 3 components:\n1. *prev - address of the previous node\n2. data - data item\n3. *next - address of next node.\n\n\n\nDouble Linked List Node\nOperations on the Double Linked List:\n1. Insertion at the beginning\n2. Insertion at the end\n3. Insertion in between the nodes\n4. Deletion at the beginning\n5. Deletion at the end\n6. Deletion in between the nodes\n7. Traversal\nimport java.util.Scanner;\nclass Node {\nint data;\nNode next;\nNode prev;\nNode(int data) {\nthis.data = data;\nthis.next = null;\nthis.prev = null;\n}\n}\nclass DLinkedList {\nNode head;\nint ctr;\nDLinkedList() {\nthis.head = null;\nthis.ctr = 0;\n}\nvoid insertBeg(int data)\n{\n# Write Code Here\n}\nvoid insertEnd(int data)\n{\n# Write Code Here\n\n\n\n}\nvoid deleteBeg()\n{\n# Write Code Here\n}\nvoid deleteEnd()\n{\n# Write Code Here\n}\nvoid insertPos(int pos, int data)\n{\n# Write Code Here\n}\nvoid deletePos(int pos)\n{\n# Write Code Here\n}\nvoid traverseF()\n{\n# Write Code Here\n}\nvoid traverseR()\n{\n# Write Code Here\n}\npublic class Main {\npublic static void main(String[] args)\n{\n# Write Code Here\n}\n}\n8.3 Sorted Merge of Two Sorted Doubly Circular Linked Lists\nGiven two sorted Doubly circular Linked List containing n1 and n2 nodes respectively. The problem is to\nmerge the two lists such that resultant list is also in sorted order.\nInput: List 1 and List 2\n\n\n\nOutput: Merged List\nProcedure for Merging Doubly Linked List:\n1. If head1 == NULL, return head2.\n2. If head2 == NULL, return head1.\n3. Let last1 and last2 be the last nodes of the two lists respectively. They can be obtained with the help\nof the previous links of the first nodes.\n4. Get pointer to the node which will be the last node of the final list. If last1.data < last2.data,\nthen last_node = last2, Else last_node = last1.\n5. Update last1.next = last2.next = NULL.\n6. Now merge the two lists as two sorted doubly linked list are being merged. Refer merge procedure\nof this post. Let the first node of the final list be finalHead.\n7. Update finalHead.prev = last_node and last_node.next = finalHead.\n8. Return finalHead.\nclass Node {\nint data;\nNode next, prev;\nNode(int data) {\nthis.data = data;\nthis.next = null;\nthis.prev = null;\n}\n}\npublic class SortedMergeDoublyCircularLinkedList\n{\n# Write Code Here\n}\nstatic Node mergeUtil(Node head1, Node head2)\n{\n# Write Code Here\n\n\n\n}\nstatic void printList(Node head)\n{\n# Write Code Here\n}\npublic static void main(String[] args)\n{\n# Write Code Here\n}\n}\n8.4 Delete all occurrences of a given key in a Doubly Linked List\nGiven a doubly linked list and a key x. The problem is to delete all occurrences of the given key x from the\ndoubly linked list.\nInput: 2 <-> 2 <-> 10 <-> 8 <-> 4 <-> 2 <-> 5 <-> 2\nx = 2\nOutput: 10 <-> 8 <-> 4 <-> 5\nAlgorithm:\ndelAllOccurOfGivenKey (head_ref, x)\nif head_ref == NULL\nreturn\nInitialize current = head_ref\nDeclare next\nwhile current != NULL\nif current->data == x\nnext = current->next\ndeleteNode(head_ref, current)\ncurrent = next\nelse\ncurrent = current->next\nclass Node {\nint data;\nNode next, prev;\nNode(int data) {\nthis.data = data;\nthis.next = null;\nthis.prev = null;\n}\n}\npublic class DeleteOccurrenceInDoublyLinkedList\n{\n# Write Code Here\n}\n\n\n\nstatic Node deleteAllOccurOfX(Node head, int x)\n{\n# Write Code Here\n}\nstatic void printList(Node head)\n{\n# Write Code Here\n}\npublic static void main(String[] args)\n{\n# Write Code Here\n}\n}",
+    "test_cases": [
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "8.5",
+    "title": "8.5 Delete a Doubly Linked List Node at a Given Position",
+    "description": "# 8.5 Delete a Doubly Linked List Node at a Given Position\n\nGiven a doubly linked list and a position n. The task is to delete the node at the given position n from the\nbeginning.\n\n**Example:**\n```\nInput: Initial doubly linked list\nOutput: Doubly Linked List after deletion of node at position n = 2\n```\n\nProcedure:\n1. Get the pointer to the node at position n by traversing the doubly linked list up to the nth node from\nthe beginning.\n2. Delete the node using the pointer obtained in Step 1.\n\n\n\nstatic Node deleteNode(Node head, Node del)\n{\n# Write Code Here\n}\nstatic Node deleteNodeAtGivenPos(Node head, int n)\n{\n# Write Code Here\n}\nstatic void printList(Node head)\n{\n# Write Code Here\n}\n}\n\n\n\n9. Trees",
+    "boilerplate_code": "public class DeleteNodeAtGivenPosition\n{\n# Write Code Here\n}",
+    "test_cases": [
+      {
+        "input": "Initial doubly linked list",
+        "output": "Doubly Linked List after deletion of node at position n = 2",
+        "is_hidden": false
+      },
+      {
+        "input": "Initial doubly linked list",
+        "output": "Doubly Linked List after deletion of node at position n = 2",
+        "is_hidden": false
+      },
+      {
+        "input": "Initial doubly linked list",
+        "output": "Doubly Linked List after deletion of node at position n = 2",
+        "is_hidden": false
+      },
+      {
+        "input": "Initial doubly linked list",
+        "output": "Doubly Linked List after deletion of node at position n = 2",
+        "is_hidden": false
+      },
+      {
+        "input": "Initial doubly linked list",
+        "output": "Doubly Linked List after deletion of node at position n = 2",
+        "is_hidden": false
+      },
+      {
+        "input": "Initial doubly linked list",
+        "output": "Doubly Linked List after deletion of node at position n = 2",
+        "is_hidden": true
+      },
+      {
+        "input": "Initial doubly linked list",
+        "output": "Doubly Linked List after deletion of node at position n = 2",
+        "is_hidden": true
+      },
+      {
+        "input": "Initial doubly linked list",
+        "output": "Doubly Linked List after deletion of node at position n = 2",
+        "is_hidden": true
+      },
+      {
+        "input": "Initial doubly linked list",
+        "output": "Doubly Linked List after deletion of node at position n = 2",
+        "is_hidden": true
+      },
+      {
+        "input": "Initial doubly linked list",
+        "output": "Doubly Linked List after deletion of node at position n = 2",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "9.1",
+    "title": "9.1 Tree Creation and Basic Tree Terminologies",
+    "description": "# 9.1 Tree Creation and Basic Tree Terminologies\n\nA tree data structure is a hierarchical structure that is used to represent and organize data in a way that is\neasy to navigate and search. It is a collection of nodes that are connected by edges and has a hierarchical\nrelationship between the nodes.\nBasic Terminologies in Tree:\n1. Parent Node: The node which is a predecessor of a node is called the parent node of that node. {B} is\nthe parent node of {D, E}.\n2. Child Node: The node which is the immediate successor of a node is called the child node of that node.\nExamples: {D, E} are the child nodes of {B}.\n3. Root Node: The topmost node of a tree or the node which does not have any parent node is called the\nroot node. {A} is the root node of the tree. A non-empty tree must contain exactly one root node and\nexactly one path from the root to all other nodes of the tree.\n4. Leaf Node or External Node: The nodes which do not have any child nodes are called leaf nodes. {K, L,\nM, N, O, P} are the leaf nodes of the tree.\n5. Ancestor of a Node: Any predecessor nodes on the path of the root to that node are called Ancestors\nof that node. {A, B} are the ancestor nodes of the node {E}\n6. Descendant: Any successor node on the path from the leaf node to that node. {E, I} are the\ndescendants of the node {B}.\n7. Sibling: Children of the same parent node are called siblings. {D, E} are called siblings.\n8. Level of a node: The count of edges on the path from the root node to that node. The root node has\nlevel 0.\n9. Internal node: A node with at least one child is called Internal Node.\n10. Neighbour of a Node: Parent or child nodes of that node are called neighbors of that node.\n11. Subtree: Any node of the tree along with its descendant.\nstatic void printChildren(int root, List<List<Integer>> adj)\n\n\n\n{\n# Write Code Here\n}\nstatic void printLeafNodes(int root, List<List<Integer>> adj)\n{\n# Write Code Here\n}\nstatic void printDegrees(int root, List<List<Integer>> adj)\n{\n# Write Code Here\n}\npublic static void main(String[] args)\n{\n# Write Code Here\n}\n}",
+    "boilerplate_code": "import java.util.ArrayList;\nimport java.util.List;\npublic class TreeBasicTerminologies\n{\n# Write Code Here\n}",
+    "test_cases": [
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "9.2",
+    "title": "9.2 Binary Tree Traversal Techniques",
+    "description": "# 9.2 Binary Tree Traversal Techniques\n\nA binary tree data structure can be traversed in following ways:\n1. Inorder Traversal\n2. Preorder Traversal\n3. Postorder Traversal\n4. Level Order Traversal\nAlgorithm Inorder (tree)\n1. Traverse the left subtree, i.e., call Inorder(left->subtree)\n2. Visit the root.\n3. Traverse the right subtree, i.e., call Inorder(right->subtree)\nAlgorithm Preorder (tree)\n1. Visit the root.\n2. Traverse the left subtree, i.e., call Preorder(left->subtree)\n3. Traverse the right subtree, i.e., call Preorder(right->subtree)\nAlgorithm Postorder (tree)\n1. Traverse the left subtree, i.e., call Postorder(left->subtree)\n2. Traverse the right subtree, i.e., call Postorder(right->subtree)\n\n\n\n3. Visit the root.\nvoid inorder(Node root)\n{\n# Write Code Here\n}\n}\n}\n}",
+    "boilerplate_code": "public class BinaryTreeTraversal {\npublic static void main(String[] args)\n{\n# Write Code Here\n}\n}",
+    "test_cases": [
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "9.3",
+    "title": "9.3 Insertion in a Binary Tree in Level Order",
+    "description": "# 9.3 Insertion in a Binary Tree in Level Order\n\nGiven a binary tree and a key, insert the key into the binary tree at the first position available in level order.\n\n**Example:**\n```\nInput: Consider the tree given below\n\n\n\nOutput:\n```\n\nThe idea is to do an iterative level order traversal of the given tree using queue. If we find a node whose\nleft child is empty, we make a new key as the left child of the node. Else if we find a node whose right child\nis empty, we make the new key as the right child. We keep traversing the tree until we find a node whose\neither left or right child is empty.\nstatic Node insert(Node root, int key)\n{\n# Write Code Here\n}\npublic static void main(String[] args)\n{\n# Write Code Here\n}\n}",
+    "boilerplate_code": "public class BinaryTreeInsertion\n{\n# Write Code Here\n}",
+    "test_cases": [
+      {
+        "input": "Consider the tree given below",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "Consider the tree given below",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "Consider the tree given below",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "Consider the tree given below",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "Consider the tree given below",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "Consider the tree given below",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "Consider the tree given below",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "Consider the tree given below",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "Consider the tree given below",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "Consider the tree given below",
+        "output": "",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "9.4",
+    "title": "9.4 Finding the Maximum Height or Depth of a Binary Tree",
+    "description": "# 9.4 Finding the Maximum Height or Depth of a Binary Tree\n\nGiven a binary tree, the task is to find the height of the tree. The height of the tree is the number of edges\nin the tree from the root to the deepest node.\nNote: The height of an empty tree is 0.\n\n**Example:**\n```\nInput: Consider the tree below\n\n\n\nRecursively calculate the height of the left and the right subtrees of a node and assign height to the node\nas max of the heights of two children plus 1.\nmaxDepth(\u20181\u2019) = max(maxDepth(\u20182\u2019), maxDepth(\u20183\u2019)) + 1 = 2 + 1\nbecause recursively\nmaxDepth(\u20182\u2019) = max (maxDepth(\u20184\u2019), maxDepth(\u20185\u2019)) + 1 = 1 + 1 and (as height of both \u20184\u2019 and \u20185\u2019 are 1)\nmaxDepth(\u20183\u2019) = 1\nProcedure:\n\u2022 Recursively do a Depth-first search.\n\u2022 If the tree is empty then return 0\n\u2022 Otherwise, do the following\n\u2022 Get the max depth of the left subtree recursively i.e. call maxDepth( tree->left-subtree)\n\u2022 Get the max depth of the right subtree recursively i.e. call maxDepth( tree->right-subtree)\n\u2022 Get the max of max depths of left and right subtrees and add 1 to it for the current node.\n\u2022 Return max_depth.\npublic static void main(String[] args)\n{\n# Write Code Here\n}",
+    "boilerplate_code": "public class MaximumDepthOfTree\n{\n# Write Code Here\n}",
+    "test_cases": [
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "9.5",
+    "title": "9.5 Deletion in a Binary Tree",
+    "description": "# 9.5 Deletion in a Binary Tree\n\nGiven a binary tree, delete a node from it by making sure that the tree shrinks from the bottom (i.e. the\ndeleted node is replaced by the bottom-most and rightmost node).\n\n**Example:**\n```\nInput: Delete 10 in below tree\n10\n/ \\\n20 30\nOutput:\n```\n\n30\n/\n20\n\n**Example:**\n```\nInput: Delete 20 in below tree\n10\n/ \\\n20 30\n\\\n40\nOutput:\n```\n\n10\n/ \\\n40 30\nAlgorithm:\n1. Starting at the root, find the deepest and rightmost node in the binary tree and the node which we\nwant to delete.\n2. Replace the deepest rightmost node\u2019s data with the node to be deleted.\n3. Then delete the deepest rightmost node.\n\n\n\nstatic void deleteDeepest(Node root, Node dNode)\n{\n# Write Code Here\n}\nstatic Node deletion(Node root, int key)\n{\n# Write Code Here\n}\npublic static void main(String[] args)\n{\n# Write Code Here\n}\n}\n\n\n\n10. Binary Search Tree (BST)",
+    "boilerplate_code": "public class BinaryTreeDeletion\n{\n# Write Code Here\n}",
+    "test_cases": [
+      {
+        "input": "Delete 10 in below tree",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "Delete 20 in below tree",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "Delete 20 in below tree",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "Delete 20 in below tree",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "Delete 20 in below tree",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "Delete 20 in below tree",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "Delete 20 in below tree",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "Delete 20 in below tree",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "Delete 20 in below tree",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "Delete 20 in below tree",
+        "output": "",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "10.1",
+    "title": "10.1 Searching in Binary Search Tree",
+    "description": "# 10.1 Searching in Binary Search Tree\n\nGiven a BST, the task is to delete a node in this BST. For searching a value in BST, consider it as a sorted\narray. Perform search operation in BST using Binary Search Algorithm.\nAlgorithm to search for a key in a given Binary Search Tree:\nLet\u2019s say we want to search for the number X, We start at the root. Then:\n\u2022 We compare the value to be searched with the value of the root.\n\u2022 If it\u2019s equal we are done with the search if it\u2019s smaller we know that we need to go to the left subtree\nbecause in a binary search tree all the elements in the left subtree are smaller and all the elements\nin the right subtree are larger.\n\u2022 Repeat the above step till no more traversal is possible\n\u2022 If at any iteration, key is found, return True. Else False.\n\n\n\n// Node class to represent each node of the BST\nNode search(int key) {\nreturn searchRec(root, key);\n}\nNode searchRec(Node root, int key)\n{\n# Write Code Here\n}\npublic static void main(String[] args)\n{\n# Write Code Here\n}\n}",
+    "boilerplate_code": "class BST\n{\n# Write Code Here\n}",
+    "test_cases": [
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "10.2",
+    "title": "10.2 Find the node with Minimum Value in a BST",
+    "description": "# 10.2 Find the node with Minimum Value in a BST\n\nWrite a function to find the node with minimum value in a Binary Search Tree.\n\n**Example:**\n```\nInput: Consider the tree given below\n\n\n\nOutput: 8\n```\n\n\n**Example:**\n```\nInput: Consider the tree given below\nOutput: 10\n```\n\npublic static void main(String[] args)\n{\n# Write Code Here\n}\n}",
+    "boilerplate_code": "class BinarySearchTree\n{\n# Write Code Here\n}",
+    "test_cases": [
+      {
+        "input": "Consider the tree given below",
+        "output": "8",
+        "is_hidden": false
+      },
+      {
+        "input": "Consider the tree given below",
+        "output": "10",
+        "is_hidden": false
+      },
+      {
+        "input": "Consider the tree given below",
+        "output": "10",
+        "is_hidden": false
+      },
+      {
+        "input": "Consider the tree given below",
+        "output": "10",
+        "is_hidden": false
+      },
+      {
+        "input": "Consider the tree given below",
+        "output": "10",
+        "is_hidden": false
+      },
+      {
+        "input": "Consider the tree given below",
+        "output": "10",
+        "is_hidden": true
+      },
+      {
+        "input": "Consider the tree given below",
+        "output": "10",
+        "is_hidden": true
+      },
+      {
+        "input": "Consider the tree given below",
+        "output": "10",
+        "is_hidden": true
+      },
+      {
+        "input": "Consider the tree given below",
+        "output": "10",
+        "is_hidden": true
+      },
+      {
+        "input": "Consider the tree given below",
+        "output": "10",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "10.3",
+    "title": "10.3 Check if a Binary Tree is BST or not",
+    "description": "# 10.3 Check if a Binary Tree is BST or not\n\nA binary search tree (BST) is a node-based binary tree data structure that has the following properties.\n1. The left subtree of a node contains only nodes with keys less than the node\u2019s key.\n2. The right subtree of a node contains only nodes with keys greater than the node\u2019s key.\n3. Both the left and right subtrees must also be binary search trees.\n4. Each node (item in the tree) has a distinct key.\n\n**Example:**\n```\nInput: Consider the tree given below\n\n\n\nOutput: Check if max value in left subtree is smaller than the node and min value in right subtree greater\n```\n\nthan the node, then print it \u201cIs BST\u201d otherwise \u201cNot a BST\u201d\nProcedure:\n1. If the current node is null then return true\n2. If the value of the left child of the node is greater than or equal to the current node then return false\n3. If the value of the right child of the node is less than or equal to the current node then return false\n4. If the left subtree or the right subtree is not a BST then return false\n5. Else return true\nboolean isBST(Node node) {\nreturn isBSTUtil(node, Integer.MIN_VALUE, Integer.MAX_VALUE);\n}\nboolean isBSTUtil(Node node, int min, int max)\n{\n# Write Code Here\n}\npublic static void main(String[] args)\n{\n# Write Code Here\n}\n}",
+    "boilerplate_code": "class BinaryTree\n{\n# Write Code Here\n}",
+    "test_cases": [
+      {
+        "input": "Consider the tree given below",
+        "output": "Check if max value in left subtree is smaller than the node and min value in right subtree greater",
+        "is_hidden": false
+      },
+      {
+        "input": "Consider the tree given below",
+        "output": "Check if max value in left subtree is smaller than the node and min value in right subtree greater",
+        "is_hidden": false
+      },
+      {
+        "input": "Consider the tree given below",
+        "output": "Check if max value in left subtree is smaller than the node and min value in right subtree greater",
+        "is_hidden": false
+      },
+      {
+        "input": "Consider the tree given below",
+        "output": "Check if max value in left subtree is smaller than the node and min value in right subtree greater",
+        "is_hidden": false
+      },
+      {
+        "input": "Consider the tree given below",
+        "output": "Check if max value in left subtree is smaller than the node and min value in right subtree greater",
+        "is_hidden": false
+      },
+      {
+        "input": "Consider the tree given below",
+        "output": "Check if max value in left subtree is smaller than the node and min value in right subtree greater",
+        "is_hidden": true
+      },
+      {
+        "input": "Consider the tree given below",
+        "output": "Check if max value in left subtree is smaller than the node and min value in right subtree greater",
+        "is_hidden": true
+      },
+      {
+        "input": "Consider the tree given below",
+        "output": "Check if max value in left subtree is smaller than the node and min value in right subtree greater",
+        "is_hidden": true
+      },
+      {
+        "input": "Consider the tree given below",
+        "output": "Check if max value in left subtree is smaller than the node and min value in right subtree greater",
+        "is_hidden": true
+      },
+      {
+        "input": "Consider the tree given below",
+        "output": "Check if max value in left subtree is smaller than the node and min value in right subtree greater",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "10.4",
+    "title": "10.4 Second Largest Element in BST",
+    "description": "# 10.4 Second Largest Element in BST\n\nGiven a Binary search tree (BST), find the second largest element.\n\n**Example:**\n```\nInput: Root of below BST\n10\n/\n5\nOutput: 5\n```\n\n\n**Example:**\n```\nInput: Root of below BST\n10\n/ \\\n5 20\n\\\n30\nOutput: 20\n```\n\nProcedure: The second largest element is second last element in inorder traversal and second element in\nreverse inorder traversal. We traverse given Binary Search Tree in reverse inorder and keep track of counts\nof nodes visited. Once the count becomes 2, we print the node.\nsecondLargestUtil(node.right);\ncount++;\n// If count is equal to 2 then this is the second largest\nif (count == 2) {\nSystem.out.println(\"The second largest element is \" + node.key);\nreturn;\n}\n\n\n\nsecondLargestUtil(node.left);\n}\n// Function to find the second largest element\nvoid secondLargest(Node node) {\ncount = 0;\nsecondLargestUtil(node);\n}\n// Driver code\npublic static void main(String[] args)\n{\n# Write Code Here\n}\n}\nTry:\n1. Kth largest element in BST when modification to BST is not allowed: Given a Binary Search Tree (BST)\nand a positive integer k, find the k\u2019th largest element in the Binary Search Tree. For a given BST, if k = 3,\nthen output should be 14, and if k = 5, then output should be 10.",
+    "boilerplate_code": "class BinarySearchTree\n{\n# Write Code Here\n}",
+    "test_cases": [
+      {
+        "input": "Root of below BST",
+        "output": "5",
+        "is_hidden": false
+      },
+      {
+        "input": "Root of below BST",
+        "output": "20",
+        "is_hidden": false
+      },
+      {
+        "input": "Root of below BST",
+        "output": "20",
+        "is_hidden": false
+      },
+      {
+        "input": "Root of below BST",
+        "output": "20",
+        "is_hidden": false
+      },
+      {
+        "input": "Root of below BST",
+        "output": "20",
+        "is_hidden": false
+      },
+      {
+        "input": "Root of below BST",
+        "output": "20",
+        "is_hidden": true
+      },
+      {
+        "input": "Root of below BST",
+        "output": "20",
+        "is_hidden": true
+      },
+      {
+        "input": "Root of below BST",
+        "output": "20",
+        "is_hidden": true
+      },
+      {
+        "input": "Root of below BST",
+        "output": "20",
+        "is_hidden": true
+      },
+      {
+        "input": "Root of below BST",
+        "output": "20",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "10.5",
+    "title": "10.5 Insertion in Binary Search Tree (BST)",
+    "description": "# 10.5 Insertion in Binary Search Tree (BST)\n\nGiven a Binary search tree (BST), the task is to insert a new node in this BST.\n\n**Example:**\n```\nInput: Consider a BST and insert the element 40 into it.\n\n\n\nProcedure for inserting a value in a BST:\nA new key is always inserted at the leaf by maintaining the property of the binary search tree. We start\nsearching for a key from the root until we hit a leaf node. Once a leaf node is found, the new node is added\nas a child of the leaf node. The below steps are followed while we try to insert a node into a binary search\ntree:\n\u2022 Check the value to be inserted (say X) with the value of the current node (say val) we are in:\n\u2022 If X is less than val move to the left subtree.\n\u2022 Otherwise, move to the right subtree.\n\u2022 Once the leaf node is reached, insert X to its right or left based on the relation between X and the leaf\nnode\u2019s value.\n// A utility class that represents an individual node in a BST\nvoid inorder()\n{\ninorderRec(root);\n}\nvoid inorderRec(Node root)\n{\n# Write Code Here\n\n\n\n}\n}\n// Driver code\npublic static void main(String[] args)\n{\n# Write Code Here\n}\n}\nTry:\n1. Check if two BSTs contain same set of elements: Given two Binary Search Trees consisting of unique\npositive elements, we have to check whether the two BSTs contain the same set of elements or not.\n\n**Example:**\n```\nInput: Consider two BSTs which contains same set of elements {5, 10, 12, 15, 20, 25}, but the structure of\nthe two given BSTs can be different.\n\n\n\n11. AVL Tree",
+    "boilerplate_code": "class BinarySearchTree\n{\n# Write Code Here\n}",
+    "test_cases": [
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "11.1",
+    "title": "11.1 Insertion in an AVL Tree",
+    "description": "# 11.1 Insertion in an AVL Tree\n\nAVL tree is a self-balancing Binary Search Tree (BST) where the difference between heights of left and right\nsubtrees cannot be more than one for all nodes. To make sure that the given tree remains AVL after every\ninsertion, we must augment the standard BST insert operation to perform some re-balancing.\nFollowing are two basic operations that can be performed to balance a BST without violating the BST\nproperty (keys(left) < key(root) < keys(right)).\n\u2022 Left Rotation\n\u2022 Right Rotation\nT1, T2 and T3 are subtrees of the tree, rooted with y (on the left side) or x (on the right side)\nKeys in both of the above trees follow the following order\nkeys(T1) < key(x) < keys(T2) < key(y) < keys(T3)\nSo BST property is not violated anywhere.\nProcedure for inserting a node into an AVL tree\nLet the newly inserted node be w\n\u2022 Perform standard BST insert for w.\n\u2022 Starting from w, travel up and find the first unbalanced node. Let z be the first unbalanced node, y be\nthe child of z that comes on the path from w to z and x be the grandchild of z that comes on the path\nfrom w to z.\n\u2022 Re-balance the tree by performing appropriate rotations on the subtree rooted with z. There can be 4\npossible cases that need to be handled as x, y and z can be arranged in 4 ways.\n\u2022 Following are the possible 4 arrangements:\n\u2022 y is the left child of z and x is the left child of y (Left Left Case)\n\u2022 y is the left child of z and x is the right child of y (Left Right Case)\n\u2022 y is the right child of z and x is the right child of y (Right Right Case)\n\u2022 y is the right child of z and x is the left child of y (Right Left Case)\nTreeNode leftRotate(TreeNode x)\n{\n# write the code\n}\npublic static void main(String[] args) {\n# write the code\n}",
+    "boilerplate_code": "class AVL_Tree {\n# write the code\n\n\n\n}",
+    "test_cases": [
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "11.2",
+    "title": "11.2 Deletion in an AVL Tree",
+    "description": "# 11.2 Deletion in an AVL Tree\n\nGiven an AVL tree, make sure that the given tree remains AVL after every deletion, we must augment the\nstandard BST delete operation to perform some re-balancing. Following are two basic operations that can\nbe performed to re-balance a BST without violating the BST property (keys(left) < key(root) < keys(right)).\n1. Left Rotation\n2. Right Rotation\nT1, T2 and T3 are subtrees of the tree rooted with y (on left side)\nor x (on right side)\nKeys in both of the above trees follow the following order\nkeys(T1) < key(x) < keys(T2) < key(y) < keys(T3)\nSo BST property is not violated anywhere.\nProcedure to delete a node from AVL tree:\nLet w be the node to be deleted\n1. Perform standard BST delete for w.\n2. Starting from w, travel up and find the first unbalanced node. Let z be the first unbalanced node, y be\nthe larger height child of z, and x be the larger height child of y. Note that the definitions of x and y\nare different from insertion here.\n3. Re-balance the tree by performing appropriate rotations on the subtree rooted with z. There can be 4\npossible cases that needs to be handled as x, y and z can be arranged in 4 ways. Following are the\npossible 4 arrangements:\ni. y is left child of z and x is left child of y (Left Left Case)\nii. y is left child of z and x is right child of y (Left Right Case)\niii. y is right child of z and x is right child of y (Right Right Case)\n\n\n\niv. y is right child of z and x is left child of y (Right Left Case)",
+    "boilerplate_code": "class AVL_Tree {\nTreeNode leftRotate(TreeNode z)\n{\n# Write code here\n}\nTreeNode rightRotate(TreeNode z)\n{\n# Write code here\n}\nTreeNode insert(TreeNode node, int key)\n{\n# Write code here\n}\n11.3 Count Greater Nodes in AVL Tree\nGiven an AVL tree, calculate number of elements which are greater than given value in AVL tree.\nInput: x = 5\nRoot of below AVL tree\n9\n/ \\\n1 10\n/ \\ \\\n0 5 11\n/ / \\\n-1 2 6\nOutput: 4\nExplanation: There are 4 values which are greater than 5 in AVL tree which are 6, 9, 10 and 11.\nclass TreeNode {\nint key, height, desc;\nTreeNode left, right;\nTreeNode(int d) {\nkey = d;\n\n\n\nheight = 1;\ndesc = 0;\n}\n}\nclass AVL_Tree\n{\n# Write code here\n}\nTreeNode insert(TreeNode node, int key)\n{\n# Write code here\n}\nTreeNode minValueNode(TreeNode node)\n{\n# Write code here\n}\nTreeNode deleteNode(TreeNode root, int key)\n{\n# Write code here\n}\nvoid preOrder(TreeNode node)\n{\n# Write code here\n}\npublic class Main\n{\n# Write code here\n}\n}",
+    "test_cases": [
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "11.4",
+    "title": "11.4 Minimum Number of Nodes in an AVL Tree with given Height",
+    "description": "# 11.4 Minimum Number of Nodes in an AVL Tree with given Height\n\nGiven the height of an AVL tree \u2018h\u2019, the task is to find the minimum number of nodes the tree can have.\n\n**Example:**\n```\nInput: H = 0\nOutput: N = 1\n```\n\nOnly '1' node is possible if the height\nof the tree is '0' which is the root node.\n\n**Example:**\n```\nInput: H = 3\nOutput: N = 7\n```\n\nRecursive approach:\nIn an AVL tree, we have to maintain the height balance property, i.e. difference in the height of the left\nand the right subtrees cannot be other than -1, 0 or 1 for each node.\nWe will try to create a recurrence relation to find minimum number of nodes for a given height, n(h).\n\u2022 For height = 0, we can only have a single node in an AVL tree, i.e. n(0) = 1\n\u2022 For height = 1, we can have a minimum of two nodes in an AVL tree, i.e. n(1) = 2\n\n\n\n\u2022 Now for any height \u2018h\u2019, root will have two subtrees (left and right). Out of which one has to be of\nheight h-1 and other of h-2. [root node excluded]\n\u2022 So, n(h) = 1 + n(h-1) + n(h-2) is the required recurrence relation for h>=2 [1 is added for the root\nnode]\n\n\n\n12. Graph Traversal",
+    "boilerplate_code": "public class AVLTreeMinimumNodes {\npublic static int AVLnodes(int height)\n{\n# Write code here\n}\npublic static void main(String[] args) {\nint H = 3;\nSystem.out.println(AVLnodes(H)); // Output: 4\n}\n}",
+    "test_cases": [
+      {
+        "input": "H = 0",
+        "output": "N = 1",
+        "is_hidden": false
+      },
+      {
+        "input": "H = 3",
+        "output": "N = 7",
+        "is_hidden": false
+      },
+      {
+        "input": "H = 3",
+        "output": "N = 7",
+        "is_hidden": false
+      },
+      {
+        "input": "H = 3",
+        "output": "N = 7",
+        "is_hidden": false
+      },
+      {
+        "input": "H = 3",
+        "output": "N = 7",
+        "is_hidden": false
+      },
+      {
+        "input": "H = 3",
+        "output": "N = 7",
+        "is_hidden": true
+      },
+      {
+        "input": "H = 3",
+        "output": "N = 7",
+        "is_hidden": true
+      },
+      {
+        "input": "H = 3",
+        "output": "N = 7",
+        "is_hidden": true
+      },
+      {
+        "input": "H = 3",
+        "output": "N = 7",
+        "is_hidden": true
+      },
+      {
+        "input": "H = 3",
+        "output": "N = 7",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "12.1",
+    "title": "12.1 Breadth First Search",
+    "description": "# 12.1 Breadth First Search\n\nThe Breadth First Search (BFS) algorithm is used to search a graph data structure for a node that meets a\nset of criteria. It starts at the root of the graph and visits all nodes at the current depth level before moving\non to the nodes at the next depth level.\nFor a given graph G, print BFS traversal from a given source vertex.\nOutput: Following is Breadth First Traversal (starting from vertex 2)\n```\n\n2 0 3 1",
+    "boilerplate_code": "import java.util.*;\npublic class Graph {\nprivate Map<Integer, List<Integer>> graph;\npublic Graph()\n{\ngraph = new HashMap<>();\n}\npublic void addEdge(int u, int v) {\nif (!graph.containsKey(u)) {\ngraph.put(u, new ArrayList<>());\n}\ngraph.get(u).add(v);\n}\npublic void BFS(int s)\n{\n# Write code here\n}\npublic static void main(String[] args)\n{\n# Write code here\n}\n}",
+    "test_cases": [
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "12.2",
+    "title": "12.2 Depth First Search",
+    "description": "# 12.2 Depth First Search\n\nDepth First Traversal (or DFS) for a graph is similar to Depth First Traversal of a tree. The only catch here\nis, that, unlike trees, graphs may contain cycles (a node may be visited twice). To avoid processing a node\nmore than once, use a boolean visited array. A graph can have more than one DFS traversal.\nFor a given graph G, print DFS traversal from a given source vertex.\n\n**Example:**\n```\nInput: n = 4, e = 6\n0 -> 1, 0 -> 2, 1 -> 2, 2 -> 0, 2 -> 3, 3 -> 3\n\n\n\nOutput: DFS from vertex 1: 1 2 0 3\n```\n\nExplanation:\nDFS Diagram:\n\n**Example:**\n```\nInput: n = 4, e = 6\n2 -> 0, 0 -> 2, 1 -> 2, 0 -> 1, 3 -> 3, 1 -> 3\nOutput: DFS from vertex 2: 2 0 1 3\n```\n\nExplanation:\nDFS Diagram:",
+    "boilerplate_code": "import java.util.*;\nclass Graph {\nprivate Map<Integer, List<Integer>> graph;\npublic Graph() {\n// Initialize the graph as a HashMap of ArrayLists\ngraph = new HashMap<>();\n}\npublic void addEdge(int u, int v)\n{\n# Write code here\n}\npublic void DFS(int v) {\nDFSUtil(v, visited);\n\n\n\n}\npublic static void main(String[] args)\n{\n# Write code here\n}\n}",
+    "test_cases": [
+      {
+        "input": "n = 4, e = 6",
+        "output": "DFS from vertex 1: 1 2 0 3",
+        "is_hidden": false
+      },
+      {
+        "input": "n = 4, e = 6",
+        "output": "DFS from vertex 2: 2 0 1 3",
+        "is_hidden": false
+      },
+      {
+        "input": "n = 4, e = 6",
+        "output": "DFS from vertex 2: 2 0 1 3",
+        "is_hidden": false
+      },
+      {
+        "input": "n = 4, e = 6",
+        "output": "DFS from vertex 2: 2 0 1 3",
+        "is_hidden": false
+      },
+      {
+        "input": "n = 4, e = 6",
+        "output": "DFS from vertex 2: 2 0 1 3",
+        "is_hidden": false
+      },
+      {
+        "input": "n = 4, e = 6",
+        "output": "DFS from vertex 2: 2 0 1 3",
+        "is_hidden": true
+      },
+      {
+        "input": "n = 4, e = 6",
+        "output": "DFS from vertex 2: 2 0 1 3",
+        "is_hidden": true
+      },
+      {
+        "input": "n = 4, e = 6",
+        "output": "DFS from vertex 2: 2 0 1 3",
+        "is_hidden": true
+      },
+      {
+        "input": "n = 4, e = 6",
+        "output": "DFS from vertex 2: 2 0 1 3",
+        "is_hidden": true
+      },
+      {
+        "input": "n = 4, e = 6",
+        "output": "DFS from vertex 2: 2 0 1 3",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "12.3",
+    "title": "12.3 Best First Search (Informed Search)",
+    "description": "# 12.3 Best First Search (Informed Search)\n\nThe idea of Best First Search is to use an evaluation function to decide which adjacent is most promising\nand then explore. Best First Search falls under the category of Heuristic Search or Informed Search.\nImplementation of Best First Search:\nWe use a priority queue or heap to store the costs of nodes that have the lowest evaluation function value.\nSo the implementation is a variation of BFS, we just need to change Queue to PriorityQueue.\nAlgorithm:\nBest-First-Search(Graph g, Node start)\n1) Create an empty PriorityQueue\nPriorityQueue pq;\n2) Insert \"start\" in pq.\npq.insert(start)\n3) Until PriorityQueue is empty\nu = PriorityQueue.DeleteMin\nIf u is the goal\nExit\nElse\nForeach neighbor v of u\nIf v \"Unvisited\"\nMark v \"Visited\"\npq.insert(v)\nMark u \"Examined\"\nEnd procedure\n\n**Example:**\n```\nInput: Consider the graph given below.\n\u2022 We start from source \u201cS\u201d and search for goal \u201cI\u201d using given costs and Best First search.\n\n\n\n\u2022 pq initially contains S\n\u2022 We remove S from pq and process unvisited neighbors of S to pq.\n\u2022 pq now contains {A, C, B} (C is put before B because C has lesser cost)\n\u2022 We remove A from pq and process unvisited neighbors of A to pq.\n\u2022 pq now contains {C, B, E, D}\n\u2022 We remove C from pq and process unvisited neighbors of C to pq.\n\u2022 pq now contains {B, H, E, D}\n\u2022 We remove B from pq and process unvisited neighbors of B to pq.\n\u2022 pq now contains {H, E, D, F, G}\n\u2022 We remove H from pq.\n\u2022 Since our goal \u201cI\u201d is a neighbor of H, we return.",
+    "boilerplate_code": "import java.util.*;\npublic class BestFirstSearch {\nstatic int v = 14;\nstatic List<List<Pair<Integer, Integer>>> graph = new ArrayList<>();\nstatic void addedge(int x, int y, int cost) {\ngraph.get(x).add(new Pair<>(y, cost));\ngraph.get(y).add(new Pair<>(x, cost));\n}\nstatic void best_first_search(int actual_Src, int target, int n)\n{\n# Write code here\n}\npublic static void main(String[] args)\n{\n# Write code here\n}\n}",
+    "test_cases": [
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "12.4",
+    "title": "12.4 Breadth First Traversal of a Graph",
+    "description": "# 12.4 Breadth First Traversal of a Graph\n\nGiven a directed graph. The task is to do Breadth First Traversal of this graph starting from 0.\nOne can move from node u to node v only if there's an edge from u to v. Find the BFS traversal of the graph\nstarting from the 0th vertex, from left to right according to the input graph. Also, you should only take\nnodes directly or indirectly connected from Node 0 in consideration.\n\n**Example:**\n```\nInput: Consider the graph given below where V = 5, E = 4, edges = {(0,1), (0,2), (0,3), (2,4)}\n\n\n\nOutput: 0 1 2 3 4\n```\n\nExplanation:\n0 is connected to 1, 2, and 3.\n2 is connected to 4.\nSo starting from 0, it will go to 1 then 2 then 3. After this 2 to 4, thus BFS will be 0 1 2 3 4.\n\n**Example:**\n```\nInput: Consider the graph given below where V = 3, E = 2, edges = {(0, 1), (0, 2)}\nOutput: 0 1 2\n```\n\nExplanation:\n0 is connected to 1, 2. So starting from 0, it will go to 1 then 2, thus BFS will be 0 1 2.\nYour task is to complete the function bfsOfGraph() which takes the integer V denoting the number of\nvertices and adjacency list as input parameters and returns a list containing the BFS traversal of the graph\nstarting from the 0th vertex from left to right.\npublic static void main(String args[]) {\n# Write Code Here\n}\n}",
+    "boilerplate_code": "import java.util.*;\nclass Graph {\nprivate int V;\nprivate LinkedList<Integer>[] adj;\nGraph(int v) {\nV = v;\nadj = new LinkedList[v];\nfor (int i = 0; i < v; ++i)\nadj[i] = new LinkedList();\n}\nvoid addEdge(int v, int w) {\n\n\n\nadj[v].add(w);\n}\nvoid BFS(int s)\n{\n# Write Code Here\n}\n}",
+    "test_cases": [
+      {
+        "input": "Consider the graph given below where V = 5, E = 4, edges = {(0,1), (0,2), (0,3), (2,4)}",
+        "output": "0 1 2 3 4",
+        "is_hidden": false
+      },
+      {
+        "input": "Consider the graph given below where V = 3, E = 2, edges = {(0, 1), (0, 2)}",
+        "output": "0 1 2",
+        "is_hidden": false
+      },
+      {
+        "input": "Consider the graph given below where V = 3, E = 2, edges = {(0, 1), (0, 2)}",
+        "output": "0 1 2",
+        "is_hidden": false
+      },
+      {
+        "input": "Consider the graph given below where V = 3, E = 2, edges = {(0, 1), (0, 2)}",
+        "output": "0 1 2",
+        "is_hidden": false
+      },
+      {
+        "input": "Consider the graph given below where V = 3, E = 2, edges = {(0, 1), (0, 2)}",
+        "output": "0 1 2",
+        "is_hidden": false
+      },
+      {
+        "input": "Consider the graph given below where V = 3, E = 2, edges = {(0, 1), (0, 2)}",
+        "output": "0 1 2",
+        "is_hidden": true
+      },
+      {
+        "input": "Consider the graph given below where V = 3, E = 2, edges = {(0, 1), (0, 2)}",
+        "output": "0 1 2",
+        "is_hidden": true
+      },
+      {
+        "input": "Consider the graph given below where V = 3, E = 2, edges = {(0, 1), (0, 2)}",
+        "output": "0 1 2",
+        "is_hidden": true
+      },
+      {
+        "input": "Consider the graph given below where V = 3, E = 2, edges = {(0, 1), (0, 2)}",
+        "output": "0 1 2",
+        "is_hidden": true
+      },
+      {
+        "input": "Consider the graph given below where V = 3, E = 2, edges = {(0, 1), (0, 2)}",
+        "output": "0 1 2",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "12.5",
+    "title": "12.5 Depth First Search (DFS) for Disconnected Graph",
+    "description": "# 12.5 Depth First Search (DFS) for Disconnected Graph\n\nGiven a Disconnected Graph, the task is to implement DFS or Depth First Search Algorithm for this\nDisconnected Graph.\n\n**Example:**\n```\nInput: Consider the graph given below.\nOutput: 0 1 2 3\n```\n\nProcedure for DFS on Disconnected Graph:\nIterate over all the vertices of the graph and for any unvisited vertex, run a DFS from that vertex.\npublic Graph()\n{\ngraph = new HashMap<>();\n}\npublic void addEdge(int u, int v)\n\n\n\n{\n# Write Code Here\n}\nprivate void DFSUtil(int v, boolean[] visited)\n{\n# Write Code Here\n}\n}\npublic void DFS() {\nboolean[] visited = new boolean[graph.size()];\n# Write Code Here\n}\npublic static void main(String[] args)\n{\n# Write Code Here\n}\n}\nTry:\n1. Detect a negative cycle in a Graph (Bellman Ford): A Bellman-Ford algorithm is also guaranteed to\nfind the shortest path in a graph, similar to Dijkstra\u2019s algorithm. Although Bellman-Ford is slower than\nDijkstra\u2019s algorithm, it is capable of handling graphs with negative edge weights, which makes it more\nversatile. The shortest path cannot be found if there exists a negative cycle in the graph. If we continue to\ngo around the negative cycle an infinite number of times, then the cost of the path will continue to decrease\n(even though the length of the path is increasing).\nConsider a graph G and detect a negative cycle in the graph using Bellman Ford algorithm.\n\n\n\n13. Minimum Spanning Tree (MST)",
+    "boilerplate_code": "import java.util.ArrayList;\nimport java.util.HashMap;\nimport java.util.List;\nimport java.util.Map;\n// Class representing a directed graph using adjacency list representation\nclass Graph\n{\n# Write Code Here\n}",
+    "test_cases": [
+      {
+        "input": "Consider the graph given below.",
+        "output": "0 1 2 3",
+        "is_hidden": false
+      },
+      {
+        "input": "Consider the graph given below.",
+        "output": "0 1 2 3",
+        "is_hidden": false
+      },
+      {
+        "input": "Consider the graph given below.",
+        "output": "0 1 2 3",
+        "is_hidden": false
+      },
+      {
+        "input": "Consider the graph given below.",
+        "output": "0 1 2 3",
+        "is_hidden": false
+      },
+      {
+        "input": "Consider the graph given below.",
+        "output": "0 1 2 3",
+        "is_hidden": false
+      },
+      {
+        "input": "Consider the graph given below.",
+        "output": "0 1 2 3",
+        "is_hidden": true
+      },
+      {
+        "input": "Consider the graph given below.",
+        "output": "0 1 2 3",
+        "is_hidden": true
+      },
+      {
+        "input": "Consider the graph given below.",
+        "output": "0 1 2 3",
+        "is_hidden": true
+      },
+      {
+        "input": "Consider the graph given below.",
+        "output": "0 1 2 3",
+        "is_hidden": true
+      },
+      {
+        "input": "Consider the graph given below.",
+        "output": "0 1 2 3",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "13.1",
+    "title": "13.1 Kruskal\u2019s Algorithm",
+    "description": "# 13.1 Kruskal\u2019s Algorithm\n\nIn Kruskal\u2019s algorithm, sort all edges of the given graph in increasing order. Then it keeps on adding new\nedges and nodes in the MST if the newly added edge does not form a cycle. It picks the minimum weighted\nedge at first and the maximum weighted edge at last.\nMST using Kruskal\u2019s algorithm:\n1. Sort all the edges in non-decreasing order of their weight.\n2. Pick the smallest edge. Check if it forms a cycle with the spanning tree formed so far. If the cycle is not\nformed, include this edge. Else, discard it.\n3. Repeat step#2 until there are (V-1) edges in the spanning tree.\nKruskal\u2019s algorithm to find the minimum cost spanning tree uses the greedy approach. The Greedy Choice\nis to pick the smallest weight edge that does not cause a cycle in the MST constructed so far.\n\n**Example:**\n```\nInput: For the given graph G find the minimum cost spanning tree.\nThe graph contains 9 vertices and 14 edges. So, the minimum spanning tree formed will be having (9 \u2013 1)\n= 8 edges.\nAfter sorting:\nWeight Source Destination\n1 7 6\n2 8 2\n2 6 5\n4 0 1\n4 2 5\n6 8 6\n7 2 3\n7 7 8\n8 0 7\n8 1 2\n9 3 4\n10 5 4\n11 1 7\n\n\n\n14 3 5\nNow pick all edges one by one from the sorted list of edges.\nOutput:\n```\n\n// Kruskal's algorithm to find minimum Spanning Tree of a given connected,\nOutput: Following are the edges in the constructed MST\n```\n\n2 -- 3 == 4\n0 -- 3 == 5\n0 -- 1 == 10\nMinimum Cost Spanning Tree: 19",
+    "boilerplate_code": "import java.util.*;\npublic class Graph {\nclass Edge implements Comparable<Edge> {\nint src, dest, weight;\n// Comparator function used for sorting edges\npublic int compareTo(Edge compareEdge) {\nreturn this.weight - compareEdge.weight;\n}\n}\nprivate int V; // Number of vertices\nprivate List<Edge> edges; // List of edges\npublic Graph(int vertices) {\nthis.V = vertices;\nthis.edges = new ArrayList<>();\n}\npublic void addEdge(int u, int v, int w)\n{\n# Write Code Here\n}\nprivate void union(int[] parent, int[] rank, int x, int y)\n{\n# Write Code Here\n}\npublic void KruskalMST()\n{\n# Write Code Here\n}\n\n\n\npublic static void main(String[] args) {\nGraph g = new Graph(4);\ng.addEdge(0, 1, 10);\ng.addEdge(0, 2, 6);\ng.addEdge(0, 3, 5);\ng.addEdge(1, 3, 15);\ng.addEdge(2, 3, 4);\n// Function call\ng.KruskalMST();\n}\n}",
+    "test_cases": [
+      {
+        "input": "For the given graph G find the minimum cost spanning tree.",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "For the given graph G find the minimum cost spanning tree.",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "For the given graph G find the minimum cost spanning tree.",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "For the given graph G find the minimum cost spanning tree.",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "For the given graph G find the minimum cost spanning tree.",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "For the given graph G find the minimum cost spanning tree.",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "For the given graph G find the minimum cost spanning tree.",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "For the given graph G find the minimum cost spanning tree.",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "For the given graph G find the minimum cost spanning tree.",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "For the given graph G find the minimum cost spanning tree.",
+        "output": "",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "13.2",
+    "title": "13.2 Prim\u2019s Algorithm",
+    "description": "# 13.2 Prim\u2019s Algorithm\n\nThe Prim\u2019s algorithm starts with an empty spanning tree. The idea is to maintain two sets of vertices. The\nfirst set contains the vertices already included in the MST, and the other set contains the vertices not yet\nincluded. At every step, it considers all the edges that connect the two sets and picks the minimum weight\nedge from these edges. After picking the edge, it moves the other endpoint of the edge to the set containing\nMST.\nPrim\u2019s Algorithm:\nThe working of Prim\u2019s algorithm can be described by using the following steps:\n1. Determine an arbitrary vertex as the starting vertex of the MST.\n2. Follow steps 3 to 5 till there are vertices that are not included in the MST (known as fringe vertex).\n3. Find edges connecting any tree vertex with the fringe vertices.\n4. Find the minimum among these edges.\n5. Add the chosen edge to the MST if it does not form any cycle.\n6. Return the MST and exit\n\n**Example:**\n```\nInput: For the given graph G find the minimum cost spanning tree.\nOutput: The final structure of the MST is as follows and the weight of the edges of the MST is (4 + 8 + 1 +\n```\n\n2 + 4 + 2 + 7 + 9) = 37.\n\n\n\nOutput:\n```\n\nEdge Weight\n0 - 1 2\n1 - 2 3\n0 - 3 6\n1 - 4 5",
+    "boilerplate_code": "import java.util.Arrays;\npublic class Graph {\nprivate int V; // Number of vertices\nprivate int[][] graph; // Adjacency matrix representation of graph\npublic Graph(int vertices) {\nthis.V = vertices;\nthis.graph = new int[V][V];\n}\npublic void printMST(int[] parent) {\nSystem.out.println(\"Edge \\tWeight\");\nfor (int i = 1; i < V; i++) {\nSystem.out.println(parent[i] + \" - \" + i + \"\\t\" + graph[i][parent[i]]);\n}\n}\nprivate int minKey(int[] key, boolean[] mstSet)\n{\n# Write Code Here\n}\npublic void primMST()\n{\n# Write Code Here\n}\npublic static void main(String[] args)\n{\n# Write Code Here\n}\n}",
+    "test_cases": [
+      {
+        "input": "For the given graph G find the minimum cost spanning tree.",
+        "output": "The final structure of the MST is as follows and the weight of the edges of the MST is (4 + 8 + 1 +",
+        "is_hidden": false
+      },
+      {
+        "input": "For the given graph G find the minimum cost spanning tree.",
+        "output": "The final structure of the MST is as follows and the weight of the edges of the MST is (4 + 8 + 1 +",
+        "is_hidden": false
+      },
+      {
+        "input": "For the given graph G find the minimum cost spanning tree.",
+        "output": "The final structure of the MST is as follows and the weight of the edges of the MST is (4 + 8 + 1 +",
+        "is_hidden": false
+      },
+      {
+        "input": "For the given graph G find the minimum cost spanning tree.",
+        "output": "The final structure of the MST is as follows and the weight of the edges of the MST is (4 + 8 + 1 +",
+        "is_hidden": false
+      },
+      {
+        "input": "For the given graph G find the minimum cost spanning tree.",
+        "output": "The final structure of the MST is as follows and the weight of the edges of the MST is (4 + 8 + 1 +",
+        "is_hidden": false
+      },
+      {
+        "input": "For the given graph G find the minimum cost spanning tree.",
+        "output": "The final structure of the MST is as follows and the weight of the edges of the MST is (4 + 8 + 1 +",
+        "is_hidden": true
+      },
+      {
+        "input": "For the given graph G find the minimum cost spanning tree.",
+        "output": "The final structure of the MST is as follows and the weight of the edges of the MST is (4 + 8 + 1 +",
+        "is_hidden": true
+      },
+      {
+        "input": "For the given graph G find the minimum cost spanning tree.",
+        "output": "The final structure of the MST is as follows and the weight of the edges of the MST is (4 + 8 + 1 +",
+        "is_hidden": true
+      },
+      {
+        "input": "For the given graph G find the minimum cost spanning tree.",
+        "output": "The final structure of the MST is as follows and the weight of the edges of the MST is (4 + 8 + 1 +",
+        "is_hidden": true
+      },
+      {
+        "input": "For the given graph G find the minimum cost spanning tree.",
+        "output": "The final structure of the MST is as follows and the weight of the edges of the MST is (4 + 8 + 1 +",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "13.3",
+    "title": "13.3 Total Number of Spanning Trees in a Graph",
+    "description": "# 13.3 Total Number of Spanning Trees in a Graph\n\nIf a graph is a complete graph with n vertices, then total number of spanning trees is n(n-2) where n is the\nnumber of nodes in the graph. In complete graph, the task is equal to counting different labeled trees with\nn nodes for which have Cayley\u2019s formula.\n\n\n\nLaplacian matrix:\nA Laplacian matrix L, where L[i, i] is the degree of node i and L[i, j] = \u22121 if there is an edge between nodes i\nand j, and otherwise L[i, j] = 0.\nKirchhoff\u2019s theorem provides a way to calculate the number of spanning trees for a given graph as a\ndeterminant of a special matrix. Consider the following graph,\nAll possible spanning trees are as follows:\nIn order to calculate the number of spanning trees, construct a Laplacian matrix L, where L[i, i] is the degree\nof node i and L[i, j] = \u22121 if there is an edge between nodes i and j, and otherwise L[i, j] = 0.\nfor the above graph, The Laplacian matrix will look like this\nThe number of spanning trees equals the determinant of a matrix.\nThe Determinant of a matrix that can be obtained when we remove any row and any column from L.\nFor example, if we remove the first row and column, the result will be,\nThe determinant is always the same, regardless of which row and column we remove from L.",
+    "boilerplate_code": "import java.util.Arrays;\npublic class NumberOfSpanningTrees {\nstatic final int MAX = 100;\nstatic final int MOD = 1000000007;\n\n\n\nvoid multiply(long[][] A, long[][] B, long[][] C, int size) {\nfor (int i = 0; i < size; i++) {\nfor (int j = 0; j < size; j++) {\nC[i][j] = 0;\nfor (int k = 0; k < size; k++) {\nC[i][j] = (C[i][j] + A[i][k] * B[k][j]) % MOD;\n}\n}\n}\n}\nvoid power(long[][] A, int N, long[][] result, int size)\n{\n# Write Code Here\n}\nlong numOfSpanningTree(int[][] graph, int V)\n{\n# Write Code Here\n}\npublic static void main(String[] args) {\nint V = 4; // Number of vertices in graph\nint E = 5; // Number of edges in graph\nint[][] graph = { { 0, 1, 1, 1 }, { 1, 0, 1, 1 }, { 1, 1, 0, 1 }, { 1, 1, 1,\n0 } };\nNumberOfSpanningTrees obj = new NumberOfSpanningTrees();\nSystem.out.println(obj.numOfSpanningTree(graph, V));\n}\n}",
+    "test_cases": [
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "13.4",
+    "title": "13.4 Minimum Product Spanning Tree",
+    "description": "# 13.4 Minimum Product Spanning Tree\n\nA minimum product spanning tree for a weighted, connected, and undirected graph is a spanning tree with\na weight product less than or equal to the weight product of every other spanning tree. The weight product\nof a spanning tree is the product of weights corresponding to each edge of the spanning tree. All weights\nof the given graph will be positive for simplicity.\n\n**Example:**\n```\nInput:\nOutput: Minimum Product that we can obtain is 180 for above graph by choosing edges 0-1, 1-2, 0-3 and\n```\n\n1-4\nThis problem can be solved using standard minimum spanning tree algorithms like Kruskal and prim\u2019s\nalgorithm, but we need to modify our graph to use these algorithms. Minimum spanning tree algorithms\n\n\n\ntries to minimize the total sum of weights, here we need to minimize the total product of weights. We can\nuse the property of logarithms to overcome this problem.\nlog(w1* w2 * w3 * \u2026. * wN) = log(w1) + log(w2) + log(w3) \u2026.. + log(wN)\nWe can replace each weight of the graph by its log value, then we apply any minimum spanning tree\nalgorithm which will try to minimize the sum of log(wi) which in turn minimizes the weight product.",
+    "boilerplate_code": "import java.util.Arrays;\npublic class MinimumProductMST {\n// Number of vertices in the graph\nstatic final int V = 5;\n// A utility function to find the vertex with minimum key value, from the set of\n// vertices not yet included in MST\nint minKey(int key[], boolean mstSet[]) {\nint min = Integer.MAX_VALUE, min_index = -1;\nfor (int v = 0; v < V; v++) {\nif (mstSet[v] == false && key[v] < min) {\nmin = key[v];\nmin_index = v;\n}\n}\nreturn min_index;\n}\nvoid printMST(int parent[], int n, int graph[][])\n{\n# Write Code Here\n}\nvoid primMST(int inputGraph[][], int logGraph[][])\n{\n# Write Code Here\n}\nvoid minimumProductMST(int graph[][])\n{\n# Write Code Here\n}\npublic static void main(String[] args)\n{\n# Write Code Here\n}\n}",
+    "test_cases": [
+      {
+        "input": "",
+        "output": "Minimum Product that we can obtain is 180 for above graph by choosing edges 0-1, 1-2, 0-3 and",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "Minimum Product that we can obtain is 180 for above graph by choosing edges 0-1, 1-2, 0-3 and",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "Minimum Product that we can obtain is 180 for above graph by choosing edges 0-1, 1-2, 0-3 and",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "Minimum Product that we can obtain is 180 for above graph by choosing edges 0-1, 1-2, 0-3 and",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "Minimum Product that we can obtain is 180 for above graph by choosing edges 0-1, 1-2, 0-3 and",
+        "is_hidden": false
+      },
+      {
+        "input": "",
+        "output": "Minimum Product that we can obtain is 180 for above graph by choosing edges 0-1, 1-2, 0-3 and",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "Minimum Product that we can obtain is 180 for above graph by choosing edges 0-1, 1-2, 0-3 and",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "Minimum Product that we can obtain is 180 for above graph by choosing edges 0-1, 1-2, 0-3 and",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "Minimum Product that we can obtain is 180 for above graph by choosing edges 0-1, 1-2, 0-3 and",
+        "is_hidden": true
+      },
+      {
+        "input": "",
+        "output": "Minimum Product that we can obtain is 180 for above graph by choosing edges 0-1, 1-2, 0-3 and",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "problem_id": "13.5",
+    "title": "13.5 Reverse Delete Algorithm for Minimum Spanning Tree",
+    "description": "# 13.5 Reverse Delete Algorithm for Minimum Spanning Tree\n\nIn Reverse Delete algorithm, we sort all edges in decreasing order of their weights. After sorting, we one by\none pick edges in decreasing order. We include current picked edge if excluding current edge causes\ndisconnection in current graph. The main idea is delete edge if its deletion does not lead to disconnection\nof graph.\nAlgorithm:\n1. Sort all edges of graph in non-increasing order of edge weights.\n\n\n\n2. Initialize MST as original graph and remove extra edges using step 3.\n3. Pick highest weight edge from remaining edges and check if deleting the edge disconnects the\ngraph or not.\nIf disconnects, then we don\u2019t delete the edge.\nElse we delete the edge and continue.\n\n**Example:**\n```\nInput: Consider the graph below\nIf we delete highest weight edge of weight 14, graph doesn\u2019t become disconnected, so we remove it.\nNext we delete 11 as deleting it doesn\u2019t disconnect the graph.\nNext we delete 10 as deleting it doesn\u2019t disconnect the graph.\n\n\n\nNext is 9. We cannot delete 9 as deleting it causes disconnection.\nWe continue this way and following edges remain in final MST.\nEdges in MST\n(3, 4)\n(0, 7)\n(2, 3)\n(2, 5)\n(0, 1)\n(5, 6)\n(2, 8)\n(6, 7)\n// Function to add an edge to the graph\nvoid addEdge(int u, int v, int w) {\n# Write Code Here\n}\nvoid dfs(int v, boolean[] visited)\n{\n# Write Code Here\n}\n// Function to check if the graph is connected\nboolean connected()\n{\n# Write Code Here\n}\nvoid reverseDeleteMST()\n{\n# Write Code Here\n}\n}\nTry:\n1. Detect Cycle in a Directed Graph: Given the root of a Directed graph, The task is to check whether the\ngraph contains a cycle or not.\n\n**Example:**\n```\nInput: N = 4, E = 6\nOutput: Yes\n```\n\nExplanation: The diagram clearly shows a cycle 0 -> 2 -> 0\n\n\n\n14. Final Notes\nThe only way to learn programming is program, program and program on challenging problems. The\nproblems in this tutorial are certainly NOT challenging. There are tens of thousands of challenging problems\navailable \u2013 used in training for various programming contests (such as International Collegiate Programming\nContest (ICPC), International Olympiad in Informatics (IOI)). Check out these sites:\n\u2022 The ACM - ICPC International collegiate programming contest (https://icpc.global/ )\n\u2022 The Topcoder Open (TCO) annual programming and design contest (https://www.topcoder.com/ )\n\u2022 Universidad de Valladolid\u2019s online judge (https://uva.onlinejudge.org/ ).\n\u2022 Peking University\u2019s online judge (http://poj.org/ ).\n\u2022 USA Computing Olympiad (USACO) Training Program @ http://train.usaco.org/usacogate.\n\u2022 Google\u2019s coding competitions (https://codingcompetitions.withgoogle.com/codejam,\nhttps://codingcompetitions.withgoogle.com/hashcode )\n\u2022 The ICFP programming contest (https://www.icfpconference.org/ )\n\u2022 BME International 24-hours programming contest (https://www.challenge24.org/ )\n\u2022 The International Obfuscated C Code Contest (https://www0.us.ioccc.org/main.html )\n\u2022 Internet Problem Solving Contest (https://ipsc.ksp.sk/ )\n\u2022 Microsoft Imagine Cup (https://imaginecup.microsoft.com/en-us )\n\u2022 Hewlett Packard Enterprise (HPE) Codewars (https://hpecodewars.org/ )\n\u2022 OpenChallenge (https://www.openchallenge.org/ )\nCoding Contests Scores\nStudents must solve problems and attain scores in the following coding contests:\nName of the contest Minimum number of problems to solve Required score\n\u2022 CodeChef 20 200\n\u2022 Leetcode 20 200\n\u2022 GeeksforGeeks 20 200\n\u2022 SPOJ 5 50\n\u2022 InterviewBit 10 1000\n\u2022 Hackerrank 25 250\n\u2022 Codeforces 10 100\n\u2022 BuildIT 50 500\nTotal score need to obtain 2500\nStudent must have any one of the following certification:\n1. HackerRank - Problem Solving Skills Certification (Basic and Intermediate)\n2. GeeksforGeeks \u2013 Data Structures and Algorithms Certification\n3. CodeChef - Learn Data Structures and Algorithms Certification\n4. Interviewbit \u2013 DSA pro / Python pro\n5. Edx \u2013 Data Structures and Algorithms\n5. NPTEL \u2013 Programming, Data Structures and Algorithms\n6. NPTEL \u2013 Introduction to Data Structures and Algorithms\n7. NPTEL \u2013 Data Structures and Algorithms\n8. NPTEL \u2013 Programming and Data Structure\n\n\n\nV. TEXT BOOKS:\n1. Rance D. Necaise, \u201cData Structures and Algorithms using Python\u201d, Wiley Student Edition.\n2. Benjamin Baka, David Julian, \u201cPython Data Structures and Algorithms\u201d, Packt Publishers, 2017.\nVI. REFERENCE BOOKS:\n1. S. Lipschutz, \u201cData Structures\u201d, Tata McGraw Hill Education, 1st Edition, 2008.\n2. D. Samanta, \u201cClassic Data Structures\u201d, PHI Learning, 2nd Edition, 2004.\nVII. ELECTRONICS RESOURCES:\n1. https://www.tutorialspoint.com/data_structures_algorithms/algorithms_basics.htm\n2. https://www.codechef.com/certification/data-structures-and-algorithms/prepare\n3. https://www.cs.auckland.ac.nz/software/AlgAnim/dsToC.html\n4. https://online-learning.harvard.edu/course/data-structures-and-algorithms\nVIII. MATERIALS ONLINE\n1. Syllabus\n2. Lab manual",
+    "boilerplate_code": "public class ReverseDeleteMST {\npublic static void main(String[] args)\n{\n# Write Code Here\n}\n}",
+    "test_cases": [
+      {
+        "input": "N = 4, E = 6",
+        "output": "Yes",
+        "is_hidden": false
+      },
+      {
+        "input": "N = 4, E = 6",
+        "output": "Yes",
+        "is_hidden": false
+      },
+      {
+        "input": "N = 4, E = 6",
+        "output": "Yes",
+        "is_hidden": false
+      },
+      {
+        "input": "N = 4, E = 6",
+        "output": "Yes",
+        "is_hidden": false
+      },
+      {
+        "input": "N = 4, E = 6",
+        "output": "Yes",
+        "is_hidden": false
+      },
+      {
+        "input": "N = 4, E = 6",
+        "output": "Yes",
+        "is_hidden": true
+      },
+      {
+        "input": "N = 4, E = 6",
+        "output": "Yes",
+        "is_hidden": true
+      },
+      {
+        "input": "N = 4, E = 6",
+        "output": "Yes",
+        "is_hidden": true
+      },
+      {
+        "input": "N = 4, E = 6",
+        "output": "Yes",
+        "is_hidden": true
+      },
+      {
+        "input": "N = 4, E = 6",
+        "output": "Yes",
+        "is_hidden": true
+      }
+    ]
+  }
+]
