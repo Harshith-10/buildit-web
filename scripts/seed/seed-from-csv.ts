@@ -7,16 +7,17 @@ import { user } from "@/db/schema";
 import { auth } from "@/lib/auth";
 
 interface StudentCSVRow {
-  email: string;
+  rollNumber: string;
   name: string;
+  email: string;
   username: string;
   displayUsername?: string;
   image?: string;
-  rollNumber: string;
   dateOfBirth?: string;
   semester?: string;
   section?: string;
   branch?: string;
+  regulation?: string;
 }
 
 interface InstructorCSVRow {
@@ -36,98 +37,186 @@ async function generateAvatar(seed: string): Promise<string> {
 
 async function processStudentsCSV(filePath: string) {
   console.log(`\nProcessing students CSV: ${filePath}`);
-  
+
   const fileContent = await readFile(filePath, "utf-8");
   const records = parse(fileContent, {
     columns: true,
     skip_empty_lines: true,
     trim: true,
-  }) as StudentCSVRow[];
+  }) as Record<string, string>[];
 
   let successCount = 0;
   let skipCount = 0;
 
   for (const record of records) {
-    if (!record.email || !record.name || !record.username) {
-      console.log(`⚠️  Skipping invalid row: ${JSON.stringify(record)}`);
+    // Helper to find value from multiple potential column names
+    const getValue = (keys: string[]) => {
+      const recordKeys = Object.keys(record);
+      for (const key of keys) {
+        const foundKey = recordKeys.find(
+          (k) =>
+            k.toLowerCase().replace(/[^a-z0-9]/g, "") ===
+            key.toLowerCase().replace(/[^a-z0-9]/g, "")
+        );
+        if (foundKey && record[foundKey]) return record[foundKey];
+      }
+      return "";
+    };
+
+    const rollNumber = getValue(["rollNumber", "rollNo", "roll no", "roll_no"]);
+    const name = getValue(["name", "studentName", "student name", "student"]);
+    let email = getValue(["email", "e-mail", "mail"]);
+    const dobRaw = getValue([
+      "dateOfBirth",
+      "dob",
+      "d.o.b",
+      "date of birth",
+      "D.O.B",
+    ]);
+    const semester = getValue(["semester", "sem"]);
+    const section = getValue(["section", "sec"]);
+    const branch = getValue(["branch"]);
+    const regulation = getValue(["regulation", "Regulation"]);
+    let username = getValue(["username", "user name"]);
+
+    // Defaults and logical fallbacks
+    if (!email && rollNumber) {
+      email = `${rollNumber}@iare.ac.in`;
+    }
+    if (!username) {
+      username = rollNumber || name.replace(/\s+/g, "").toLowerCase();
+    }
+
+    if (!email || !name) {
+      console.log(
+        `⚠️  Skipping invalid row (missing email/unique ID or name): ${JSON.stringify(
+          record
+        )}`
+      );
       skipCount++;
       continue;
     }
 
+    // Parse Date (Handle DD-MM-YYYY)
+    let dob: Date | null = null;
+    if (dobRaw) {
+      if (dobRaw.includes("-") && dobRaw.split("-")[0].length === 2) {
+        const [day, month, year] = dobRaw.split("-");
+        dob = new Date(`${year}-${month}-${day}`);
+      } else {
+        dob = new Date(dobRaw);
+      }
+    }
+
     try {
       const existingUser = await db.query.user.findFirst({
-        where: eq(user.email, record.email),
+        where: eq(user.email, email),
       });
 
       if (existingUser) {
-        console.log(`  User ${record.username} already exists, updating data...`);
+        console.log(
+          `  User ${username} (${email}) already exists, updating data...`
+        );
         await db
           .update(user)
-          .set({ 
+          .set({
             role: "student",
-            rollNumber: record.rollNumber || existingUser.rollNumber,
-            dateOfBirth: record.dateOfBirth ? new Date(record.dateOfBirth) : existingUser.dateOfBirth,
-            semester: record.semester || existingUser.semester,
-            section: record.section || existingUser.section,
-            branch: record.branch || existingUser.branch,
+            rollNumber: rollNumber || existingUser.rollNumber,
+            dateOfBirth: dob || existingUser.dateOfBirth,
+            semester: semester || existingUser.semester,
+            section: section || existingUser.section,
+            branch: branch || existingUser.branch,
           })
           .where(eq(user.id, existingUser.id));
-        skipCount++;
+        successCount++;
         continue;
       }
 
-      const displayUsername = record.displayUsername || record.name.split(" ")[0];
-      const image = record.image || await generateAvatar(record.username);
+      const displayUsername = name.split(" ")[0]; // First name as display name
+      const image = await generateAvatar(username);
+
+      let password = DEFAULT_PASSWORD;
+      if (dob && !isNaN(dob.getTime())) {
+        const d = String(dob.getDate()).padStart(2, "0");
+        const m = String(dob.getMonth() + 1).padStart(2, "0");
+        const y = dob.getFullYear();
+        password = `${d}${m}${y}`;
+      }
 
       await auth.api.signUpEmail({
         body: {
-          email: record.email,
-          name: record.name,
-          password: DEFAULT_PASSWORD,
-          username: record.username,
-          displayUsername: displayUsername,
-          image: image,
+          email,
+          name,
+          password,
+          username,
+          displayUsername,
+          image,
         },
       });
 
       // Update role and additional fields after creation
       await db
         .update(user)
-        .set({ 
+        .set({
           role: "student",
-          rollNumber: record.rollNumber,
-          dateOfBirth: record.dateOfBirth ? new Date(record.dateOfBirth) : null,
-          semester: record.semester,
-          section: record.section,
-          branch: record.branch,
+          rollNumber: rollNumber,
+          dateOfBirth: dob,
+          semester: semester,
+          section: section,
+          branch: branch,
+          regulation: regulation,
         })
-        .where(eq(user.email, record.email));
+        .where(eq(user.email, email));
 
-      console.log(`✓ Student ${record.username} created successfully`);
+      console.log(`✓ Student ${username} created successfully`);
       successCount++;
     } catch (error) {
-      console.error(`✗ Error creating student ${record.username}:`, error);
+      console.error(`✗ Error creating student ${username}:`, error);
     }
   }
 
-  console.log(`\nStudents Summary: ${successCount} created, ${skipCount} skipped`);
+  console.log(
+    `\nStudents Summary: ${successCount} processed (created/updated), ${skipCount} skipped`
+  );
 }
 
 async function processInstructorsCSV(filePath: string) {
   console.log(`\nProcessing instructors CSV: ${filePath}`);
-  
+
   const fileContent = await readFile(filePath, "utf-8");
   const records = parse(fileContent, {
     columns: true,
     skip_empty_lines: true,
     trim: true,
-  }) as InstructorCSVRow[];
+  }) as Record<string, string>[];
 
   let successCount = 0;
   let skipCount = 0;
 
   for (const record of records) {
-    if (!record.email || !record.name || !record.username) {
+    // Helper to find value from multiple potential column names
+    const getValue = (keys: string[]) => {
+      const recordKeys = Object.keys(record);
+      for (const key of keys) {
+        const foundKey = recordKeys.find(
+          (k) =>
+            k.toLowerCase().replace(/[^a-z0-9]/g, "") ===
+            key.toLowerCase().replace(/[^a-z0-9]/g, "")
+        );
+        if (foundKey && record[foundKey]) return record[foundKey];
+      }
+      return "";
+    };
+
+    const name = getValue(["name", "instructorName", "instructor name"]);
+    const email = getValue(["email", "e-mail", "mail"]);
+    let username = getValue(["username"]);
+
+    if (!username) {
+      username = name.replace(/\s+/g, "").toLowerCase().substring(0, 20);
+    }
+
+    if (!email || !name) {
       console.log(`⚠️  Skipping invalid row: ${JSON.stringify(record)}`);
       skipCount++;
       continue;
@@ -135,51 +224,53 @@ async function processInstructorsCSV(filePath: string) {
 
     try {
       const existingUser = await db.query.user.findFirst({
-        where: eq(user.email, record.email),
+        where: eq(user.email, email),
       });
 
       if (existingUser) {
-        console.log(`  User ${record.username} already exists, updating data...`);
+        console.log(`  User ${username} already exists, updating data...`);
         await db
           .update(user)
-          .set({ 
+          .set({
             role: "instructor",
           })
           .where(eq(user.id, existingUser.id));
-        skipCount++;
+        successCount++;
         continue;
       }
 
-      const displayUsername = record.displayUsername || record.name.split(" ")[0];
-      const image = record.image || await generateAvatar(record.username);
+      const displayUsername = name.split(" ")[0];
+      const image = await generateAvatar(username);
 
       await auth.api.signUpEmail({
         body: {
-          email: record.email,
-          name: record.name,
+          email,
+          name,
           password: DEFAULT_PASSWORD,
-          username: record.username,
-          displayUsername: displayUsername,
-          image: image,
+          username,
+          displayUsername,
+          image,
         },
       });
 
       // Update role and additional fields after creation
       await db
         .update(user)
-        .set({ 
+        .set({
           role: "instructor",
         })
-        .where(eq(user.email, record.email));
+        .where(eq(user.email, email));
 
-      console.log(`✓ Instructor ${record.username} created successfully`);
+      console.log(`✓ Instructor ${username} created successfully`);
       successCount++;
     } catch (error) {
-      console.error(`✗ Error creating instructor ${record.username}:`, error);
+      console.error(`✗ Error creating instructor ${username}:`, error);
     }
   }
 
-  console.log(`\nInstructors Summary: ${successCount} created, ${skipCount} skipped`);
+  console.log(
+    `\nInstructors Summary: ${successCount} created, ${skipCount} skipped`
+  );
 }
 
 async function seedFromCSV() {
@@ -192,28 +283,37 @@ async function seedFromCSV() {
 
   try {
     const files = await readdir(CSV_DIRECTORY);
-    const csvFiles = files.filter(file => file.toLowerCase().endsWith(".csv"));
+    const csvFiles = files.filter((file) =>
+      file.toLowerCase().endsWith(".csv")
+    );
 
     if (csvFiles.length === 0) {
       console.log(`\n⚠️  No CSV files found in ${CSV_DIRECTORY}`);
-      console.log("\nExpected files:");
-      console.log("  - students.csv (email, name, username, rollNumber, dateOfBirth, semester, section, branch)");
-      console.log("  - instructors.csv (email, name, username, rollNumber?, dateOfBirth?, branch?)");
       return;
     }
 
-    console.log(`\nFound ${csvFiles.length} CSV file(s):\n${csvFiles.map(f => `  - ${f}`).join("\n")}`);
+    console.log(
+      `\nFound ${csvFiles.length} CSV file(s):\n${csvFiles
+        .map((f) => `  - ${f}`)
+        .join("\n")}`
+    );
 
     for (const file of csvFiles) {
       const filePath = join(CSV_DIRECTORY, file);
       const fileName = file.toLowerCase();
 
-      if (fileName.includes("student")) {
+      // Flexible filename matching
+      if (fileName.includes("student") || fileName.includes("aero")) {
         await processStudentsCSV(filePath);
-      } else if (fileName.includes("instructor")) {
+      } else if (
+        fileName.includes("instructor") ||
+        fileName.includes("teacher")
+      ) {
         await processInstructorsCSV(filePath);
       } else {
-        console.log(`\n⚠️  Skipping ${file} - filename should contain 'student' or 'instructor'`);
+        console.log(
+          `\n⚠️  Skipping ${file} - filename should contain 'student' or 'instructor' (or 'aero' etc for students)`
+        );
       }
     }
 
