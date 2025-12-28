@@ -36,6 +36,7 @@ interface Exam {
   createdBy: string;
   createdAt: Date | null;
   updatedAt: Date;
+  userSessionStatus?: string | null;
 }
 
 interface ExamsViewProps {
@@ -70,7 +71,12 @@ export function ExamsView({
   };
 
   // Helper for Status Badge
-  const getStatus = (start: Date, end: Date) => {
+  const getStatus = (start: Date, end: Date, userSessionStatus?: string | null) => {
+    // If user has submitted or been terminated, show as completed
+    if (userSessionStatus === "submitted" || userSessionStatus === "terminated") {
+      return <Badge variant="secondary">Completed</Badge>;
+    }
+    
     const now = new Date();
     if (now < start)
       return (
@@ -94,7 +100,7 @@ export function ExamsView({
     },
     {
       header: "Status",
-      accessorKey: (item: Exam) => getStatus(item.startTime, item.endTime),
+      accessorKey: (item: Exam) => getStatus(item.startTime, item.endTime, item.userSessionStatus),
     },
     {
       header: "Start Time",
@@ -130,7 +136,8 @@ export function ExamsView({
               <p>View Details</p>
             </TooltipContent>
           </Tooltip>
-          {isOngoing(item.startTime, item.endTime) && (
+          {isOngoing(item.startTime, item.endTime) && 
+           !item.userSessionStatus && (
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
@@ -161,7 +168,7 @@ export function ExamsView({
         <div className="p-2 bg-primary/10 rounded-lg">
           <Calendar className="h-6 w-6 text-primary" />
         </div>
-        {getStatus(item.startTime, item.endTime)}
+        {getStatus(item.startTime, item.endTime, item.userSessionStatus)}
       </div>
 
       <h3 className="text-xl font-bold mb-2 line-clamp-1">{item.title}</h3>
@@ -181,7 +188,8 @@ export function ExamsView({
         <Button asChild variant="outline" className="flex-1">
           <Link href={`/exams/${item.id}`}>View Details</Link>
         </Button>
-        {isOngoing(item.startTime, item.endTime) && (
+        {isOngoing(item.startTime, item.endTime) && 
+         !item.userSessionStatus && (
           <Button asChild className="flex-1">
             <Link href={`/exam/${item.id}`}>Start Exam</Link>
           </Button>

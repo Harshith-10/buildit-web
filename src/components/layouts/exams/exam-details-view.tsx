@@ -4,14 +4,20 @@ import { format } from "date-fns";
 import {
   AlertCircle,
   Calendar,
+  CheckCircle,
   Clock,
   PlayCircle,
   Settings,
   User,
+  XCircle,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { getExamCreatedBy } from "@/actions/exam-details";
+import {
+  getExamCreatedBy,
+  hasUserBeenTerminated,
+  hasUserCompletedExam,
+} from "@/actions/exam-details";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,6 +29,7 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { usePageName } from "@/hooks/use-page-name";
+import { useSession } from "@/lib/auth-client";
 import type { ExamConfig } from "@/types/exam-config";
 
 interface Exam {
@@ -43,6 +50,7 @@ interface ExamDetailsViewProps {
 
 export function ExamDetailsView({ exam }: ExamDetailsViewProps) {
   usePageName(exam.title);
+  const { data: session } = useSession();
 
   const getStatus = (start: Date, end: Date) => {
     const now = new Date();
@@ -68,10 +76,33 @@ export function ExamDetailsView({ exam }: ExamDetailsViewProps) {
   const isOngoing = now >= exam.startTime && now <= exam.endTime;
 
   const [creator, setCreator] = useState("");
+  const [hasCompleted, setHasCompleted] = useState(false);
+  const [isTerminated, setIsTerminated] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getExamCreatedBy(exam.id).then((createdBy) => setCreator(createdBy));
-  }, [exam.id]);
+    const fetchData = async () => {
+      try {
+        const createdBy = await getExamCreatedBy(exam.id);
+        setCreator(createdBy);
+
+        if (session?.user?.id) {
+          const [completed, terminated] = await Promise.all([
+            hasUserCompletedExam(exam.id, session.user.id),
+            hasUserBeenTerminated(exam.id, session.user.id),
+          ]);
+          setHasCompleted(completed);
+          setIsTerminated(terminated);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [exam.id, session?.user?.id]);
+
+  const canStartExam = isOngoing && !hasCompleted && !isTerminated;
 
   return (
     <div className="p-6 flex flex-col gap-6">
@@ -87,16 +118,30 @@ export function ExamDetailsView({ exam }: ExamDetailsViewProps) {
           </p>
         </div>
         <div className="flex gap-2">
-          {isOngoing ? (
-            <Button size="lg" className="gap-2" asChild>
+          {canStartExam ? (
+            <Button size="lg" className="gap-2" asChild disabled={loading}>
               <Link href={`/exam/${exam.id}`}>
                 <PlayCircle className="h-5 w-5" /> Start Exam
               </Link>
             </Button>
           ) : (
             <Button size="lg" disabled variant="outline" className="gap-2">
-              <PlayCircle className="h-5 w-5" />{" "}
-              {now < exam.startTime ? "Not Started" : "Exam Ended"}
+              {loading ? (
+                "Loading..."
+              ) : hasCompleted ? (
+                <>
+                  <CheckCircle className="h-5 w-5" /> Already Completed
+                </>
+              ) : isTerminated ? (
+                <>
+                  <XCircle className="h-5 w-5" /> Terminated
+                </>
+              ) : (
+                <>
+                  <PlayCircle className="h-5 w-5" />{" "}
+                  {now < exam.startTime ? "Not Started" : "Exam Ended"}
+                </>
+              )}
             </Button>
           )}
         </div>

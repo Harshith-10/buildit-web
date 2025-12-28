@@ -112,34 +112,47 @@ export async function startExam(
     currentFingerprint = Buffer.from(`${ip}-${ua}`).toString("base64");
   }
 
-  // 3. Check for Existing Active Sessions
-  const [activeSession] = await db
+  // 3. Check for Existing Sessions
+  const existingSessions = await db
     .select()
     .from(examSessions)
     .where(
       and(
         eq(examSessions.examId, examId),
         eq(examSessions.userId, userId),
-        eq(examSessions.status, "in_progress"),
       ),
     );
 
+  // Check if user has already submitted this exam
+  const submittedSession = existingSessions.find(
+    (s) => s.status === "submitted",
+  );
+  if (submittedSession) {
+    throw new Error("You have already completed this exam");
+  }
+
+  // Check if user has been terminated
+  const terminatedSession = existingSessions.find(
+    (s) => s.status === "terminated",
+  );
+  if (terminatedSession) {
+    throw new Error("Your exam was terminated due to malpractice");
+  }
+
+  // Check for active session
+  const activeSession = existingSessions.find(
+    (s) => s.status === "in_progress",
+  );
+
   if (activeSession) {
     // SECURITY CHECK: Is it the same device?
-    // Note: User can allow simple resume if strict mode is off,
-    // but code from startExam.ts suggested logic.
     if (
       activeSession.deviceFingerprint &&
       activeSession.deviceFingerprint !== currentFingerprint
     ) {
-      // Ideally trigger alert or block.
       console.warn(
         `Suspicious resume attempt for user ${userId} on exam ${examId}`,
       );
-      // throw new Error("Multi-device access detected. Exam locked.");
-      // User requested "Prevent user from starting exam while existing... gracefully get back".
-      // So resume should be allowed, but maybe with warning?
-      // Let's allow resume for now to be "smooth".
     }
     return activeSession.id;
   }
@@ -255,11 +268,8 @@ export async function recordViolation(
     events: [...(details.events || []), newEvent],
   };
 
-  if (newCount >= 10) {
-    // Increased limit as current detection is strict/buggy?
-    // Or stick to 3 but make it more reliable.
-    // The previous code had 3. The user said "current one rarely detects... bad... 2 attempts as 4".
-    // I added debounce, so 3 might be fine now. But let's set to 5 to be safe/lenient.
+  if (newCount >= 3) {
+    // Terminate after 3 violations
     await db
       .update(examSessions)
       .set({

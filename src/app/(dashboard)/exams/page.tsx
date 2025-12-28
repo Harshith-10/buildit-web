@@ -1,5 +1,7 @@
+import { headers } from "next/headers";
 import { getExamSession } from "@/actions/exam-session";
 import { getExams } from "@/actions/exams-list";
+import { auth } from "@/lib/auth";
 import { searchParamsCache } from "@/lib/search-params/exams";
 import { ExamsView } from "../../../components/layouts/exams/exams-view";
 
@@ -17,11 +19,17 @@ export default async function ExamsPage({
     sessionId,
   } = await searchParamsCache.parse(searchParams);
 
+  // Get current user
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  const userId = session?.user?.id;
+
   let terminationDetails = null;
   if (sessionId && error === "exam_terminated") {
-    const session = await getExamSession(sessionId);
-    if (session?.terminationDetails) {
-      terminationDetails = session.terminationDetails;
+    const examSession = await getExamSession(sessionId);
+    if (examSession?.terminationDetails) {
+      terminationDetails = examSession.terminationDetails;
     }
   }
 
@@ -31,6 +39,7 @@ export default async function ExamsPage({
     status: status || undefined,
     sort: sort || undefined, // getExams handles default sort logic, but we can pass it explicitly
     perPage: 10,
+    userId: userId || undefined,
   });
 
   return (

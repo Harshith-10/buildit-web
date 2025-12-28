@@ -73,14 +73,26 @@ export function ExamEntry({
 
       const fingerprint = await getDeviceFingerprint();
 
-      // Use the new server action
-      // We need to update startExam to accept fingerprint or handle it
-      // Passing fingerprint as 3rd arg assuming we update the action
-      // If action signature is fixed, we might need to update it first.
-      // For now, I will match the updated action signature in the next tool call.
+      // Start the exam session first
       const sessionId = await startExam(examId, user.id, fingerprint);
 
       toast.dismiss();
+      
+      // Request fullscreen mode
+      try {
+        const elem = document.documentElement;
+        if (elem.requestFullscreen) {
+          await elem.requestFullscreen();
+        } else if ((elem as any).webkitRequestFullscreen) {
+          await (elem as any).webkitRequestFullscreen();
+        } else if ((elem as any).msRequestFullscreen) {
+          await (elem as any).msRequestFullscreen();
+        }
+      } catch (fsError) {
+        console.warn("Fullscreen request failed:", fsError);
+        // Continue even if fullscreen fails
+      }
+
       toast.success("Exam started!");
       router.push(`/exam/${sessionId}`);
     } catch (error: any) {

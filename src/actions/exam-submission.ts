@@ -11,11 +11,13 @@ import type { ExamSubmission } from "@/stores/exam-store";
 interface BulkSubmissionPayload {
   sessionId: string;
   submissions: Record<string, ExamSubmission>;
+  terminated?: boolean;
 }
 
 export const bulkSubmitExam = async ({
   sessionId,
   submissions: examSubmissions,
+  terminated = false,
 }: BulkSubmissionPayload) => {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -90,10 +92,10 @@ export const bulkSubmitExam = async ({
           } as any);
         }
 
-        // Mark exam as completed
+        // Mark exam as completed or terminated
         await tx
           .update(examSessions)
-          .set({ status: "submitted" })
+          .set({ status: terminated ? "terminated" : "submitted" })
           .where(eq(examSessions.id, sessionId));
       });
     } catch (error) {
@@ -104,7 +106,7 @@ export const bulkSubmitExam = async ({
     // No submissions, still close the exam
     await db
       .update(examSessions)
-      .set({ status: "submitted" })
+      .set({ status: terminated ? "terminated" : "submitted" })
       .where(eq(examSessions.id, sessionId));
   }
 

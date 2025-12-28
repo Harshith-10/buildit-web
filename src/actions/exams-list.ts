@@ -1,8 +1,8 @@
 "use server";
 
-import { and, asc, desc, gt, gte, ilike, lt, lte, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gt, gte, ilike, inArray, lt, lte, sql } from "drizzle-orm";
 import db from "@/db";
-import { exams } from "@/db/schema";
+import { examSessions, exams } from "@/db/schema";
 
 export type GetExamsParams = {
   page?: number;
@@ -10,6 +10,7 @@ export type GetExamsParams = {
   search?: string;
   status?: "upcoming" | "ongoing" | "completed";
   sort?: string;
+  userId?: string;
 };
 
 export async function getExams({
@@ -18,6 +19,7 @@ export async function getExams({
   search,
   status,
   sort,
+  userId,
 }: GetExamsParams) {
   const currentTimestamp = new Date();
 
@@ -82,7 +84,35 @@ export async function getExams({
 
   const total = countResult?.count ?? 0;
 
-  return { data, total };
+  // If userId is provided, fetch user's session status for each exam
+  let userSessions: Record<string, { status: string }> = {};
+  if (userId && data.length > 0) {
+    const examIds = data.map((exam) => exam.id);
+    const sessions = await db
+      .select({
+        examId: examSessions.examId,
+        status: examSessions.status,
+      })
+      .from(examSessions)
+      .where(
+        and(
+          eq(examSessions.userId, userId),
+          inArray(examSessions.examId, examIds),
+        ),
+      );
+
+    userSessions = Object.fromEntries(
+      sessions.map((s) => [s.examId, { status: s.status }]),
+    );
+  }
+
+  // Attach user session status to each exam
+  const dataWithStatus = data.map((exam) => ({
+    ...exam,
+    userSessionStatus: userSessions[exam.id]?.status || null,
+  }));
+
+  return { data: dataWithStatus, total };
 }
 
 // Helper to check lt

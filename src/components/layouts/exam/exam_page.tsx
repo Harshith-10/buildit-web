@@ -9,11 +9,11 @@ import { bulkSubmitExam } from "@/actions/exam-submission";
 import ExamHeader from "@/components/layouts/exam/exam_header";
 import ExamPanes from "@/components/layouts/exam/exam_panes";
 import ExamSidebar from "@/components/layouts/exam/exam_sidebar";
-import { showMalpracticeWarning } from "@/components/layouts/exam/malpractice_warning";
+import { ExamViolationEnforcement } from "@/components/layouts/exam/exam-violation-enforcement";
 import { SidebarInset } from "@/components/ui/sidebar";
 import { useExamData } from "@/hooks/exam/use-exam-data";
 import { useExamSession } from "@/hooks/exam/use-exam-session";
-import { useMalpractice } from "@/hooks/exam/use-malpractice";
+import { useFullscreen } from "@/hooks/exam/use-fullscreen";
 import { useExamStore } from "@/stores/exam-store";
 import type { Problem } from "@/types/problem";
 
@@ -67,13 +67,13 @@ export default function ExamPage({
     markProblemVisited(currentProblem.id);
   }, [currentProblem.id, markProblemVisited]);
 
-  const { triggerViolation } = useMalpractice({
-    sessionId,
+  // Fullscreen management
+  const { isFullscreen, enterFullscreen, exitFullscreen } = useFullscreen({
     enabled: !isEnded,
-    onViolation: (count) => {
-      showMalpracticeWarning(`Warning: Violation recorded. Count: ${count}`);
-    },
   });
+
+  // Note: We don't auto-enter fullscreen here because it must be triggered by user action
+  // The exam entry page handles initial fullscreen on "Start Exam" button click
 
   // --- Local State for Execution ---
   const [isExecuting, setIsExecuting] = useState(false);
@@ -292,6 +292,9 @@ export default function ExamPage({
     toast.dismiss();
 
     if (res.success) {
+      // Exit fullscreen before navigation
+      await exitFullscreen();
+      
       toast.success("Exam submitted successfully!");
       reset(); // Clear store
       endExam(); // Call local end exam logic (clean up tokens etc if any)
@@ -301,8 +304,44 @@ export default function ExamPage({
     }
   };
 
+  // Handle exam termination due to violations
+  const handleExamTermination = async () => {
+    console.log("[ExamPage] Handling exam termination");
+    
+    // Exit fullscreen
+    await exitFullscreen();
+    
+    // Auto-submit with current state
+    const allSubmissions = useExamStore.getState().submissions;
+    
+    try {
+      await bulkSubmitExam({
+        sessionId,
+        submissions: allSubmissions,
+        terminated: true,
+      });
+    } catch (error) {
+      console.error("[ExamPage] Failed to submit terminated exam:", error);
+    }
+    
+    // Clear store and redirect
+    reset();
+    endExam();
+    
+    // Delay redirect to show termination message
+    setTimeout(() => {
+      router.push("/exams?status=terminated");
+    }, 3000);
+  };
+
   return (
     <>
+      {/* Violation Enforcement System */}
+      <ExamViolationEnforcement 
+        enabled={!isEnded} 
+        onTerminate={handleExamTermination}
+      />
+      
       <ExamSidebar
         problems={examProblems}
         currentIndex={currentProblemIndex}

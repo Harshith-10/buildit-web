@@ -62,6 +62,16 @@ export function useExamSession({
     async (auto = false) => {
       try {
         setIsEnded(true);
+        
+        // Exit fullscreen if active
+        if (document.fullscreenElement) {
+          try {
+            await document.exitFullscreen();
+          } catch (e) {
+            console.warn("Failed to exit fullscreen:", e);
+          }
+        }
+        
         await endExamSession(sessionId);
         toast.success(
           auto ? "Time's up! Exam submitted." : "Exam submitted successfully.",
