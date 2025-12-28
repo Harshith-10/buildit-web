@@ -25,6 +25,13 @@ export const user = pgTable("user", {
   banned: boolean("banned").default(false),
   banReason: text("ban_reason"),
   banExpires: timestamp("ban_expires"),
+  // Student specific fields
+  rollNumber: text("roll_number"),
+  dateOfBirth: timestamp("date_of_birth"),
+  semester: text("semester"),
+  section: text("section"),
+  branch: text("branch"),
+  regulation: text("regulation"),
 });
 
 export const session = pgTable(
@@ -46,7 +53,7 @@ export const session = pgTable(
     pinVerified: boolean("pin_verified").default(false),
     deviceFingerprint: text("device_fingerprint"),
   },
-  (table) => [index("session_userId_idx").on(table.userId)],
+  (table) => [index("session_userId_idx").on(table.userId)]
 );
 
 export const device = pgTable(
@@ -65,7 +72,7 @@ export const device = pgTable(
   (table) => [
     index("device_userId_idx").on(table.userId),
     primaryKey({ columns: [table.fingerprint, table.userId] }),
-  ],
+  ]
 );
 
 export const account = pgTable(
@@ -92,7 +99,7 @@ export const account = pgTable(
       .$onUpdate(() => /* @__PURE__ */ new Date())
       .notNull(),
   },
-  (table) => [index("account_userId_idx").on(table.userId)],
+  (table) => [index("account_userId_idx").on(table.userId)]
 );
 
 export const verification = pgTable(
@@ -108,5 +115,5 @@ export const verification = pgTable(
       .$onUpdate(() => /* @__PURE__ */ new Date())
       .notNull(),
   },
-  (table) => [index("verification_identifier_idx").on(table.identifier)],
+  (table) => [index("verification_identifier_idx").on(table.identifier)]
 );
