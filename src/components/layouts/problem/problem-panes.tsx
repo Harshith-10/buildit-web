@@ -14,7 +14,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { useProblemStore } from "@/store/problem-store";
+import { useProblemStore } from "@/stores/problem-store";
 import type { Problem } from "@/types/problem";
 import ProblemEditor, { ProblemEditorHeader } from "./problem-editor";
 import ProblemInfo from "./problem-info";
