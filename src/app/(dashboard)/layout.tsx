@@ -6,6 +6,7 @@ import {
   Clock,
   Code2,
   FileText,
+  FileCheck,
   History,
   LayoutDashboard,
   List,
@@ -118,6 +119,11 @@ const adminItems: MenuItem[] = [
     label: "Users",
     href: "/users",
   },
+  {
+    icon: <FileCheck className="h-4 w-4" />,
+    label: "Submissions",
+    href: "/submissions",
+  },
 ];
 
 const adminSection: SidebarSection = {
@@ -152,8 +158,11 @@ export default async function DashboardLayout({
     return role !== "admin"; // Students and Faculty see Leaderboard and Resources
   });
 
-  const filteredAdminItems = adminItems.filter(() => {
-    return role === "admin"; // Only Admins see User Management
+  const filteredAdminItems = adminItems.filter((item) => {
+    // Admins and Instructors can see Submissions
+    if (item.label === "Submissions") return role === "admin" || role === "instructor";
+    // Only Admins see User Management
+    return role === "admin";
   });
 
   const sections: SidebarSection[] = [
