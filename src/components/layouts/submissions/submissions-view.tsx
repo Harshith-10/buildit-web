@@ -29,7 +29,7 @@ interface Submission {
   userName: string;
   userEmail: string;
   status: string;
-  startedAt: Date;
+  startedAt: Date | null;
   terminationReason: string | null;
   submissionCount: number;
 }
@@ -126,7 +126,11 @@ export function SubmissionsView({ data, total }: SubmissionsViewProps) {
       accessorKey: (item: Submission) => (
         <div className="flex items-center gap-2 text-muted-foreground">
           <Calendar className="h-4 w-4" />
-          <span>{format(new Date(item.startedAt), "MMM d, yyyy HH:mm")}</span>
+          <span>
+            {item.startedAt 
+              ? format(new Date(item.startedAt), "MMM d, yyyy HH:mm")
+              : "N/A"}
+          </span>
         </div>
       ),
     },

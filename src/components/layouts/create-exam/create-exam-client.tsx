@@ -71,7 +71,7 @@ const examFormSchema = z.object({
         message: "Title must be at least 2 characters.",
     }),
     description: z.string().optional(),
-    duration: z.coerce.number().min(5, {
+    duration: z.number().min(5, {
         message: "Duration must be at least 5 minutes.",
     }),
     startTime: z.string().refine((val) => !Number.isNaN(Date.parse(val)), {
@@ -82,12 +82,12 @@ const examFormSchema = z.object({
     }),
     gradingStrategy: z.enum(["DIFFICULTY_BASED", "MANUAL_POINTS"]),
     // Difficulty Based Fields
-    easyCount: z.coerce.number().min(0).optional(),
-    mediumCount: z.coerce.number().min(0).optional(),
-    hardCount: z.coerce.number().min(0).optional(),
-    easyPoints: z.coerce.number().min(1).optional(),
-    mediumPoints: z.coerce.number().min(1).optional(),
-    hardPoints: z.coerce.number().min(1).optional(),
+    easyCount: z.number().min(0).optional(),
+    mediumCount: z.number().min(0).optional(),
+    hardCount: z.number().min(0).optional(),
+    easyPoints: z.number().min(1).optional(),
+    mediumPoints: z.number().min(1).optional(),
+    hardPoints: z.number().min(1).optional(),
     // Manual Points Fields
     selectedProblems: z.array(z.string()).optional(),
     // Assignment Fields
