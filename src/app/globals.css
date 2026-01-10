@@ -195,3 +195,54 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  @keyframes logo-marquee {
+    from {
+      transform: translateX(0%);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .logo-marquee {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 10%,
+      black 90%,
+      transparent
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 10%,
+      black 90%,
+      transparent
+    );
+  }
+
+  .logo-marquee-track {
+    display: inline-flex;
+    width: max-content;
+    animation: logo-marquee 28s linear infinite;
+  }
+
+  .logo-marquee:hover .logo-marquee-track,
+  .logo-marquee:focus-within .logo-marquee-track {
+    animation-play-state: paused;
+  }
+
+  .logo-marquee-ltr .logo-marquee-track {
+    animation-direction: reverse;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .logo-marquee-track {
+      animation: none;
+      transform: none;
+    }
+  }
+}
