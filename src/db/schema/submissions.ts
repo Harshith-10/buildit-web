@@ -9,14 +9,13 @@ import {
 } from "drizzle-orm/pg-core";
 import { user } from "./auth";
 import { submissionStatus } from "./enums";
-import { examSessions } from "./exams";
 import { problems } from "./problems";
 
 export const submissions = pgTable(
   "submissions",
   {
     id: uuid().defaultRandom().primaryKey().notNull(),
-    sessionId: uuid("session_id"),
+    sessionId: uuid("session_id"), // DEPRECATED: kept for backward compatibility only
     userId: text("user_id").references(() => user.id),
     problemId: uuid("problem_id").notNull(),
     answerData: jsonb("answer_data").notNull(),
@@ -27,11 +26,7 @@ export const submissions = pgTable(
     createdAt: timestamp("created_at").defaultNow(),
   },
   (table) => [
-    foreignKey({
-      columns: [table.sessionId],
-      foreignColumns: [examSessions.id],
-      name: "submissions_session_id_exam_sessions_id_fk",
-    }),
+    // Foreign key to examSessions removed - examSessions table no longer exists
     foreignKey({
       columns: [table.problemId],
       foreignColumns: [problems.id],

@@ -2,18 +2,21 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { endExamSession, recordViolation } from "@/actions/exam-session";
+import { finishExam } from "@/lib/exam/exam-lifecycle";
+import { recordMalpractice } from "@/lib/exam/malpractice-actions";
 import type { Problem } from "@/types/problem";
 
 interface UseExamSessionProps {
-  sessionId: string;
+  assignmentId: string;
+  examId: string;
   problems: Problem[];
   expiresAt: Date;
   onViolation?: (count: number) => void;
 }
 
 export function useExamSession({
-  sessionId,
+  assignmentId,
+  examId,
   problems,
   expiresAt,
   onViolation,
@@ -33,7 +36,7 @@ export function useExamSession({
   // Initialize state from local storage
   useEffect(() => {
     // Code
-    const savedCode = localStorage.getItem(`exam-${sessionId}-codes`);
+    const savedCode = localStorage.getItem(`exam-${assignmentId}-codes`);
     if (savedCode) {
       try {
         const parsed = JSON.parse(savedCode);
@@ -44,7 +47,7 @@ export function useExamSession({
     }
 
     // Attempted
-    const savedAttempted = localStorage.getItem(`exam-${sessionId}-attempted`);
+    const savedAttempted = localStorage.getItem(`exam-${assignmentId}-attempted`);
     if (savedAttempted) {
       try {
         const parsed = JSON.parse(savedAttempted);
@@ -53,22 +56,30 @@ export function useExamSession({
         console.error("Failed to load attempted problems:", e);
       }
     }
-  }, [sessionId]);
+  }, [assignmentId]);
 
   const handleEndExam = useCallback(
     async (auto = false) => {
       try {
-        await endExamSession(sessionId);
-        setIsEnded(true);
-        toast.success(
-          auto ? "Time's up! Exam submitted." : "Exam submitted successfully.",
-        );
-        window.location.href = `/exams?status=completed`;
+        const result = await finishExam(assignmentId);
+        if (result.success) {
+          setIsEnded(true);
+          toast.success(
+            auto ? "Time's up! Exam submitted." : "Exam submitted successfully.",
+          );
+          if (result.redirectPath) {
+            window.location.href = result.redirectPath;
+          } else {
+            window.location.href = `/${examId}/results`;
+          }
+        } else {
+          toast.error(result.error || "Failed to submit exam.");
+        }
       } catch (_e) {
         toast.error("Failed to submit exam.");
       }
     },
-    [sessionId],
+    [assignmentId, examId],
   );
 
   // Timer Logic
@@ -105,7 +116,7 @@ export function useExamSession({
         newStorage.set(problemId, code);
         // Persist
         localStorage.setItem(
-          `exam-${sessionId}-codes`,
+          `exam-${assignmentId}-codes`,
           JSON.stringify(Object.fromEntries(newStorage)),
         );
         return newStorage;
@@ -116,14 +127,14 @@ export function useExamSession({
           const newSet = new Set(prev);
           newSet.add(problemId);
           localStorage.setItem(
-            `exam-${sessionId}-attempted`,
+            `exam-${assignmentId}-attempted`,
             JSON.stringify([...newSet]),
           );
           return newSet;
         });
       }
     },
-    [currentProblemIndex, problems, sessionId],
+    [currentProblemIndex, problems, assignmentId],
   );
 
   const navigateTo = (index: number) => {
@@ -135,21 +146,27 @@ export function useExamSession({
   const handleViolation = useCallback(
     async (type: string) => {
       try {
-        const result = await recordViolation(sessionId, type);
-        if (onViolation && result.count !== undefined)
-          onViolation(result.count);
+        const result = await recordMalpractice(assignmentId, type, `${type} violation`, true);
+        if (onViolation && result.warningsLeft !== undefined) {
+          const violationCount = 3 - result.warningsLeft;
+          onViolation(violationCount);
+        }
 
         if (result.terminated) {
           toast.error("Exam terminated due to multiple violations.");
           setIsEnded(true);
-          // Clean up local storage potentially? Or keep for review.
-          window.location.reload(); // Force reload to show termination state
+          // Redirect to results page
+          if (result.redirectPath) {
+            window.location.href = result.redirectPath;
+          } else {
+            window.location.href = `/${examId}/results`;
+          }
         }
       } catch (e) {
         console.error("Failed to record violation:", e);
       }
     },
-    [sessionId, onViolation],
+    [assignmentId, examId, onViolation],
   );
 
   return {

@@ -1,45 +1,24 @@
 export interface TestCase {
   id: string;
-  problemId: string;
   input: string;
   expectedOutput: string;
-  isHidden: boolean;
 }
 
 export interface Problem {
   id: string;
   title: string;
-  description: string;
-  difficulty: "easy" | "medium" | "hard";
-  content: {
-    examples: {
-      input: string;
-      output: string;
-      explanation?: string;
-    }[];
-    constraints?: string[];
-  };
-  driverCode?: Record<string, string>;
+  problemStatement: string;
   testCases: TestCase[];
-  collection?: {
-    id: string;
-    name: string;
-  };
 }
 
-export interface Submission {
+export interface TestcaseResult {
   id: string;
-  problemId: string;
-  status:
-    | "accepted"
-    | "wrong_answer"
-    | "pending"
-    | "time_limit_exceeded"
-    | "runtime_error"
-    | "compile_error";
-  score: number;
-  runtimeMs?: number;
-  memoryKb?: number;
-  createdAt: Date;
-  answerData: any;
+  passed: boolean;
+  input: string;
+  expectedOutput: string;
+  actualOutput?: string;
+  run_details: {
+    stdout: string;
+    stderr: string;
+  };
 }

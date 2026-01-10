@@ -120,22 +120,20 @@ export function ExamDetailsView({ exam }: ExamDetailsViewProps) {
         <div className="flex gap-2">
           {canStartExam ? (
             <Button size="lg" className="gap-2" asChild disabled={loading}>
-              <Link href={`/exam/${exam.id}`}>
+              <Link href={`/${exam.id}/onboarding`}>
                 <PlayCircle className="h-5 w-5" /> Start Exam
+              </Link>
+            </Button>
+          ) : (hasCompleted || isTerminated) && !loading ? (
+            <Button size="lg" className="gap-2" asChild>
+              <Link href={`/${exam.id}/results`}>
+                <CheckCircle className="h-5 w-5" /> View Results
               </Link>
             </Button>
           ) : (
             <Button size="lg" disabled variant="outline" className="gap-2">
               {loading ? (
                 "Loading..."
-              ) : hasCompleted ? (
-                <>
-                  <CheckCircle className="h-5 w-5" /> Already Completed
-                </>
-              ) : isTerminated ? (
-                <>
-                  <XCircle className="h-5 w-5" /> Terminated
-                </>
               ) : (
                 <>
                   <PlayCircle className="h-5 w-5" />{" "}

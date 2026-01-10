@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { recordViolation } from "@/actions/exam-session";
+import { recordMalpractice } from "@/lib/exam/malpractice-actions";
 
 export type ViolationType = "fullscreen" | "tab" | "blur" | "devtools";
 
@@ -15,8 +15,8 @@ export interface ViolationRecord {
 const MAX_VIOLATIONS = 3;
 
 interface ViolationStoreState {
-  // Session ID for server sync
-  sessionId: string | null;
+  // Assignment ID for server sync (was sessionId)
+  assignmentId: string | null;
 
   // Current violation state
   state: ViolationState;
@@ -37,7 +37,7 @@ interface ViolationStoreState {
   isProcessing: boolean;
 
   // Actions
-  setSessionId: (sessionId: string) => void;
+  setAssignmentId: (assignmentId: string) => void;
   setExamActive: (active: boolean) => void;
   setOnTerminate: (callback: () => void) => void;
   triggerViolation: (type: ViolationType) => void;
@@ -49,7 +49,7 @@ interface ViolationStoreState {
 }
 
 export const useViolationStore = create<ViolationStoreState>((set, get) => ({
-  sessionId: null,
+  assignmentId: null,
   state: "IDLE",
   activeViolation: null,
   violations: [],
@@ -57,8 +57,8 @@ export const useViolationStore = create<ViolationStoreState>((set, get) => ({
   onTerminate: null,
   isProcessing: false,
 
-  setSessionId: (sessionId) => {
-    set({ sessionId });
+  setAssignmentId: (assignmentId) => {
+    set({ assignmentId });
   },
 
   setExamActive: (active) => {
@@ -73,7 +73,7 @@ export const useViolationStore = create<ViolationStoreState>((set, get) => ({
   },
 
   triggerViolation: (type) => {
-    const { examActive, state, onTerminate, sessionId, isProcessing } = get();
+    const { examActive, state, onTerminate, assignmentId, isProcessing } = get();
 
     if (!examActive) return;
     if (state === "TERMINATED") return;
@@ -101,8 +101,8 @@ export const useViolationStore = create<ViolationStoreState>((set, get) => ({
       violations: updatedViolations,
     });
 
-    if (sessionId) {
-      recordViolation(sessionId, type)
+    if (assignmentId) {
+      recordMalpractice(assignmentId, type, `${type} violation`, true)
         .then((result) => {
           if (result.terminated) {
             set({
@@ -116,18 +116,8 @@ export const useViolationStore = create<ViolationStoreState>((set, get) => ({
             return;
           }
 
-          if (result.ignored) {
-            const currentViolations = get().violations;
-            set({
-              state: "IDLE",
-              activeViolation: null,
-              violations: currentViolations.slice(0, -1),
-              isProcessing: false,
-            });
-            return;
-          }
-
-          if (result.count && result.count >= MAX_VIOLATIONS) {
+          // Check remaining warnings
+          if (result.warningsLeft <= 0) {
             set({
               state: "TERMINATED",
               isProcessing: false,

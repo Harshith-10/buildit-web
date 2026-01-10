@@ -120,6 +120,11 @@ const adminItems: MenuItem[] = [
     href: "/users",
   },
   {
+    icon: <Users className="h-4 w-4" />,
+    label: "User Groups",
+    href: "/user-groups",
+  },
+  {
     icon: <FileCheck className="h-4 w-4" />,
     label: "Submissions",
     href: "/submissions",

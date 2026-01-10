@@ -1,6 +1,10 @@
 "use server";
 
-const PISTON_API_URL = process.env.PISTON_API_URL || "http://localhost:2000";
+import {
+  executeCode as turboExecute,
+  getRuntimes as turboGetRuntimes,
+  mapTestCases,
+} from "@/lib/turbo";
 
 export type FileContent = {
   name?: string;
@@ -92,29 +96,44 @@ export type ExecuteTestcasesResponse = {
 export async function executeCode(
   payload: ExecuteCodePayload,
 ): Promise<ExecuteCodeResponse> {
+  // Use Turbo if enabled
+  if (USE_TURBO) {
+    try {
+      const code = payload.files[0]?.content || "";
+      const turboResult = await turboExecute(
   try {
-    const response = await fetch(`${PISTON_API_URL}/api/v2/execute`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+    const code = payload.files[0]?.content || "";
+    const turboResult = await turboExecute(
+      code,
+      payload.language,
+      undefined,
+      payload.stdin,
+      payload.version,
+    );
 
-    if (!response.ok) {
-      // Piston returns errors as { message: string }
-      const error = await response.json();
-      throw new Error(error.message || `API error: ${response.statusText}`);
-    }
-
-    return await response.json();
-  } catch (error: any) {
-    console.error("Execute code error:", error);
+    // Convert Turbo result to standard format
     return {
-      language: payload.language,
-      version: payload.version,
+      language: turboResult.language,
+      version: turboResult.version,
       run: {
-        stdout: "",
+        stdout: turboResult.run?.stdout || "",
+        stderr: turboResult.run?.stderr || "",
+        output: turboResult.run?.stdout || "",
+        code: turboResult.run?.exit_code ?? null,
+        signal: null,
+      },
+      compile: turboResult.compile
+        ? {
+            stdout: turboResult.compile.stdout,
+            stderr: turboResult.compile.stderr,
+            output: turboResult.compile.stdout,
+            code: turboResult.compile.exit_code,
+            signal: null,
+          }
+        : undefined,
+    };
+  } catch (error: any) {
+    console.error("Turbo execution
         stderr: error.message || "Unknown error occurred",
         output: error.message || "Unknown error occurred",
         code: -1,
@@ -128,54 +147,103 @@ export async function executeCode(
 export async function executeTestcases(
   payload: ExecuteTestcasesPayload,
 ): Promise<ExecuteTestcasesResponse> {
+  // Use Turbo if enabled
+  if (USE_TURBO) {
+    try {
+      const code = payload.files[0]?.content || "";
+      const turboTestCases = mapTestCases(
+        payload.testcases.map((tc) => ({
+          id: tc.id,
+          input: tc.input,
+          expectedOutput: Array.isArray(tc.expectedOutput)
+            ? tc.expectedOutput.join("\n")
+            : tc.expectedOutput,
+        })),
+      );
+
+      const turboResult = await turboExecute(
+        code,
+        payload.language,
+        turboTestCases,
+        undefined,
+        payload.version,
+      );
+
+      // Convert Turbo testcase results to Piston format
+      const testcaseResults: TestcaseResult[] = turboResult.testcases.map(
+        (tc) => ({
+          id: tc.id,
+          input: payload.testcases.find((t) => t.id === tc.id)?.input || "",
+          expectedOutput:
+            payload.testcases.find((t) => t.id === tc.id)?.expectedOutput || "",
+          actualOutput: tc.actual_output,
+          passed: tc.passed,
+          run_details: {
+            stdout: tc.run_details?.stdout || "",
+            stderr: tc.run_details?.stderr || "",
+            code: tc.run_details?.exit_code ?? null,
+            signal: null,
   try {
-    const response = await fetch(`${PISTON_API_URL}/api/v3/execute`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+    const code = payload.files[0]?.content || "";
+    const turboTestCases = mapTestCases(
+      payload.testcases.map((tc) => ({
+        id: tc.id,
+        input: tc.input,
+        expectedOutput: Array.isArray(tc.expectedOutput)
+          ? tc.expectedOutput.join("\n")
+          : tc.expectedOutput,
+      })),
+    );
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || `API error: ${response.statusText}`);
-    }
+    const turboResult = await turboExecute(
+      code,
+      payload.language,
+      turboTestCases,
+      undefined,
+      payload.version,
+    );
 
-    return await response.json();
-  } catch (error: any) {
-    console.error("Execute testcases error:", error);
-    // Return a structure that indicates failure, but matching the response type is hard without a valid response.
-    // We'll return an empty testcases array and the error message.
+    // Convert Turbo testcase results to standard format
+    const testcaseResults: TestcaseResult[] = turboResult.testcases.map(
+      (tc) => ({
+        id: tc.id,
+        input: payload.testcases.find((t) => t.id === tc.id)?.input || "",
+        expectedOutput:
+          payload.testcases.find((t) => t.id === tc.id)?.expectedOutput || "",
+        actualOutput: tc.actual_output,
+        passed: tc.passed,
+        run_details: {
+          stdout: tc.run_details?.stdout || "",
+          stderr: tc.run_details?.stderr || "",
+          code: tc.run_details?.exit_code ?? null,
+          signal: null,
+          memory: tc.run_details?.memory_usage || 0,
+          cpu_time: tc.run_details?.cpu_time || 0,
+          wall_time: tc.run_details?.execution_time || 0,
+        },
+      }),
+    );
+
     return {
-      language: payload.language,
-      version: payload.version,
-      testcases: [],
-      message: error.message || "Unknown error occurred",
+      language: turboResult.language,
+      version: turboResult.version,
+      compile: turboResult.compile
+        ? {
+            stdout: turboResult.compile.stdout,
+            stderr: turboResult.compile.stderr,
+            output: turboResult.compile.stdout,
+            code: turboResult.compile.exit_code,
+            signal: null,
+          }
+        : undefined,
+      testcases: testcaseResults,
     };
-  }
-}
-
-export type Runtime = {
-  language: string;
-  version: string;
-  aliases: string[];
-  runtime?: string;
-};
-
-export async function getLanguages(): Promise<Runtime[]> {
-  try {
-    const response = await fetch(`${PISTON_API_URL}/api/v2/runtimes`, {
-      method: "GET",
-    });
-
-    if (!response.ok) {
-      throw new Error(`API error: ${response.statusText}`);
-    }
-
-    return await response.json();
   } catch (error: any) {
-    console.error("Get languages error:", error);
-    return [];
-  }
-}
+    console.error("Turbo testcases execution error:", error);turboRuntimes = await turboGetRuntimes();
+    // Convert Turbo runtime format to expected format
+    return turboRuntimes.map((runtime) => ({
+      language: runtime.language,
+      version: runtime.version,
+      aliases: runtime.aliases,
+      runtime: runtime.runtime,
+    })

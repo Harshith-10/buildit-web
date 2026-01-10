@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { AlertCircle, Calendar, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { deleteSubmission } from "@/actions/submissions-list";
+import { useRouter } from "next/navigation";
 import { DataItemsView } from "@/components/common/data-items/data-items-root";
 import {
   AlertDialog,
@@ -19,19 +19,23 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { usePageName } from "@/hooks/use-page-name";
+import { deleteExamAssignment } from "@/actions/exam-assignments-list";
 
 interface Submission {
   id: string;
-  sessionId: string;
   examId: string;
-  examTitle: string;
+  examTitle: string | null;
   userId: string;
-  userName: string;
-  userEmail: string;
+  userName: string | null;
+  userEmail: string | null;
   status: string;
+  score: number | null;
   startedAt: Date | null;
-  terminationReason: string | null;
-  submissionCount: number;
+  completedAt: Date | null;
+  createdAt: Date | null;
+  malpracticeCount: number | null;
+  isTerminated: boolean | null;
+  assignedQuestionIds: unknown;
 }
 
 interface SubmissionsViewProps {
@@ -41,22 +45,22 @@ interface SubmissionsViewProps {
 
 export function SubmissionsView({ data, total }: SubmissionsViewProps) {
   usePageName("Submissions");
+  const router = useRouter();
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const handleDelete = async (sessionId: string) => {
+  const handleDelete = async (assignmentId: string) => {
     setIsDeleting(true);
     try {
-      const result = await deleteSubmission(sessionId);
-      if (result.error) {
-        toast.error(result.error);
+      const result = await deleteExamAssignment(assignmentId);
+      if (result.success) {
+        toast.success("Assignment deleted successfully. Student can now retake the exam.");
+        router.refresh();
       } else {
-        toast.success("Submission deleted successfully");
-        // Refresh the page to update the list
-        window.location.reload();
+        toast.error(result.message || "Failed to delete assignment");
       }
     } catch (error) {
-      toast.error("Failed to delete submission");
+      toast.error("Failed to delete assignment");
       console.error(error);
     } finally {
       setIsDeleting(false);
@@ -66,15 +70,24 @@ export function SubmissionsView({ data, total }: SubmissionsViewProps) {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "submitted":
+      case "completed":
         return "text-green-500 bg-green-500/10 hover:bg-green-500/20";
       case "terminated":
         return "text-red-500 bg-red-500/10 hover:bg-red-500/20";
       case "in_progress":
         return "text-yellow-500 bg-yellow-500/10 hover:bg-yellow-500/20";
+      case "not_started":
+        return "text-gray-500 bg-gray-500/10 hover:bg-gray-500/20";
       default:
         return "bg-secondary";
     }
+  };
+
+  const getQuestionCount = (assignedIds: unknown): number => {
+    if (Array.isArray(assignedIds)) {
+      return assignedIds.length;
+    }
+    return 0;
   };
 
   const columns = [
@@ -82,15 +95,15 @@ export function SubmissionsView({ data, total }: SubmissionsViewProps) {
       header: "Student",
       accessorKey: (item: Submission) => (
         <div className="flex flex-col">
-          <span className="font-medium">{item.userName}</span>
-          <span className="text-xs text-muted-foreground">{item.userEmail}</span>
+          <span className="font-medium">{item.userName || "Unknown"}</span>
+          <span className="text-xs text-muted-foreground">{item.userEmail || item.userId}</span>
         </div>
       ),
     },
     {
       header: "Exam",
       accessorKey: (item: Submission) => (
-        <span className="font-medium">{item.examTitle}</span>
+        <span className="font-medium">{item.examTitle || "Unknown Exam"}</span>
       ),
     },
     {
@@ -101,13 +114,13 @@ export function SubmissionsView({ data, total }: SubmissionsViewProps) {
             variant="outline"
             className={`border-0 ${getStatusColor(item.status)}`}
           >
-            {item.status === "terminated" ? "Terminated" : "Submitted"}
+            {item.status.replace("_", " ").toUpperCase()}
           </Badge>
-          {item.status === "terminated" && item.terminationReason && (
+          {item.isTerminated && (
             <div className="group relative">
-              <AlertCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+              <AlertCircle className="h-4 w-4 text-red-500 cursor-help" />
               <div className="absolute left-0 bottom-full mb-2 hidden group-hover:block z-50 w-48 p-2 text-xs bg-popover text-popover-foreground border rounded-md shadow-md">
-                {item.terminationReason}
+                Terminated due to malpractice ({item.malpracticeCount || 0} violations)
               </div>
             </div>
           )}
@@ -115,19 +128,28 @@ export function SubmissionsView({ data, total }: SubmissionsViewProps) {
       ),
     },
     {
-      header: "Submissions",
+      header: "Score",
       accessorKey: (item: Submission) => (
-        <span className="text-muted-foreground">{item.submissionCount}</span>
+        <span className="font-semibold">{item.score ?? 0}</span>
       ),
       className: "text-center",
     },
     {
-      header: "Started At",
+      header: "Questions",
+      accessorKey: (item: Submission) => (
+        <span className="text-muted-foreground">{getQuestionCount(item.assignedQuestionIds)}</span>
+      ),
+      className: "text-center",
+    },
+    {
+      header: "Completed At",
       accessorKey: (item: Submission) => (
         <div className="flex items-center gap-2 text-muted-foreground">
           <Calendar className="h-4 w-4" />
           <span>
-            {item.startedAt 
+            {item.completedAt 
+              ? format(new Date(item.completedAt), "MMM d, yyyy HH:mm")
+              : item.startedAt
               ? format(new Date(item.startedAt), "MMM d, yyyy HH:mm")
               : "N/A"}
           </span>
@@ -140,7 +162,7 @@ export function SubmissionsView({ data, total }: SubmissionsViewProps) {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => setDeletingId(item.sessionId)}
+          onClick={() => setDeletingId(item.id)}
           className="text-destructive hover:text-destructive hover:bg-destructive/10"
         >
           <Trash2 className="h-4 w-4" />
@@ -166,7 +188,9 @@ export function SubmissionsView({ data, total }: SubmissionsViewProps) {
             key: "status",
             options: [
               { label: "All", value: "all" },
-              { label: "Submitted", value: "submitted" },
+              { label: "Completed", value: "completed" },
+              { label: "In Progress", value: "in_progress" },
+              { label: "Not Started", value: "not_started" },
               { label: "Terminated", value: "terminated" },
             ],
           },
@@ -182,11 +206,11 @@ export function SubmissionsView({ data, total }: SubmissionsViewProps) {
       <AlertDialog open={!!deletingId} onOpenChange={() => setDeletingId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Submission</AlertDialogTitle>
+            <AlertDialogTitle>Reset Exam Assignment</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this submission? This will remove
-              all associated data including the exam session and all problem
-              submissions. This action cannot be undone.
+              Are you sure you want to reset this exam assignment? This will allow
+              the student to retake the exam. All their previous submissions and
+              progress will be permanently deleted. This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -196,7 +220,7 @@ export function SubmissionsView({ data, total }: SubmissionsViewProps) {
               disabled={isDeleting}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {isDeleting ? "Deleting..." : "Delete"}
+              {isDeleting ? "Resetting..." : "Reset Assignment"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

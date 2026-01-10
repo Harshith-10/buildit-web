@@ -1,9 +1,105 @@
 "use server";
 
-import { count, desc, eq, sql } from "drizzle-orm";
+import { count, desc, eq, inArray, sql } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 import db from "@/db";
-import { dailyProblems, exams, problems, submissions, user } from "@/db/schema";
+import { dailyProblems, exams, problems, submissions, testCases, user } from "@/db/schema";
+
+const DEFAULT_PROBLEM_CONTENT = {
+  type: "doc",
+  content: [
+    {
+      type: "paragraph",
+      content: [
+        {
+          type: "text",
+          text: "See description for details.",
+        },
+      ],
+    },
+  ],
+};
+
+async function createDefaultProblem() {
+  // Find a system user (admin or instructor) to be the creator
+  const systemUser = await db.query.user.findFirst({
+    where: inArray(user.role, ["admin", "instructor"]),
+  });
+
+  if (!systemUser) {
+    console.error("No admin or instructor user found to create default problem");
+    return null;
+  }
+
+  console.log("Creating default problem for daily challenge...");
+
+  // Create a simple starter problem
+  const [newProblem] = await db
+    .insert(problems)
+    .values({
+      type: "coding",
+      difficulty: "easy",
+      title: "Two Sum",
+      slug: "two-sum-default",
+      description: `# Two Sum
+
+Given an array of integers \`nums\` and an integer \`target\`, return indices of the two numbers such that they add up to \`target\`.
+
+You may assume that each input would have exactly one solution, and you may not use the same element twice.
+
+You can return the answer in any order.
+
+## Example 1:
+\`\`\`
+Input: nums = [2,7,11,15], target = 9
+Output: [0,1]
+Explanation: Because nums[0] + nums[1] == 9, we return [0, 1].
+\`\`\`
+
+## Example 2:
+\`\`\`
+Input: nums = [3,2,4], target = 6
+Output: [1,2]
+\`\`\``,
+      content: DEFAULT_PROBLEM_CONTENT,
+      driverCode: {
+        java: "class Solution {\n    public int[] twoSum(int[] nums, int target) {\n        // Your code here\n    }\n}",
+        python: "class Solution:\n    def twoSum(self, nums: List[int], target: int) -> List[int]:\n        # Your code here\n        pass"
+      },
+      gradingMetadata: {
+        timeLimit: 1000,
+        memoryLimit: 256,
+      },
+      public: true,
+      createdBy: systemUser.id,
+    })
+    .returning();
+
+  // Add test cases
+  await db.insert(testCases).values([
+    {
+      problemId: newProblem.id,
+      input: "[2,7,11,15]\n9",
+      expectedOutput: "[0,1]",
+      isHidden: false,
+    },
+    {
+      problemId: newProblem.id,
+      input: "[3,2,4]\n6",
+      expectedOutput: "[1,2]",
+      isHidden: false,
+    },
+    {
+      problemId: newProblem.id,
+      input: "[3,3]\n6",
+      expectedOutput: "[0,1]",
+      isHidden: true,
+    },
+  ]);
+
+  console.log("✅ Default problem created successfully");
+  return newProblem;
+}
 
 export async function ensureDailyProblem() {
   const today = new Date().toISOString().split("T")[0];
@@ -19,14 +115,19 @@ export async function ensureDailyProblem() {
     return existing;
   }
 
-  const randomProblem = await db
+  let randomProblem = await db
     .select()
     .from(problems)
     .orderBy(sql`RANDOM()`)
     .limit(1);
 
+  // If no problems exist, create a default one
   if (!randomProblem || randomProblem.length === 0) {
-    throw new Error("No problems available to select for daily problem");
+    const defaultProblem = await createDefaultProblem();
+    if (!defaultProblem) {
+      throw new Error("Unable to create default problem. Please seed users first with 'pnpm db:seed:users'");
+    }
+    randomProblem = [defaultProblem];
   }
 
   const newDaily = await db

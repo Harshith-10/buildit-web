@@ -2,10 +2,8 @@ import { inArray } from "drizzle-orm";
 import db from "@/db";
 import {
   collections,
-  examSessions,
   exams,
   problems as problemsSchema, // renamed to avoid conflict
-  sessionProblems,
   testCases,
   user,
 } from "@/db/schema";
@@ -56,12 +54,9 @@ async function seedData() {
 
     // 2. Clean existing data
     // Order matters for FK constraints:
-    // sessionProblems -> examSessions -> (exams)
     // testCases -> problems -> (collections)
+    // Note: examAssignments and assignmentSubmissions are handled separately
     console.log("🧹 Cleaning existing data...");
-    await db.delete(sessionProblems);
-    await db.delete(examSessions);
-    await db.delete(exams);
     await db.delete(testCases);
     await db.delete(problemsSchema);
     await db.delete(collections);

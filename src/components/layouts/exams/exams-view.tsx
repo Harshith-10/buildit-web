@@ -72,8 +72,8 @@ export function ExamsView({
 
   // Helper for Status Badge
   const getStatus = (start: Date, end: Date, userSessionStatus?: string | null) => {
-    // If user has submitted or been terminated, show as completed
-    if (userSessionStatus === "submitted" || userSessionStatus === "terminated") {
+    // If user has completed the exam, show as completed
+    if (userSessionStatus === "completed") {
       return <Badge variant="secondary">Completed</Badge>;
     }
     
@@ -146,7 +146,7 @@ export function ExamsView({
                   variant="ghost"
                   className="h-8 w-8 text-primary"
                 >
-                  <Link href={`/exam/${item.id}`}>
+                  <Link href={`/${item.id}/onboarding`}>
                     <Play className="h-4 w-4" />
                   </Link>
                 </Button>
@@ -163,7 +163,10 @@ export function ExamsView({
   ];
 
   const renderCard = (item: Exam) => (
-    <div className="flex flex-col h-full border rounded-xl p-6 hover:border-primary/50 transition-colors bg-card text-card-foreground shadow-sm">
+    <div 
+      onClick={() => router.push(`/exams/${item.id}`)}
+      className="flex flex-col h-full border rounded-xl p-6 hover:border-primary/50 transition-colors bg-card text-card-foreground shadow-sm cursor-pointer"
+    >
       <div className="flex justify-between items-start mb-4">
         <div className="p-2 bg-primary/10 rounded-lg">
           <Calendar className="h-6 w-6 text-primary" />
@@ -184,14 +187,18 @@ export function ExamsView({
         </div>
       </div>
 
-      <div className="mt-auto pt-4 border-t w-full flex gap-2">
+      <div className="mt-auto pt-4 border-t w-full flex gap-2" onClick={(e) => e.stopPropagation()}>
         <Button asChild variant="outline" className="flex-1">
           <Link href={`/exams/${item.id}`}>View Details</Link>
         </Button>
-        {isOngoing(item.startTime, item.endTime) && 
+        {item.userSessionStatus === "completed" ? (
+          <Button asChild className="flex-1">
+            <Link href={`/${item.id}/results`}>View Results</Link>
+          </Button>
+        ) : isOngoing(item.startTime, item.endTime) && 
          !item.userSessionStatus && (
           <Button asChild className="flex-1">
-            <Link href={`/exam/${item.id}`}>Start Exam</Link>
+            <Link href={`/${item.id}/onboarding`}>Start Exam</Link>
           </Button>
         )}
       </div>

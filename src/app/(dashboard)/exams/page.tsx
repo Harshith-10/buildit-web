@@ -1,5 +1,4 @@
 import { headers } from "next/headers";
-import { getExamSession } from "@/actions/exam-session";
 import { getExams } from "@/actions/exams-list";
 import { auth } from "@/lib/auth";
 import { searchParamsCache } from "@/lib/search-params/exams";
@@ -16,7 +15,6 @@ export default async function ExamsPage({
     status,
     sort,
     error,
-    sessionId,
   } = await searchParamsCache.parse(searchParams);
 
   // Get current user
@@ -25,13 +23,8 @@ export default async function ExamsPage({
   });
   const userId = session?.user?.id;
 
-  let terminationDetails = null;
-  if (sessionId && error === "exam_terminated") {
-    const examSession = await getExamSession(sessionId);
-    if (examSession?.terminationDetails) {
-      terminationDetails = examSession.terminationDetails;
-    }
-  }
+  // TODO: Fetch termination details from examAssignments if needed
+  const terminationDetails = null;
 
   const { data, total } = await getExams({
     page,

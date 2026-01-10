@@ -484,7 +484,7 @@ function ExamCarousel({ exams }: { exams: StudentViewProps["upcomingExams"] }) {
             className="w-full h-full"
           >
             <Link
-              href={`/exam/${currentExam.id}`}
+              href={`/${currentExam.id}/onboarding`}
               className="flex flex-col gap-2 p-4 rounded-xl bg-background border border-muted-foreground/40 shadow-sm cursor-pointer h-full group"
             >
               <div className="flex items-center gap-2">

@@ -2,7 +2,7 @@
 
 import { and, asc, desc, eq, gt, gte, ilike, inArray, lt, lte, sql } from "drizzle-orm";
 import db from "@/db";
-import { examSessions, exams } from "@/db/schema";
+import { examAssignments, exams, examGroups, userGroupMembers } from "@/db/schema";
 
 export type GetExamsParams = {
   page?: number;
@@ -66,50 +66,104 @@ export async function getExams({
   if (sort === "date-asc") orderBy = [asc(exams.startTime)];
   if (sort === "date-desc") orderBy = [desc(exams.startTime)];
 
-  // Data Query
-  const data = await db
-    .select()
-    .from(exams)
-    .where(whereClause)
-    .limit(perPage)
-    .offset((page - 1) * perPage)
-    .orderBy(...orderBy);
+  // If userId is provided, filter exams to only those assigned to user's groups
+  let data;
+  let total = 0;
 
-  // Count Query
-  // Note: Drizzle optimized count is better, but simple sql count is fine for now.
-  const [countResult] = await db
-    .select({ count: sql<number>`cast(count(*) as integer)` })
-    .from(exams)
-    .where(whereClause);
+  if (userId) {
+    // Get the groups that the user belongs to
+    const userGroupsResult = await db
+      .select({ groupId: userGroupMembers.groupId })
+      .from(userGroupMembers)
+      .where(eq(userGroupMembers.userId, userId));
 
-  const total = countResult?.count ?? 0;
+    const userGroupIds = userGroupsResult.map((ug) => ug.groupId);
 
-  // If userId is provided, fetch user's session status for each exam
-  let userSessions: Record<string, { status: string }> = {};
+    if (userGroupIds.length === 0) {
+      // User is not in any group, return empty result
+      return { data: [], total: 0 };
+    }
+
+    // Get exam IDs that are assigned to user's groups
+    const examGroupsResult = await db
+      .select({ examId: examGroups.examId })
+      .from(examGroups)
+      .where(inArray(examGroups.groupId, userGroupIds));
+
+    const allowedExamIds = examGroupsResult.map((eg) => eg.examId);
+
+    if (allowedExamIds.length === 0) {
+      // No exams assigned to user's groups
+      return { data: [], total: 0 };
+    }
+
+    // Add exam ID filter to conditions
+    const examIdCondition = inArray(exams.id, allowedExamIds);
+    const finalWhereClause = whereClause 
+      ? and(whereClause, examIdCondition)
+      : examIdCondition;
+
+    // Data Query with user's group filter
+    data = await db
+      .select()
+      .from(exams)
+      .where(finalWhereClause)
+      .limit(perPage)
+      .offset((page - 1) * perPage)
+      .orderBy(...orderBy);
+
+    // Count Query with user's group filter
+    const [countResult] = await db
+      .select({ count: sql<number>`cast(count(*) as integer)` })
+      .from(exams)
+      .where(finalWhereClause);
+
+    total = countResult?.count ?? 0;
+  } else {
+    // No userId provided, return all exams (for admin view)
+    data = await db
+      .select()
+      .from(exams)
+      .where(whereClause)
+      .limit(perPage)
+      .offset((page - 1) * perPage)
+      .orderBy(...orderBy);
+
+    // Count Query
+    const [countResult] = await db
+      .select({ count: sql<number>`cast(count(*) as integer)` })
+      .from(exams)
+      .where(whereClause);
+
+    total = countResult?.count ?? 0;
+  }
+
+  // If userId is provided, fetch user's assignment status for each exam
+  let userAssignments: Record<string, { status: string }> = {};
   if (userId && data.length > 0) {
     const examIds = data.map((exam) => exam.id);
-    const sessions = await db
+    const assignments = await db
       .select({
-        examId: examSessions.examId,
-        status: examSessions.status,
+        examId: examAssignments.examId,
+        status: examAssignments.status,
       })
-      .from(examSessions)
+      .from(examAssignments)
       .where(
         and(
-          eq(examSessions.userId, userId),
-          inArray(examSessions.examId, examIds),
+          eq(examAssignments.userId, userId),
+          inArray(examAssignments.examId, examIds),
         ),
       );
 
-    userSessions = Object.fromEntries(
-      sessions.map((s) => [s.examId, { status: s.status }]),
+    userAssignments = Object.fromEntries(
+      assignments.map((a) => [a.examId, { status: a.status }]),
     );
   }
 
-  // Attach user session status to each exam
+  // Attach user assignment status to each exam
   const dataWithStatus = data.map((exam) => ({
     ...exam,
-    userSessionStatus: userSessions[exam.id]?.status || null,
+    userSessionStatus: userAssignments[exam.id]?.status || null,
   }));
 
   return { data: dataWithStatus, total };

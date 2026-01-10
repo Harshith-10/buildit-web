@@ -3,7 +3,7 @@
 import { and, eq } from "drizzle-orm";
 import { cache } from "react";
 import db from "@/db";
-import { examSessions, exams, user } from "@/db/schema";
+import { examAssignments, exams, user } from "@/db/schema";
 
 export const getExam = cache(async (examId: string) => {
   const [exam] = await db.select().from(exams).where(eq(exams.id, examId));
@@ -21,32 +21,32 @@ export const getExamCreatedBy = cache(async (examId: string) => {
 
 export const hasUserCompletedExam = cache(
   async (examId: string, userId: string) => {
-    const [session] = await db
+    const [assignment] = await db
       .select()
-      .from(examSessions)
+      .from(examAssignments)
       .where(
         and(
-          eq(examSessions.examId, examId),
-          eq(examSessions.userId, userId),
-          eq(examSessions.status, "submitted"),
+          eq(examAssignments.examId, examId),
+          eq(examAssignments.userId, userId),
+          eq(examAssignments.status, "completed"),
         ),
       );
-    return !!session;
+    return !!assignment;
   },
 );
 
 export const hasUserBeenTerminated = cache(
   async (examId: string, userId: string) => {
-    const [session] = await db
+    const [assignment] = await db
       .select()
-      .from(examSessions)
+      .from(examAssignments)
       .where(
         and(
-          eq(examSessions.examId, examId),
-          eq(examSessions.userId, userId),
-          eq(examSessions.status, "terminated"),
+          eq(examAssignments.examId, examId),
+          eq(examAssignments.userId, userId),
+          eq(examAssignments.isTerminated, true),
         ),
       );
-    return !!session;
+    return !!assignment;
   },
 );
