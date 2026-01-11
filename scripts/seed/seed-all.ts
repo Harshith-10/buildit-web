@@ -11,9 +11,6 @@ import {
   user,
   userGroups,
   userGroupMembers,
-  collections,
-  problems,
-  testCases,
 } from "@/db/schema";
 import { auth } from "@/lib/auth";
 
@@ -251,89 +248,7 @@ async function seedGroups(users: any[]) {
   return allGroups;
 }
 
-async function seedOldCollectionsAndProblems(createdBy: string) {
-  console.log("📚 Seeding old-style collections and problems...");
 
-  const collectionsData = [
-    {
-      name: "Data Structures",
-      description: "Basic data structures problems",
-      public: true,
-      createdBy,
-    },
-    {
-      name: "Algorithms",
-      description: "Algorithm design and analysis problems",
-      public: true,
-      createdBy,
-    },
-  ];
-
-  let collectionsCreated = 0;
-  let problemsCreated = 0;
-
-  for (const collectionData of collectionsData) {
-    const existingCollection = await db.query.collections.findFirst({
-      where: eq(collections.name, collectionData.name),
-    });
-
-    let collection;
-    if (existingCollection) {
-      console.log(`  Collection ${collectionData.name} already exists`);
-      collection = existingCollection;
-    } else {
-      [collection] = await db
-        .insert(collections)
-        .values(collectionData)
-        .returning();
-      collectionsCreated++;
-      console.log(`  ✓ Created collection: ${collectionData.name}`);
-    }
-
-    // Add a sample problem to each collection
-    const problemData = {
-      collectionId: collection.id,
-      type: "coding" as const,
-      difficulty: "medium" as const,
-      title: `Sample ${collectionData.name} Problem`,
-      slug: `sample-${collectionData.name.toLowerCase().replace(/\s+/g, "-")}-problem`,
-      description: `This is a sample problem for ${collectionData.name}`,
-      content: { type: "doc", content: [] },
-      driverCode: { java: "", python: "" },
-      public: true,
-      createdBy,
-    };
-
-    const existingProblem = await db.query.problems.findFirst({
-      where: eq(problems.slug, problemData.slug),
-    });
-
-    if (!existingProblem) {
-      const [problem] = await db.insert(problems).values(problemData).returning();
-      problemsCreated++;
-
-      // Add test cases
-      await db.insert(testCases).values([
-        {
-          problemId: problem.id,
-          input: "1",
-          expectedOutput: "1",
-          isHidden: false,
-        },
-        {
-          problemId: problem.id,
-          input: "2",
-          expectedOutput: "2",
-          isHidden: true,
-        },
-      ]);
-
-      console.log(`    ✓ Added sample problem`);
-    }
-  }
-
-  console.log(`✅ Seeded ${collectionsCreated} collections and ${problemsCreated} problems\n`);
-}
 
 async function seedAll() {
   console.log("🌱 Starting comprehensive database seeding...\n");
@@ -354,10 +269,7 @@ async function seedAll() {
   // Step 2: Seed Groups
   await seedGroups(users);
 
-  // Step 3: Seed Old-Style Collections and Problems
-  await seedOldCollectionsAndProblems(createdBy);
-
-  // Step 4: Seed Questions
+  // Step 3: Seed Questions
   console.log("📦 Seeding questions and question collections...\n");
 
   let totalProcessed = 0;

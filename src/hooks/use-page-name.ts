@@ -22,12 +22,10 @@ export function usePageName(name: string) {
   const clearPageName = usePageNameStore((state) => state.clearPageName);
 
   useEffect(() => {
-    console.log("usePageName Hook Running:", { pathname, name });
     setPageName(pathname, name);
 
     // Cleanup: remove the page name when component unmounts
     return () => {
-      console.log("usePageName Cleanup:", { pathname });
       clearPageName(pathname);
     };
   }, [pathname, name, setPageName, clearPageName]);

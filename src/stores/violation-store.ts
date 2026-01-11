@@ -174,7 +174,7 @@ export const useViolationStore = create<ViolationStoreState>((set, get) => ({
       state: "IDLE",
       activeViolation: null,
       violations: [],
-      sessionId: null,
+      assignmentId: null,
       isProcessing: false,
       examActive: false,
     });

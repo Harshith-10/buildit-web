@@ -144,14 +144,6 @@ export async function submitQuestion(
     }
 
     // 6. Insert Submission
-    console.log("[SUBMIT] Inserting submission:", {
-      assignmentId: input.assignmentId,
-      questionId: input.questionId,
-      verdict,
-      testCasesPassed: passedCount,
-      totalTestCases: gradingTestCases.length,
-    });
-
     const insertResult = await db.insert(assignmentSubmissions).values({
       assignmentId: input.assignmentId,
       questionId: input.questionId,
@@ -161,8 +153,6 @@ export async function submitQuestion(
       testCasesPassed: passedCount,
       totalTestCases: gradingTestCases.length,
     });
-
-    console.log("[SUBMIT] Insertion result:", insertResult);
 
     // 7. Calculate New Score based on Grading Strategy
     const assignedQuestionIds = assignment.assignedQuestionIds as string[];

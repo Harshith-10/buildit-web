@@ -1,18 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { 
-  Plus, 
-  Trash2, 
-  Users, 
-  Edit2, 
-  UserPlus, 
+import {
+  Plus,
+  Trash2,
+  Users,
+  Edit2,
+  UserPlus,
   UserMinus,
-  Search
+  Search,
+  Check
 } from "lucide-react";
 import {
   createUserGroup,
@@ -62,15 +63,22 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface User {
   id: string;
   name: string | null;
   email: string;
   role: string;
-  rollNo?: string | null;
+  rollNumber?: string | null;
   branch?: string | null;
   semester?: string | null;
+}
+
+interface GroupMember {
+  userId: string;
+  groupId: string;
+  joinedAt: Date;
 }
 
 interface Group {
@@ -78,6 +86,7 @@ interface Group {
   name: string;
   description: string | null;
   createdAt: Date;
+  members: GroupMember[];
 }
 
 interface UserGroupsClientProps {
@@ -132,7 +141,7 @@ export default function UserGroupsClient({ groups: initialGroups, users }: UserG
         toast.success("Group created successfully!");
         setIsCreateDialogOpen(false);
         createForm.reset();
-        setTimeout(() => router.refresh(), 0);
+        router.refresh();
       }
     } catch (error) {
       toast.error("Failed to create group");
@@ -143,7 +152,7 @@ export default function UserGroupsClient({ groups: initialGroups, users }: UserG
 
   async function onEditSubmit(data: GroupFormValues) {
     if (!selectedGroup) return;
-    
+
     setIsLoading(true);
     try {
       const result = await updateUserGroup({
@@ -151,7 +160,7 @@ export default function UserGroupsClient({ groups: initialGroups, users }: UserG
         name: data.name,
         description: data.description,
       });
-      
+
       if (result.error) {
         toast.error(result.error);
       } else {
@@ -159,7 +168,7 @@ export default function UserGroupsClient({ groups: initialGroups, users }: UserG
         setIsEditDialogOpen(false);
         setSelectedGroup(null);
         editForm.reset();
-        setTimeout(() => router.refresh(), 0);
+        router.refresh();
       }
     } catch (error) {
       toast.error("Failed to update group");
@@ -170,7 +179,7 @@ export default function UserGroupsClient({ groups: initialGroups, users }: UserG
 
   async function handleDeleteGroup() {
     if (!groupToDelete) return;
-    
+
     setIsLoading(true);
     try {
       const result = await deleteUserGroup(groupToDelete);
@@ -180,7 +189,7 @@ export default function UserGroupsClient({ groups: initialGroups, users }: UserG
         toast.success("Group deleted successfully!");
         setIsDeleteDialogOpen(false);
         setGroupToDelete(null);
-        setTimeout(() => router.refresh(), 0);
+        router.refresh();
       }
     } catch (error) {
       toast.error("Failed to delete group");
@@ -191,33 +200,74 @@ export default function UserGroupsClient({ groups: initialGroups, users }: UserG
 
   async function handleAddMember(userId: string) {
     if (!selectedGroup) return;
-    
+
+    // Optimistic update
+    const updatedGroups = groups.map(g => {
+      if (g.id === selectedGroup.id) {
+        return {
+          ...g,
+          members: [...g.members, { userId, groupId: g.id, joinedAt: new Date() }]
+        };
+      }
+      return g;
+    });
+    setGroups(updatedGroups);
+    // Also update selectedGroup so UI reflects change immediately
+    const updatedSelectedGroup = {
+      ...selectedGroup,
+      members: [...selectedGroup.members, { userId, groupId: selectedGroup.id, joinedAt: new Date() }]
+    }
+    setSelectedGroup(updatedSelectedGroup);
+
     try {
       const result = await addUserToGroup(selectedGroup.id, userId);
       if (result.error) {
         toast.error(result.error);
+        // Revert on error
+        router.refresh();
       } else {
         toast.success("Member added successfully!");
-        setTimeout(() => router.refresh(), 0);
+        router.refresh();
       }
     } catch (error) {
       toast.error("Failed to add member");
+      router.refresh();
     }
   }
 
   async function handleRemoveMember(userId: string) {
     if (!selectedGroup) return;
-    
+
+    // Optimistic update
+    const updatedGroups = groups.map(g => {
+      if (g.id === selectedGroup.id) {
+        return {
+          ...g,
+          members: g.members.filter(m => m.userId !== userId)
+        };
+      }
+      return g;
+    });
+    setGroups(updatedGroups);
+    // Update selectedGroup
+    const updatedSelectedGroup = {
+      ...selectedGroup,
+      members: selectedGroup.members.filter(m => m.userId !== userId)
+    };
+    setSelectedGroup(updatedSelectedGroup);
+
     try {
       const result = await removeUserFromGroup(selectedGroup.id, userId);
       if (result.error) {
         toast.error(result.error);
+        router.refresh();
       } else {
         toast.success("Member removed successfully!");
-        setTimeout(() => router.refresh(), 0);
+        router.refresh();
       }
     } catch (error) {
       toast.error("Failed to remove member");
+      router.refresh();
     }
   }
 
@@ -234,11 +284,36 @@ export default function UserGroupsClient({ groups: initialGroups, users }: UserG
     setMemberSearchQuery("");
   }
 
-  const filteredUsers = users.filter(user => 
-    user.name?.toLowerCase().includes(memberSearchQuery.toLowerCase()) ||
-    user.email.toLowerCase().includes(memberSearchQuery.toLowerCase()) ||
-    user.rollNo?.toLowerCase().includes(memberSearchQuery.toLowerCase())
-  );
+  // Effect to sync state when props change (router.refresh results)
+  useEffect(() => {
+    setGroups(initialGroups);
+    if (selectedGroup) {
+      // If we have a selected group open, update it with fresh data
+      const freshGroup = initialGroups.find(g => g.id === selectedGroup.id);
+      if (freshGroup) {
+        setSelectedGroup(freshGroup);
+      }
+    }
+  }, [initialGroups]);
+
+  const enrolledUserIds = useMemo(() => {
+    if (!selectedGroup) return new Set<string>();
+    return new Set(selectedGroup.members.map(m => m.userId));
+  }, [selectedGroup]);
+
+  const filteredUsers = useMemo(() => {
+    const query = memberSearchQuery.toLowerCase();
+    return users.filter(user =>
+      user.name?.toLowerCase().includes(query) ||
+      user.email.toLowerCase().includes(query) ||
+      user.rollNumber?.toLowerCase().includes(query)
+    );
+  }, [users, memberSearchQuery]);
+
+  const membersList = useMemo(() => {
+    if (!selectedGroup) return [];
+    return users.filter(u => enrolledUserIds.has(u.id));
+  }, [users, enrolledUserIds, selectedGroup]);
 
   return (
     <div className="container mx-auto py-8 px-4 md:px-6">
@@ -285,7 +360,7 @@ export default function UserGroupsClient({ groups: initialGroups, users }: UserG
                     <FormItem>
                       <FormLabel>Description (Optional)</FormLabel>
                       <FormControl>
-                        <Textarea 
+                        <Textarea
                           placeholder="Describe this group..."
                           {...field}
                         />
@@ -318,7 +393,7 @@ export default function UserGroupsClient({ groups: initialGroups, users }: UserG
                               <div className="flex-1">
                                 <p className="text-sm font-medium">{user.name || user.email}</p>
                                 <p className="text-xs text-muted-foreground">
-                                  {user.rollNo} • {user.branch} • Sem {user.semester}
+                                  {user.rollNumber || "No Roll No"} • {user.branch || "N/A"} • Sem {user.semester || "N/A"}
                                 </p>
                               </div>
                             </div>
@@ -351,7 +426,7 @@ export default function UserGroupsClient({ groups: initialGroups, users }: UserG
                 <div className="flex-1">
                   <CardTitle className="text-xl">{group.name}</CardTitle>
                   {group.description && (
-                    <CardDescription className="mt-2">
+                    <CardDescription className="mt-2 text-sm line-clamp-2">
                       {group.description}
                     </CardDescription>
                   )}
@@ -362,28 +437,28 @@ export default function UserGroupsClient({ groups: initialGroups, users }: UserG
               <div className="flex flex-wrap gap-2 mb-4">
                 <Badge variant="secondary" className="gap-1">
                   <Users className="h-3 w-3" />
-                  Members
+                  {group.members.length} Members
                 </Badge>
               </div>
               <div className="flex gap-2">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
+                <Button
+                  variant="outline"
+                  size="sm"
                   className="flex-1"
                   onClick={() => openMembersDialog(group)}
                 >
                   <Users className="h-4 w-4 mr-2" />
                   Manage Members
                 </Button>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   size="sm"
                   onClick={() => openEditDialog(group)}
                 >
                   <Edit2 className="h-4 w-4" />
                 </Button>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   size="sm"
                   onClick={() => {
                     setGroupToDelete(group.id);
@@ -466,59 +541,140 @@ export default function UserGroupsClient({ groups: initialGroups, users }: UserG
 
       {/* Members Dialog */}
       <Dialog open={isMembersDialogOpen} onOpenChange={setIsMembersDialogOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl h-[80vh] flex flex-col">
           <DialogHeader>
             <DialogTitle>Manage Group Members</DialogTitle>
             <DialogDescription>
-              Add or remove users from {selectedGroup?.name}
+              Add or remove users from <span className="font-semibold text-primary">{selectedGroup?.name}</span>
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4">
-            <div className="relative">
+
+          <Tabs defaultValue="all" className="flex-1 flex flex-col">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-4">
+                <TabsList>
+                  <TabsTrigger value="all">All Users</TabsTrigger>
+                  <TabsTrigger value="members">Current Members ({enrolledUserIds.size})</TabsTrigger>
+                </TabsList>
+              </div>
+            </div>
+
+            <div className="relative mb-4">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search users..."
+                placeholder="Search users by name, email, or roll no..."
                 value={memberSearchQuery}
                 onChange={(e) => setMemberSearchQuery(e.target.value)}
                 className="pl-9"
               />
             </div>
-            <ScrollArea className="h-[400px] border rounded-md p-4">
-              <div className="space-y-2">
-                {filteredUsers.map((user) => (
-                  <div 
-                    key={user.id} 
-                    className="flex items-center justify-between p-3 rounded-lg border hover:bg-accent/50"
-                  >
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">{user.name || user.email}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {user.rollNo} • {user.branch} • Sem {user.semester}
-                      </p>
+
+            <TabsContent value="all" className="flex-1 mt-0">
+              <ScrollArea className="h-[400px] border rounded-md p-4 bg-muted/20">
+                <div className="space-y-2">
+                  {filteredUsers.length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      No users found.
                     </div>
-                    <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleAddMember(user.id)}
-                      >
-                        <UserPlus className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleRemoveMember(user.id)}
-                      >
-                        <UserMinus className="h-4 w-4" />
-                      </Button>
+                  ) : (
+                    filteredUsers.map((user) => {
+                      const isMember = enrolledUserIds.has(user.id);
+                      return (
+                        <div
+                          key={user.id}
+                          className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${isMember ? 'bg-primary/5 border-primary/20' : 'bg-background hover:bg-accent/50'}`}
+                        >
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <p className="text-sm font-medium">{user.name || "Unnamed User"}</p>
+                              {isMember && <Badge variant="secondary" className="text-[10px] py-0 h-5">Member</Badge>}
+                            </div>
+                            <p className="text-xs text-muted-foreground truncate max-w-[300px]">
+                              {user.email}
+                            </p>
+                            <p className="text-xs text-muted-foreground mt-0.5">
+                              {user.rollNumber || "No Roll"} • {user.branch || "No Branch"} • Sem {user.semester || "-"}
+                            </p>
+                          </div>
+                          <div className="pl-4">
+                            {isMember ? (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/20 h-8"
+                                onClick={() => handleRemoveMember(user.id)}
+                              >
+                                <UserMinus className="h-4 w-4 mr-2" />
+                                Remove
+                              </Button>
+                            ) : (
+                              <Button
+                                size="sm"
+                                variant="default"
+                                className="h-8"
+                                onClick={() => handleAddMember(user.id)}
+                              >
+                                <UserPlus className="h-4 w-4 mr-2" />
+                                Add
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </ScrollArea>
+            </TabsContent>
+
+            <TabsContent value="members" className="flex-1 mt-0">
+              <ScrollArea className="h-[400px] border rounded-md p-4 bg-muted/20">
+                <div className="space-y-2">
+                  {membersList.length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      No members in this group yet.
                     </div>
-                  </div>
-                ))}
-              </div>
-            </ScrollArea>
-          </div>
-          <DialogFooter>
-            <Button onClick={() => setIsMembersDialogOpen(false)}>
+                  ) : (
+                    membersList
+                      .filter(user =>
+                        memberSearchQuery ? (
+                          user.name?.toLowerCase().includes(memberSearchQuery.toLowerCase()) ||
+                          user.email.toLowerCase().includes(memberSearchQuery.toLowerCase()) ||
+                          user.rollNumber?.toLowerCase().includes(memberSearchQuery.toLowerCase())
+                        ) : true
+                      )
+                      .map((user) => (
+                        <div
+                          key={user.id}
+                          className="flex items-center justify-between p-3 rounded-lg border bg-background hover:bg-accent/50"
+                        >
+                          <div className="flex-1">
+                            <p className="text-sm font-medium">{user.name || "Unnamed User"}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {user.email}
+                            </p>
+                            <p className="text-xs text-muted-foreground mt-0.5">
+                              {user.rollNumber || "No Roll"} • {user.branch || "No Branch"} • Sem {user.semester || "-"}
+                            </p>
+                          </div>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                            onClick={() => handleRemoveMember(user.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))
+                  )}
+                </div>
+              </ScrollArea>
+            </TabsContent>
+          </Tabs>
+
+          <DialogFooter className="mt-4">
+            <Button onClick={() => setIsMembersDialogOpen(false)} className="w-full sm:w-auto">
               Done
             </Button>
           </DialogFooter>
@@ -539,7 +695,7 @@ export default function UserGroupsClient({ groups: initialGroups, users }: UserG
             <AlertDialogCancel onClick={() => setGroupToDelete(null)}>
               Cancel
             </AlertDialogCancel>
-            <AlertDialogAction 
+            <AlertDialogAction
               onClick={handleDeleteGroup}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >

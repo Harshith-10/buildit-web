@@ -9,8 +9,6 @@ interface PageProps {
 export default async function ExamRootPage({ params }: PageProps) {
   const { examId } = await params;
   
-  console.log("[Exam Root] Redirecting to onboarding for exam:", examId);
-  
   // Redirect to onboarding page
   redirect(`/${examId}/onboarding`);
 }

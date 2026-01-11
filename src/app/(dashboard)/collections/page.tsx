@@ -1,26 +1,23 @@
-import { getCollections } from "@/actions/collections-list";
+import { getQuestionCollections } from "@/actions/question-collections-list";
 import { CollectionsView } from "@/components/layouts/collections/collections-view";
-import { searchParamsCache } from "@/lib/search-params/collections";
 
 export default async function CollectionsPage({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const {
-    page,
-    q: search,
-    sort,
-    visibility,
-  } = await searchParamsCache.parse(searchParams);
+  const params = await searchParams;
+  const page = Number(params.page) || 1;
+  const search = typeof params.q === "string" ? params.q : undefined;
+  const sort = typeof params.sort === "string" ? params.sort : undefined;
+  const type = typeof params.type === "string" ? params.type : undefined;
 
-  const { data, total } = await getCollections({
+  const { data, total } = await getQuestionCollections({
     page,
-    search: search || undefined,
-    sort: sort || undefined,
-    visibility: visibility || undefined,
+    search,
+    sort,
     perPage: 10,
   });
 
-  return <CollectionsView data={data} total={total} />;
+  return <CollectionsView data={data} total={total} type={type} />;
 }

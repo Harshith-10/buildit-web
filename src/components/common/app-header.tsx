@@ -25,7 +25,6 @@ export default function AppHeader() {
   const pathname = usePathname();
   // Subscribe to page names to trigger re-render when they change
   const pageNames = usePageNameStore((state) => state.pageNames);
-  console.log("AppHeader Render:", { pathname, pageNames });
 
   const pathSegments = pathname.split("/").filter((segment) => segment !== "");
 

@@ -19,10 +19,6 @@ export function AntiCheatGuard({ assignmentId }: AntiCheatGuardProps) {
   const onViolation = useCallback(
     async (event: ViolationEvent) => {
       const { type, isSevere, details } = event;
-      console.log(
-        `[AntiCheat] Violation: ${type} (Severe: ${isSevere})`,
-        details,
-      );
 
       if (!isSevere) {
         // Warning only

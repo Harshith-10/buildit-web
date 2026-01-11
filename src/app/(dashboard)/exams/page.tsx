@@ -22,6 +22,7 @@ export default async function ExamsPage({
     headers: await headers(),
   });
   const userId = session?.user?.id;
+  const userRole = session?.user?.role;
 
   // TODO: Fetch termination details from examAssignments if needed
   const terminationDetails = null;
@@ -32,7 +33,8 @@ export default async function ExamsPage({
     status: status || undefined,
     sort: sort || undefined, // getExams handles default sort logic, but we can pass it explicitly
     perPage: 10,
-    userId: userId || undefined,
+    // Only filter by userId for students; admins and instructors see all exams
+    userId: (userRole === "admin" || userRole === "instructor") ? undefined : userId,
   });
 
   return (

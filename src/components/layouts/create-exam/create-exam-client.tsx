@@ -54,6 +54,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // User Interface
@@ -172,17 +173,42 @@ export default function CreateExamClient({
     const [openImportDialog, setOpenImportDialog] = useState(false);
     const [selectedCollectionId, setSelectedCollectionId] = useState<string>("");
     const [searchQuery, setSearchQuery] = useState("");
+    const [showSelectedOnly, setShowSelectedOnly] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const problemsPerPage = 3;
+    const problemsPerPage = 10;
+
 
     const gradingStrategy = form.watch("gradingStrategy");
     const assignedTo = form.watch("assignedTo");
     const selectedProblems = form.watch("selectedProblems") || [];
 
-    const filteredProblems = problems.filter((problem) =>
-        problem.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        problem.description.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredProblems = problems.filter((problem) => {
+        const matchesSearch = problem.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            problem.description.toLowerCase().includes(searchQuery.toLowerCase());
+
+        if (showSelectedOnly) {
+            return matchesSearch && selectedProblems.includes(problem.id);
+        }
+        return matchesSearch;
+    });
+
+    // Pagination logic
+    const totalPages = Math.ceil(filteredProblems.length / problemsPerPage);
+    const paginatedProblems = filteredProblems.slice(
+        (currentPage - 1) * problemsPerPage,
+        currentPage * problemsPerPage
     );
+
+    // Reset to page 1 when search changes
+    const handleSearchChange = (value: string) => {
+        setSearchQuery(value);
+        setCurrentPage(1);
+    };
+
+    const handleShowSelectedToggle = (checked: boolean) => {
+        setShowSelectedOnly(checked);
+        setCurrentPage(1);
+    };
 
     const handleImportCollection = () => {
         if (!selectedCollectionId) return;
@@ -229,7 +255,7 @@ export default function CreateExamClient({
 
             // Determine which groups should have access based on assignedTo
             let groupIds: string[] = [];
-            
+
             if (data.assignedTo === "ALL") {
                 // All students: assign all groups
                 groupIds = groups.map(g => g.id);
@@ -271,7 +297,6 @@ export default function CreateExamClient({
                 setTimeout(() => router.push("/exams"), 0);
             }
         } catch (error) {
-            console.error("Error creating exam:", error);
             toast.error("Failed to create exam.");
         } finally {
             setIsLoading(false);
@@ -300,9 +325,10 @@ export default function CreateExamClient({
             <Form {...form}>
                 <form className="space-y-8">
                     <Tabs defaultValue="details" className="w-full">
-                        <TabsList className="grid w-full grid-cols-3 mb-8">
+                        <TabsList className="grid w-full grid-cols-4 mb-8">
                             <TabsTrigger value="details">Exam Details</TabsTrigger>
-                            <TabsTrigger value="questions">Questions & Grading</TabsTrigger>
+                            <TabsTrigger value="problems">Problems</TabsTrigger>
+                            <TabsTrigger value="grading">Grading</TabsTrigger>
                             <TabsTrigger value="participants">Participants</TabsTrigger>
                         </TabsList>
 
@@ -401,96 +427,316 @@ export default function CreateExamClient({
                             </Card>
                         </TabsContent>
 
-                        <TabsContent value="questions" className="space-y-6">
+                        <TabsContent value="problems" className="space-y-6">
+                            <Card className="flex flex-col overflow-hidden">
+                                <CardHeader className="pb-4 border-b space-y-4">
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                        <div>
+                                            <CardTitle>Problem Selection</CardTitle>
+                                            <CardDescription>
+                                                Choose problems for this exam.
+                                            </CardDescription>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Dialog open={openImportDialog} onOpenChange={setOpenImportDialog}>
+                                                <DialogTrigger asChild>
+                                                    <Button variant="outline" size="sm" className="gap-2">
+                                                        <Import className="h-4 w-4" />
+                                                        Import
+                                                    </Button>
+                                                </DialogTrigger>
+                                                <DialogContent>
+                                                    <DialogHeader>
+                                                        <DialogTitle>Import Problems</DialogTitle>
+                                                        <DialogDescription>
+                                                            Select a collection to add its problems to this exam.
+                                                        </DialogDescription>
+                                                    </DialogHeader>
+                                                    <div className="py-4">
+                                                        <Select
+                                                            value={selectedCollectionId}
+                                                            onValueChange={setSelectedCollectionId}
+                                                        >
+                                                            <SelectTrigger>
+                                                                <SelectValue placeholder="Select a collection" />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                {collections?.map((collection) => (
+                                                                    <SelectItem key={collection.id} value={collection.id}>
+                                                                        {collection.name}
+                                                                    </SelectItem>
+                                                                ))}
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </div>
+                                                    <DialogFooter>
+                                                        <Button variant="outline" onClick={() => setOpenImportDialog(false)}>
+                                                            Cancel
+                                                        </Button>
+                                                        <Button onClick={handleImportCollection} disabled={!selectedCollectionId}>
+                                                            Import
+                                                        </Button>
+                                                    </DialogFooter>
+                                                </DialogContent>
+                                            </Dialog>
+                                            <Badge variant="secondary" className="px-3 py-1">
+                                                {selectedProblems.length} Selected
+                                            </Badge>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+                                        <Input
+                                            placeholder="Search problems..."
+                                            value={searchQuery}
+                                            onChange={(e) => handleSearchChange(e.target.value)}
+                                            className="w-full sm:max-w-md"
+                                        />
+                                        <div className="flex items-center space-x-2">
+                                            <Switch
+                                                id="show-selected"
+                                                checked={showSelectedOnly}
+                                                onCheckedChange={handleShowSelectedToggle}
+                                            />
+                                            <FormLabel htmlFor="show-selected" className="text-sm font-medium cursor-pointer">
+                                                Show Selected Only
+                                            </FormLabel>
+                                        </div>
+                                    </div>
+                                </CardHeader>
+                                <CardContent className="flex-1 p-0 overflow-hidden bg-muted/10">
+                                    <div className="p-4 space-y-3 min-h-[500px]">
+                                        {paginatedProblems.map((problem) => (
+                                            <div
+                                                key={problem.id}
+                                                className="group flex items-start gap-4 p-4 rounded-xl border bg-card hover:border-primary/50 hover:shadow-sm transition-all duration-200"
+                                            >
+                                                <FormField
+                                                    control={form.control}
+                                                    name="selectedProblems"
+                                                    render={({ field }) => (
+                                                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 mt-1 shrink-0">
+                                                            <FormControl>
+                                                                <Checkbox
+                                                                    className="h-5 w-5"
+                                                                    checked={field.value?.includes(problem.id)}
+                                                                    onCheckedChange={(checked) => {
+                                                                        const value = field.value || [];
+                                                                        if (checked) {
+                                                                            field.onChange([...value, problem.id]);
+                                                                        } else {
+                                                                            field.onChange(
+                                                                                value.filter((val) => val !== problem.id)
+                                                                            );
+                                                                        }
+                                                                    }}
+                                                                />
+                                                            </FormControl>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <div className="flex-1 min-w-0 grid gap-1">
+                                                    <div className="flex items-start justify-between gap-4">
+                                                        <h4 className="font-semibold text-base leading-tight">
+                                                            {problem.title}
+                                                        </h4>
+                                                        <Badge
+                                                            variant="outline"
+                                                            className={
+                                                                problem.difficulty === "Easy"
+                                                                    ? "border-green-500 text-green-600 bg-green-50"
+                                                                    : problem.difficulty === "Medium"
+                                                                        ? "border-yellow-500 text-yellow-600 bg-yellow-50"
+                                                                        : "border-red-500 text-red-600 bg-red-50"
+                                                            }
+                                                        >
+                                                            {problem.difficulty}
+                                                        </Badge>
+                                                    </div>
+                                                    <p className="text-sm text-muted-foreground line-clamp-2">
+                                                        {problem.description}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                        {filteredProblems.length === 0 && (
+                                            <div className="flex flex-col items-center justify-center py-12 text-center text-muted-foreground">
+                                                <div className="bg-muted/50 p-4 rounded-full mb-4">
+                                                    <Import className="h-8 w-8 opacity-50" />
+                                                </div>
+                                                <p className="text-lg font-medium">No problems found</p>
+                                                <p className="text-sm">Try adjusting your search query.</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                    {totalPages > 1 && (
+                                        <div className="border-t p-4 bg-background">
+                                            <Pagination>
+                                                <PaginationContent>
+                                                    <PaginationItem>
+                                                        <PaginationPrevious
+                                                            onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                                                            className={
+                                                                currentPage === 1
+                                                                    ? "pointer-events-none opacity-50"
+                                                                    : "cursor-pointer"
+                                                            }
+                                                        />
+                                                    </PaginationItem>
+                                                    {[...Array(totalPages)].map((_, i) => {
+                                                        const page = i + 1;
+                                                        if (
+                                                            page === 1 ||
+                                                            page === totalPages ||
+                                                            (page >= currentPage - 1 && page <= currentPage + 1)
+                                                        ) {
+                                                            return (
+                                                                <PaginationItem key={page}>
+                                                                    <PaginationLink
+                                                                        onClick={() => setCurrentPage(page)}
+                                                                        isActive={currentPage === page}
+                                                                        className="cursor-pointer"
+                                                                    >
+                                                                        {page}
+                                                                    </PaginationLink>
+                                                                </PaginationItem>
+                                                            );
+                                                        } else if (
+                                                            page === currentPage - 2 ||
+                                                            page === currentPage + 2
+                                                        ) {
+                                                            return (
+                                                                <PaginationItem key={page}>
+                                                                    <PaginationEllipsis />
+                                                                </PaginationItem>
+                                                            );
+                                                        }
+                                                        return null;
+                                                    })}
+                                                    <PaginationItem>
+                                                        <PaginationNext
+                                                            onClick={() =>
+                                                                setCurrentPage(Math.min(totalPages, currentPage + 1))
+                                                            }
+                                                            className={
+                                                                currentPage === totalPages
+                                                                    ? "pointer-events-none opacity-50"
+                                                                    : "cursor-pointer"
+                                                            }
+                                                        />
+                                                    </PaginationItem>
+                                                </PaginationContent>
+                                            </Pagination>
+                                        </div>
+                                    )}
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+
+                        <TabsContent value="grading" className="space-y-6">
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>Grading Strategy</CardTitle>
-                                    <CardDescription>
-                                        Choose how student submissions are scored.
-                                    </CardDescription>
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <CardTitle>Grading Strategy</CardTitle>
+                                            <CardDescription>
+                                                Choose how student submissions are scored.
+                                            </CardDescription>
+                                        </div>
+                                        <FormField
+                                            control={form.control}
+                                            name="enablePartialPoints"
+                                            render={({ field }) => (
+                                                <FormItem className="flex items-center space-x-2 space-y-0">
+                                                    <FormControl>
+                                                        <Switch
+                                                            checked={field.value}
+                                                            onCheckedChange={field.onChange}
+                                                        />
+                                                    </FormControl>
+                                                    <FormLabel className="font-medium">
+                                                        Partial Credit
+                                                    </FormLabel>
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
                                 </CardHeader>
-                                <CardContent className="space-y-6">
+                                <CardContent className="space-y-8">
                                     <FormField
                                         control={form.control}
                                         name="gradingStrategy"
                                         render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Scoring Method</FormLabel>
-                                                <Select onValueChange={field.onChange} value={field.value}>
-                                                    <FormControl>
-                                                        <SelectTrigger>
-                                                            <SelectValue placeholder="Select grading strategy" />
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                        <SelectItem value="standard_20_40_50">
-                                                            <div className="flex flex-col">
-                                                                <span className="font-semibold">Standard (20/40/50)</span>
-                                                                <span className="text-xs text-muted-foreground">
-                                                                    Easy=20, Medium=40, Hard=50 points
-                                                                </span>
-                                                            </div>
-                                                        </SelectItem>
-                                                        <SelectItem value="linear">
-                                                            <div className="flex flex-col">
-                                                                <span className="font-semibold">Linear</span>
-                                                                <span className="text-xs text-muted-foreground">
-                                                                    Equal points per question
-                                                                </span>
-                                                            </div>
-                                                        </SelectItem>
-                                                        <SelectItem value="difficulty_based">
-                                                            <div className="flex flex-col">
-                                                                <span className="font-semibold">Difficulty-Based</span>
-                                                                <span className="text-xs text-muted-foreground">
-                                                                    Custom points per difficulty level
-                                                                </span>
-                                                            </div>
-                                                        </SelectItem>
-                                                        <SelectItem value="count_based">
-                                                            <div className="flex flex-col">
-                                                                <span className="font-semibold">Count-Based</span>
-                                                                <span className="text-xs text-muted-foreground">
-                                                                    Threshold-based scoring
-                                                                </span>
-                                                            </div>
-                                                        </SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                                <FormDescription>
-                                                    {field.value === "standard_20_40_50" && 
-                                                        "Predefined scoring: Easy questions worth 20 points, Medium worth 40, Hard worth 50."}
-                                                    {field.value === "linear" && 
-                                                        "All questions worth the same points regardless of difficulty."}
-                                                    {field.value === "difficulty_based" && 
-                                                        "Customize points for each difficulty level."}
-                                                    {field.value === "count_based" && 
-                                                        "Award marks based on the number of questions solved."}
-                                                </FormDescription>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    <FormField
-                                        control={form.control}
-                                        name="enablePartialPoints"
-                                        render={({ field }) => (
-                                            <FormItem className="flex items-center justify-between rounded-lg border p-4">
-                                                <div className="space-y-0.5">
-                                                    <FormLabel className="text-base">
-                                                        Partial Credit
-                                                    </FormLabel>
-                                                    <FormDescription>
-                                                        Award points based on test cases passed (not just fully correct solutions)
-                                                    </FormDescription>
-                                                </div>
+                                            <FormItem className="space-y-4">
                                                 <FormControl>
-                                                    <Switch
-                                                        checked={field.value}
-                                                        onCheckedChange={field.onChange}
-                                                    />
+                                                    <RadioGroup
+                                                        onValueChange={field.onChange}
+                                                        defaultValue={field.value}
+                                                        className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                                                    >
+                                                        <FormItem>
+                                                            <FormControl>
+                                                                <RadioGroupItem value="standard_20_40_50" className="peer sr-only" />
+                                                            </FormControl>
+                                                            <FormLabel className="flex flex-col items-start justify-between rounded-xl border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer transition-all">
+                                                                <div className="mb-2 text-lg font-semibold">
+                                                                    Standard
+                                                                </div>
+                                                                <div className="text-sm text-muted-foreground leading-snug">
+                                                                    Fixed scoring based on difficulty:
+                                                                    <div className="mt-2 flex gap-2">
+                                                                        <Badge variant="secondary" className="text-xs">Easy: 20</Badge>
+                                                                        <Badge variant="secondary" className="text-xs">Med: 40</Badge>
+                                                                        <Badge variant="secondary" className="text-xs">Hard: 50</Badge>
+                                                                    </div>
+                                                                </div>
+                                                            </FormLabel>
+                                                        </FormItem>
+
+                                                        <FormItem>
+                                                            <FormControl>
+                                                                <RadioGroupItem value="linear" className="peer sr-only" />
+                                                            </FormControl>
+                                                            <FormLabel className="flex flex-col items-start justify-between rounded-xl border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer transition-all">
+                                                                <div className="mb-2 text-lg font-semibold">
+                                                                    Linear
+                                                                </div>
+                                                                <div className="text-sm text-muted-foreground leading-snug">
+                                                                    Every question has the same fixed point value, regardless of difficulty.
+                                                                </div>
+                                                            </FormLabel>
+                                                        </FormItem>
+
+                                                        <FormItem>
+                                                            <FormControl>
+                                                                <RadioGroupItem value="difficulty_based" className="peer sr-only" />
+                                                            </FormControl>
+                                                            <FormLabel className="flex flex-col items-start justify-between rounded-xl border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer transition-all">
+                                                                <div className="mb-2 text-lg font-semibold">
+                                                                    Difficulty Based
+                                                                </div>
+                                                                <div className="text-sm text-muted-foreground leading-snug">
+                                                                    Set custom point values for each difficulty tier (Easy, Medium, Hard).
+                                                                </div>
+                                                            </FormLabel>
+                                                        </FormItem>
+
+                                                        <FormItem>
+                                                            <FormControl>
+                                                                <RadioGroupItem value="count_based" className="peer sr-only" />
+                                                            </FormControl>
+                                                            <FormLabel className="flex flex-col items-start justify-between rounded-xl border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer transition-all">
+                                                                <div className="mb-2 text-lg font-semibold">
+                                                                    Count Based
+                                                                </div>
+                                                                <div className="text-sm text-muted-foreground leading-snug">
+                                                                    Award total marks based on the number of questions solved (Thresholds).
+                                                                </div>
+                                                            </FormLabel>
+                                                        </FormItem>
+                                                    </RadioGroup>
                                                 </FormControl>
+                                                <FormMessage />
                                             </FormItem>
                                         )}
                                     />
@@ -699,157 +945,8 @@ export default function CreateExamClient({
                                     </motion.div>
                                 )}
                             </AnimatePresence>
-
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Problem Selection</CardTitle>
-                                    <CardDescription>
-                                        Choose problems for this exam.
-                                    </CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <motion.div
-                                        key="manual"
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -10 }}
-                                    >
-                                        {/* Fixed container with proper overflow handling */}
-                                        <Card className="max-h-[600px] flex flex-col overflow-hidden">
-                                            <CardHeader className="pb-4 border-b">
-                                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                                                    <div className="flex-1 min-w-0">
-                                                        <CardTitle>Select Problems</CardTitle>
-                                                        <CardDescription className="truncate">
-                                                            Search and select specific problems for the exam.
-                                                        </CardDescription>
-                                                    </div>
-                                                    <div className="flex items-center gap-2 flex-shrink-0">
-                                                        <Dialog open={openImportDialog} onOpenChange={setOpenImportDialog}>
-                                                            <DialogTrigger asChild>
-                                                                <Button variant="outline" size="sm" className="gap-2 whitespace-nowrap">
-                                                                    <Import className="h-4 w-4" />
-                                                                    Import from Collection
-                                                                </Button>
-                                                            </DialogTrigger>
-                                                            <DialogContent>
-                                                                <DialogHeader>
-                                                                    <DialogTitle>Import Problems</DialogTitle>
-                                                                    <DialogDescription>
-                                                                        Select a collection to add its problems to this exam.
-                                                                    </DialogDescription>
-                                                                </DialogHeader>
-                                                                <div className="py-4">
-                                                                    <Select
-                                                                        value={selectedCollectionId}
-                                                                        onValueChange={setSelectedCollectionId}
-                                                                    >
-                                                                        <SelectTrigger>
-                                                                            <SelectValue placeholder="Select a collection" />
-                                                                        </SelectTrigger>
-                                                                        <SelectContent>
-                                                                            {collections?.map((collection) => (
-                                                                                <SelectItem key={collection.id} value={collection.id}>
-                                                                                    {collection.name}
-                                                                                </SelectItem>
-                                                                            ))}
-                                                                        </SelectContent>
-                                                                    </Select>
-                                                                </div>
-                                                                <DialogFooter>
-                                                                    <Button variant="outline" onClick={() => setOpenImportDialog(false)}>
-                                                                        Cancel
-                                                                    </Button>
-                                                                    <Button onClick={handleImportCollection} disabled={!selectedCollectionId}>
-                                                                        Import
-                                                                    </Button>
-                                                                </DialogFooter>
-                                                            </DialogContent>
-                                                        </Dialog>
-                                                        <Badge variant="secondary" className="px-4 py-1 whitespace-nowrap">
-                                                            {selectedProblems.length} selected
-                                                        </Badge>
-                                                    </div>
-                                                </div>
-                                                <div className="mt-4">
-                                                    <Input
-                                                        placeholder="Search problems..."
-                                                        value={searchQuery}
-                                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                                        className="w-full"
-                                                    />
-                                                </div>
-                                            </CardHeader>
-                                            <CardContent className="flex-1 p-0 overflow-hidden">
-                                                <ScrollArea className="h-[400px] w-full">
-                                                    <div className="space-y-3 p-4">
-                                                        {filteredProblems.map((problem) => (
-                                                            <div
-                                                                key={problem.id}
-                                                                className="flex items-start gap-3 p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors overflow-hidden"
-                                                            >
-                                                                <FormField
-                                                                    control={form.control}
-                                                                    name="selectedProblems"
-                                                                    render={({ field }) => (
-                                                                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 mt-1 flex-shrink-0">
-                                                                            <FormControl>
-                                                                                <Checkbox
-                                                                                    checked={field.value?.includes(problem.id)}
-                                                                                    onCheckedChange={(checked) => {
-                                                                                        const value = field.value || [];
-                                                                                        if (checked) {
-                                                                                            field.onChange([...value, problem.id]);
-                                                                                        } else {
-                                                                                            field.onChange(
-                                                                                                value.filter((val) => val !== problem.id)
-                                                                                            );
-                                                                                        }
-                                                                                    }}
-                                                                                />
-                                                                            </FormControl>
-                                                                        </FormItem>
-                                                                    )}
-                                                                />
-                                                                <div className="flex-1 min-w-0 overflow-hidden">
-                                                                    <div className="flex items-start justify-between gap-2">
-                                                                        <div className="flex-1 min-w-0">
-                                                                            <h4 className="font-semibold leading-none tracking-tight truncate">
-                                                                                {problem.title}
-                                                                            </h4>
-                                                                            <p className="text-sm text-muted-foreground mt-1 line-clamp-2 break-words">
-                                                                                {problem.description}
-                                                                            </p>
-                                                                        </div>
-                                                                        <Badge
-                                                                            variant="outline"
-                                                                            className={
-                                                                                problem.difficulty === "Easy"
-                                                                                    ? "border-green-500 text-green-500 flex-shrink-0"
-                                                                                    : problem.difficulty === "Medium"
-                                                                                        ? "border-yellow-500 text-yellow-500 flex-shrink-0"
-                                                                                        : "border-red-500 text-red-500 flex-shrink-0"
-                                                                            }
-                                                                        >
-                                                                            {problem.difficulty}
-                                                                        </Badge>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        ))}
-                                                        {filteredProblems.length === 0 && (
-                                                            <div className="text-center py-8 text-muted-foreground">
-                                                                No problems found matching your search.
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </ScrollArea>
-                                            </CardContent>
-                                        </Card>
-                                    </motion.div>
-                                </CardContent>
-                            </Card>
                         </TabsContent>
+
 
                         <TabsContent value="participants" className="space-y-6">
                             <Card>
@@ -943,7 +1040,7 @@ export default function CreateExamClient({
                                                                             />
                                                                         </FormControl>
                                                                         <div className="space-y-1 leading-none min-w-0">
-                                                                            <FormLabel className="font-normal font-medium truncate block">
+                                                                            <FormLabel className="font-medium truncate block">
                                                                                 {group.name}
                                                                             </FormLabel>
                                                                             {group.description && (
@@ -1073,7 +1170,7 @@ export default function CreateExamClient({
                         </TabsContent>
                     </Tabs>
                 </form>
-            </Form>
-        </div>
+            </Form >
+        </div >
     );
 }

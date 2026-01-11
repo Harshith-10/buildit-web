@@ -60,28 +60,7 @@ const mainItems: MenuItem[] = [
   {
     icon: <BookOpen className="h-4 w-4" />,
     label: "Collections",
-    submenu: [
-      {
-        icon: <List className="h-4 w-4" />,
-        label: "All Collections",
-        href: "/collections",
-      },
-      {
-        icon: <Lock className="h-4 w-4" />,
-        label: "Your Collections",
-        href: "/collections?type=private",
-      },
-      {
-        icon: <Code2 className="h-4 w-4" />,
-        label: "Practice Sheets",
-        href: "/collections?type=practice",
-      },
-      {
-        icon: <Target className="h-4 w-4" />,
-        label: "Companies",
-        href: "/collections?type=company",
-      },
-    ],
+    href: "/collections",
   },
   {
     icon: <Code2 className="h-4 w-4" />,

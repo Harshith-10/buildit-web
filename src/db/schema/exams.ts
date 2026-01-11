@@ -69,8 +69,8 @@ export const examGroups = pgTable("exam_groups", {
 });
 
 export const examsRelations = relations(exams, ({ one, many }) => ({
-  groups: many(examGroups),
-  collections: many(examCollections),
+  examGroups: many(examGroups),
+  examCollections: many(examCollections),
   createdBy: one(user, {
     fields: [exams.createdBy],
     references: [user.id],
