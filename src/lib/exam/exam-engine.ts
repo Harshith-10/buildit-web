@@ -17,11 +17,10 @@ export async function generateQuestionSet(
     }
 
     case "random_pool": {
-      // Get N random IDs from a collection
+      // Get N random IDs from all problems
       const results = await db
         .select({ id: problems.id })
         .from(problems)
-        .where(eq(problems.collectionId, config.collectionId))
         .orderBy(sql`RANDOM()`) // Postgres random sort
         .limit(config.count);
 
@@ -35,9 +34,7 @@ export async function generateQuestionSet(
       for (const rule of config.rules) {
         const conditions = [eq(problems.difficulty, rule.difficulty)];
 
-        if (rule.collectionId) {
-          conditions.push(eq(problems.collectionId, rule.collectionId));
-        }
+        // collectionId not supported in current schema
 
         const ruleIds = await db
           .select({ id: problems.id })

@@ -3,7 +3,7 @@
 import { count, desc, eq, inArray, sql } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 import db from "@/db";
-import { exams, questions, assignmentSubmissions, user } from "@/db/schema";
+import { exams, questions, assignmentSubmissions, user, dailyProblems } from "@/db/schema";
 
 export const getStudentDashboardData = unstable_cache(
   async (userId: string, userName: string) => {
@@ -54,8 +54,29 @@ export const getStudentDashboardData = unstable_cache(
       .limit(5)
       .orderBy(desc(exams.createdAt));
 
+    // Get or create today's daily problem
+    const dailyProblemData = await ensureDailyProblem();
+
+    // Format daily problem for the UI
+    const dailyProblem = dailyProblemData
+      ? {
+          problem: {
+            id: dailyProblemData.questionId,
+            title: dailyProblemData.questionTitle || "",
+            difficulty: dailyProblemData.questionDifficulty || "medium",
+            slug: dailyProblemData.questionId, // Use ID as slug since questions don't have slug
+          },
+          stats: {
+            solvedCount: 0, // Can be enhanced later
+            acceptanceRate: 0, // Can be enhanced later
+            tags: [], // Tags not in schema
+            estimatedTime: "30 mins", // Default estimate
+          },
+        }
+      : null;
+
     return {
-      dailyProblem: null, // Feature removed
+      dailyProblem,
       stats: {
         totalSolved,
         totalSubmissions,
@@ -107,3 +128,78 @@ export const getAdminDashboardData = unstable_cache(
   ["admin-dashboard"],
   { revalidate: 60, tags: ["dashboard"] },
 );
+
+export async function ensureDailyProblem() {
+  const today = new Date().toISOString().split("T")[0];
+  
+  // Check if there's already a daily problem for today
+  const existingDailyProblem = await db
+    .select({
+      id: dailyProblems.id,
+      date: dailyProblems.date,
+      questionId: dailyProblems.questionId,
+      questionTitle: questions.title,
+      questionDifficulty: questions.difficulty,
+    })
+    .from(dailyProblems)
+    .leftJoin(questions, eq(dailyProblems.questionId, questions.id))
+    .where(eq(dailyProblems.date, today))
+    .limit(1);
+
+  if (existingDailyProblem.length > 0) {
+    return existingDailyProblem[0];
+  }
+
+  // Get recently used question IDs (last 30 days) to avoid repetition
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  const recentDailyProblems = await db
+    .select({ questionId: dailyProblems.questionId })
+    .from(dailyProblems)
+    .where(sql`${dailyProblems.date} >= ${thirtyDaysAgo.toISOString().split("T")[0]}`);
+
+  const recentQuestionIds = recentDailyProblems.map((dp) => dp.questionId);
+
+  // Get all available questions
+  const allQuestions = await db.select().from(questions);
+  
+  if (allQuestions.length === 0) {
+    throw new Error("No questions available for daily problem");
+  }
+
+  // Filter out recently used questions
+  const availableQuestions = recentQuestionIds.length > 0
+    ? allQuestions.filter((q) => !recentQuestionIds.includes(q.id))
+    : allQuestions;
+
+  // If all questions were used recently, use any question
+  const questionPool = availableQuestions.length > 0 ? availableQuestions : allQuestions;
+
+  // Select a random question
+  const randomQuestion = questionPool[Math.floor(Math.random() * questionPool.length)];
+
+  // Create new daily problem
+  const [newDailyProblem] = await db
+    .insert(dailyProblems)
+    .values({
+      date: today,
+      questionId: randomQuestion.id,
+    })
+    .returning();
+
+  // Fetch the complete daily problem with question data
+  const completeDailyProblem = await db
+    .select({
+      id: dailyProblems.id,
+      date: dailyProblems.date,
+      questionId: dailyProblems.questionId,
+      questionTitle: questions.title,
+      questionDifficulty: questions.difficulty,
+    })
+    .from(dailyProblems)
+    .leftJoin(questions, eq(dailyProblems.questionId, questions.id))
+    .where(eq(dailyProblems.id, newDailyProblem.id))
+    .limit(1);
+
+  return completeDailyProblem[0];
+}

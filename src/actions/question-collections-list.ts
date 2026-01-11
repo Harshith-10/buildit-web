@@ -77,7 +77,13 @@ export async function getQuestionsInCollection(
 
   const total = countResult?.count ?? 0;
 
-  return { data: questionsInCollection, total };
+  return { 
+    data: questionsInCollection.map(q => ({
+      ...q,
+      allowedLanguages: Array.isArray(q.allowedLanguages) ? q.allowedLanguages : []
+    })), 
+    total 
+  };
 }
 
 export async function getAllQuestions(search?: string) {

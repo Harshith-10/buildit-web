@@ -32,7 +32,7 @@ export default async function CollectionDetailsPage({
 
   return (
     <CollectionDetailsView
-      collection={collection}
+      collection={{ ...collection, tags: collection.tags || [] }}
       questions={questions}
       total={total}
       currentPage={page}

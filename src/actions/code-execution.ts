@@ -6,6 +6,8 @@ import {
   mapTestCases,
 } from "@/lib/turbo";
 
+const USE_TURBO = true;
+
 export type FileContent = {
   name?: string;
   content: string;
@@ -96,11 +98,6 @@ export type ExecuteTestcasesResponse = {
 export async function executeCode(
   payload: ExecuteCodePayload,
 ): Promise<ExecuteCodeResponse> {
-  // Use Turbo if enabled
-  if (USE_TURBO) {
-    try {
-      const code = payload.files[0]?.content || "";
-      const turboResult = await turboExecute(
   try {
     const code = payload.files[0]?.content || "";
     const turboResult = await turboExecute(
@@ -133,7 +130,12 @@ export async function executeCode(
         : undefined,
     };
   } catch (error: any) {
-    console.error("Turbo execution
+    console.error("Turbo execution error:", error);
+    return {
+      language: payload.language,
+      version: payload.version,
+      run: {
+        stdout: "",
         stderr: error.message || "Unknown error occurred",
         output: error.message || "Unknown error occurred",
         code: -1,
@@ -147,42 +149,6 @@ export async function executeCode(
 export async function executeTestcases(
   payload: ExecuteTestcasesPayload,
 ): Promise<ExecuteTestcasesResponse> {
-  // Use Turbo if enabled
-  if (USE_TURBO) {
-    try {
-      const code = payload.files[0]?.content || "";
-      const turboTestCases = mapTestCases(
-        payload.testcases.map((tc) => ({
-          id: tc.id,
-          input: tc.input,
-          expectedOutput: Array.isArray(tc.expectedOutput)
-            ? tc.expectedOutput.join("\n")
-            : tc.expectedOutput,
-        })),
-      );
-
-      const turboResult = await turboExecute(
-        code,
-        payload.language,
-        turboTestCases,
-        undefined,
-        payload.version,
-      );
-
-      // Convert Turbo testcase results to Piston format
-      const testcaseResults: TestcaseResult[] = turboResult.testcases.map(
-        (tc) => ({
-          id: tc.id,
-          input: payload.testcases.find((t) => t.id === tc.id)?.input || "",
-          expectedOutput:
-            payload.testcases.find((t) => t.id === tc.id)?.expectedOutput || "",
-          actualOutput: tc.actual_output,
-          passed: tc.passed,
-          run_details: {
-            stdout: tc.run_details?.stdout || "",
-            stderr: tc.run_details?.stderr || "",
-            code: tc.run_details?.exit_code ?? null,
-            signal: null,
   try {
     const code = payload.files[0]?.content || "";
     const turboTestCases = mapTestCases(
@@ -239,11 +205,38 @@ export async function executeTestcases(
       testcases: testcaseResults,
     };
   } catch (error: any) {
-    console.error("Turbo testcases execution error:", error);turboRuntimes = await turboGetRuntimes();
-    // Convert Turbo runtime format to expected format
-    return turboRuntimes.map((runtime) => ({
-      language: runtime.language,
-      version: runtime.version,
-      aliases: runtime.aliases,
-      runtime: runtime.runtime,
-    })
+    console.error("Turbo testcases execution error:", error);
+    return {
+      language: payload.language,
+      version: payload.version,
+      testcases: payload.testcases.map((tc) => ({
+        id: tc.id,
+        input: tc.input,
+        expectedOutput: tc.expectedOutput,
+        actualOutput: "",
+        passed: false,
+        run_details: {
+          stdout: "",
+          stderr: error.message || "Unknown error occurred",
+          code: -1,
+          signal: null,
+          memory: 0,
+          cpu_time: 0,
+          wall_time: 0,
+        },
+      })),
+      message: error.message,
+    };
+  }
+}
+
+export async function getRuntimes() {
+  const turboRuntimes = await turboGetRuntimes();
+  // Convert Turbo runtime format to expected format
+  return turboRuntimes.map((runtime) => ({
+    language: runtime.language,
+    version: runtime.version,
+    aliases: runtime.aliases,
+    runtime: runtime.runtime,
+  }));
+}

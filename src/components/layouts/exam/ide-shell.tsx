@@ -92,7 +92,7 @@ export function IDEShell({
               />
             </ResizablePanel>
 
-            <ResizableHandle withHandle handleOrientation="vertical" />
+            <ResizableHandle withHandle />
 
             <ResizablePanel defaultSize={60} minSize={30}>
               <CodePlayground

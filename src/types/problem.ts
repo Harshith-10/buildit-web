@@ -2,13 +2,24 @@ export interface TestCase {
   id: string;
   input: string;
   expectedOutput: string;
+  isHidden?: boolean;
 }
 
 export interface Problem {
   id: string;
+  type: string;
+  difficulty: "easy" | "medium" | "hard";
   title: string;
-  problemStatement: string;
+  slug: string;
+  description: string;
+  content: any;
+  driverCode: Record<string, string> | null;
+  gradingMetadata: any;
+  public: boolean;
+  createdBy: string;
+  createdAt: Date;
   testCases: TestCase[];
+  problemStatement?: string; // Alias for description
 }
 
 export interface TestcaseResult {

@@ -6,7 +6,18 @@ import { cache } from "react";
 import db from "@/db";
 import { problems, submissions, testCases } from "@/db/schema";
 import { auth } from "@/lib/auth";
-import type { Problem, Submission } from "@/types/problem";
+import type { Problem } from "@/types/problem";
+
+type Submission = {
+  id: string;
+  problemId: string;
+  status: "pending" | "accepted" | "wrong_answer" | "time_limit_exceeded" | "memory_limit_exceeded" | "compile_error" | "runtime_error" | "manual_review";
+  score: number;
+  runtimeMs?: number;
+  memoryKb?: number;
+  createdAt: Date;
+  answerData: any;
+};
 
 export const getProblem = cache(
   async (slug: string): Promise<Problem | null> => {
@@ -14,7 +25,6 @@ export const getProblem = cache(
       where: eq(problems.slug, slug),
       with: {
         testCases: true,
-        collection: true,
       },
     });
 
@@ -34,12 +44,6 @@ export const getProblem = cache(
       content: problem.content as Problem["content"],
       driverCode: problem.driverCode as Record<string, string>,
       testCases: testCasesToShow,
-      collection: problem.collection
-        ? {
-            id: problem.collection.id,
-            name: problem.collection.name,
-          }
-        : undefined,
     };
   },
 );
@@ -105,12 +109,10 @@ export const getUserSubmissions = async (
   }
 
   const userSubmissions = await db.query.submissions.findMany({
-    where: (table, { eq, and, isNull }) =>
+    where: (table, { eq, and }) =>
       and(
         eq(table.problemId, problemId),
         eq(table.userId, session.user.id),
-        // Only show public submissions (not exam submissions)
-        isNull(table.sessionId),
       ),
     orderBy: desc(submissions.createdAt),
   });
@@ -119,11 +121,11 @@ export const getUserSubmissions = async (
     id: s.id,
     problemId: s.problemId,
     status: s.status as Submission["status"],
-    score: s.score ?? 0,
-    runtimeMs: s.runtimeMs ?? undefined,
-    memoryKb: s.memoryKb ?? undefined,
-    createdAt: s.createdAt ?? new Date(),
-    answerData: s.answerData as any,
+    score: 0, // Score not in schema
+    runtimeMs: undefined,
+    memoryKb: undefined,
+    createdAt: s.createdAt,
+    answerData: { code: s.code, language: s.language },
   }));
 };
 
@@ -261,21 +263,16 @@ export const submitSolution = async (
     .values({
       userId: session.user.id,
       problemId: problem.id,
-      answerData: {
-        code: validatedInput.code,
-        language: validatedInput.language,
-        version: validatedInput.version,
-      },
+      code: validatedInput.code,
+      language: validatedInput.language,
       status: status,
-      runtimeMs: Math.floor(runtimeMs * 1000),
-      memoryKb: Math.floor(memoryKb / 1024),
     })
     .returning();
 
   return {
     status: submission.status,
-    runtimeMs: submission.runtimeMs,
-    memoryKb: submission.memoryKb,
+    runtimeMs: Math.floor(runtimeMs * 1000),
+    memoryKb: Math.floor(memoryKb / 1024),
     message: results.message || (allPassed ? "Accepted" : "Wrong Answer"),
     testCases: clientTestCases,
   };

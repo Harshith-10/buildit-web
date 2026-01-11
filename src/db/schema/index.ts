@@ -5,3 +5,5 @@ export * from "./assignments";
 export * from "./exams";
 export * from "./groups";
 export * from "./question-collections";
+export * from "./submissions";
+export * from "./daily-problems";

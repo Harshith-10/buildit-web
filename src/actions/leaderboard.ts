@@ -23,7 +23,6 @@ export type LeaderboardEntry = {
 export async function getLeaderboardData() {
   // Fetch all submissions with user data
   const allSubmissions = await db.query.submissions.findMany({
-    where: isNull(submissions.sessionId),
     with: {
       user: true,
     },
@@ -63,8 +62,9 @@ export async function getLeaderboardData() {
     // Note: If I solve it today with 100, and tomorrow with 100. My "best" is today's.
     // If I have 50 today, and 80 tomorrow. My "best" is 80 (tomorrow).
 
-    const currentScore = sub.score ?? 0;
-    const existingScore = existing?.score ?? -1;
+    // Calculate score based on status (accepted = 100, others = 0)
+    const currentScore = sub.status === "accepted" ? 100 : 0;
+    const existingScore = existing && existing.status === "accepted" ? 100 : 0;
 
     let shouldReplace = false;
 
@@ -104,7 +104,7 @@ export async function getLeaderboardData() {
   for (const [userId, problemsMap] of userBestSubmissions.entries()) {
     let totalScore = 0;
     let lastActive = new Date(0); // Epoch
-    let userObj: (typeof allSubmissions)[0]["user"] = null;
+    let userObj: (typeof allSubmissions)[0]["user"] | null = null;
     let totalTests = 0;
     let passedTests = 0;
     const languages = new Map<string, number>();
@@ -116,7 +116,8 @@ export async function getLeaderboardData() {
 
     for (const [problemId, sub] of problemsMap.entries()) {
       userObj = sub.user;
-      const score = sub.score ?? 0;
+      // Calculate score based on status
+      const score = sub.status === "accepted" ? 100 : 0;
       totalScore += score;
 
       if (sub.createdAt && sub.createdAt > lastActive) {
@@ -124,7 +125,7 @@ export async function getLeaderboardData() {
       }
 
       // Track language usage
-      const lang = (sub.answerData as any)?.language || "unknown";
+      const lang = sub.language || "unknown";
       languages.set(lang, (languages.get(lang) || 0) + 1);
 
       // Calc tests
@@ -152,6 +153,9 @@ export async function getLeaderboardData() {
     if (topLang === "Javascript") topLang = "JS";
     if (topLang === "Typescript") topLang = "TS";
     if (topLang === "Python") topLang = "Python";
+
+    // Skip entries without a valid user object
+    if (!userObj) continue;
 
     leaderboard.push({
       userId,
